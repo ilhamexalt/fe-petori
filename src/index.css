@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.link:hover {
+  color: white;
+  background-color: rgb(99 102 241);
+  opacity: 1;
+  padding: 5px 10px 5px 10px;
+  border-radius: 8px;
+}
+
+/* List */
+.demo-loadmore-list {
+  min-height: 350px;
+}
+
+/* This only changes this particular animation duration */
+.animate__animated.animate__bounce {
+  --animate-duration: 2s;
+}
+
+/* This changes all the animations globally */
+:root {
+  --animate-duration: 800ms;
+  --animate-delay: 0.9s;
+}
