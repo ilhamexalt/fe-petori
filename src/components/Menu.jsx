@@ -1,8 +1,5 @@
 import Swal from "sweetalert2";
-import { CgProfile } from "react-icons/cg";
-
-import { Dropdown, Space } from "antd";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Dog from "../assets/dog.gif";
 import { Drawer } from "antd";
 import { useState } from "react";
@@ -11,36 +8,13 @@ import { GrOrganization } from "react-icons/gr";
 import { FaRegMoneyBill1 } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 import ButtonComponent from "./Button";
-
-const items = [
-  {
-    label: (
-      <Link
-        onClick={() => {
-          Swal.fire({
-            title: "Coming soon!",
-            icon: "info",
-          });
-        }}
-        className="flex items-center w-32 text-base "
-      >
-        <IoSettingsOutline className="mr-2" /> Setting
-      </Link>
-    ),
-    key: "0",
-  },
-  {
-    label: (
-      <Link to="/" className="flex items-center w-32 text-base  ">
-        <MdLogout className="mr-2" /> Logout
-      </Link>
-    ),
-    key: "1",
-  },
-];
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function MenuComponet() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const [username, setUsername] = useLocalStorage("username");
+
   const showDrawer = () => {
     setOpen(true);
   };
@@ -48,6 +22,21 @@ export default function MenuComponet() {
   const onClose = () => {
     setOpen(false);
   };
+
+  const handleLogout = () => {
+    Swal.fire({
+      icon: "info",
+      text: "Are you sure want to log out?",
+      confirmButtonText: "Yes",
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("username");
+        return navigate("/");
+      }
+    });
+  };
+
   return (
     <>
       {/* Desktop Screen */}
@@ -80,17 +69,15 @@ export default function MenuComponet() {
         </NavLink>
       </div>
       <div className="hidden md:block">
-        <Dropdown
-          menu={{
-            items,
-          }}
-        >
-          <Link onClick={(e) => e.preventDefault()}>
-            <Space>
-              <CgProfile size={30} />
-            </Space>
-          </Link>
-        </Dropdown>
+        <div className="flex items-center gap-5">
+          <h1 className="font-semibold capitalize">Hi, {username} </h1>
+          <ButtonComponent
+            onClick={handleLogout}
+            className="bg-blue-500 text-white h-8 w-8 flex items-center justify-center hover:ring-blue-500"
+          >
+            <MdLogout />
+          </ButtonComponent>
+        </div>
       </div>
       {/* End */}
 
@@ -115,11 +102,12 @@ export default function MenuComponet() {
         </svg>
       </ButtonComponent>
       <Drawer
-        title="Ilham Maulana W"
+        title={`Hi, ${username}`}
         placement="right"
         width={500}
         onClose={onClose}
         open={open}
+        style={{ fontWeight: "bold" }}
       >
         <div>
           <Link
@@ -162,7 +150,7 @@ export default function MenuComponet() {
 
         <div>
           <Link
-            to="/"
+            onClick={handleLogout}
             className="text-body font-bold flex items-center gap-3  py-3 cursor-pointer  hover:text-indigo-500"
           >
             <MdLogout /> Logout

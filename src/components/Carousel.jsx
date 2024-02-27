@@ -1,26 +1,25 @@
 import { Carousel } from "antd";
-
 export default function CarouselComponent() {
   return (
-    <Carousel autoplay speed={2000}>
-      <div>
+    <Carousel autoplay speed={2000} className="hover:scale-105 transition">
+      <div className="w-full h-full md:h-[500px]">
         <img
           className="object-cover w-full h-full"
-          src="https://images.unsplash.com/photo-1552581234-26160f608093?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src="https://images.unsplash.com/photo-1619911433730-3100a65c4771?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Carousel"
         />
       </div>
-      <div>
+      <div className="w-full h-full md:h-[500px]">
         <img
           className="object-cover w-full h-full"
-          src="https://plus.unsplash.com/premium_photo-1663134377392-50c34664d632?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=1459&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Carousel"
         />
       </div>
-      <div>
+      <div className="w-full h-full md:h-[500px]">
         <img
           className="object-cover w-full h-full"
-          src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src="https://images.unsplash.com/photo-1470093851219-69951fcbb533?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Carousel"
         />
       </div>

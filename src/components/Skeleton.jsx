@@ -7,7 +7,7 @@ export default function SkeletonComponent({ className }) {
     <div
       className={
         loading
-          ? `bg-indigo-50 rounded-sm absolute top-0 ${className}`
+          ? `bg-indigo-100 rounded-sm absolute top-0 ${className}`
           : `hidden`
       }
     ></div>

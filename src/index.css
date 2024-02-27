@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: "Poppins", sans-serif;
 }
@@ -19,13 +23,54 @@ body {
   min-height: 350px;
 }
 
-/* This only changes this particular animation duration */
+/* Modal */
 .animate__animated.animate__bounce {
   --animate-duration: 2s;
 }
 
-/* This changes all the animations globally */
 :root {
   --animate-duration: 800ms;
   --animate-delay: 0.9s;
 }
+/* End Modal */
+
+/* Loading */
+.loader {
+  width: 120px;
+  height: 22px;
+  border-radius: 20px;
+  color: #514b82;
+  border: 2px solid;
+  position: relative;
+}
+.loader::before {
+  content: "";
+  position: absolute;
+  margin: 2px;
+  inset: 0 100% 0 0;
+  border-radius: inherit;
+  background: currentColor;
+  animation: l6 2s infinite;
+}
+@keyframes l6 {
+  100% {
+    inset: 0;
+  }
+}
+/* End Loading */
+
+/* Loading Universal */
+.loader-univ {
+  width: 50px;
+  aspect-ratio: 1;
+  --_c: no-repeat radial-gradient(farthest-side, #25b09b 92%, #0000);
+  background: var(--_c) top, var(--_c) left, var(--_c) right, var(--_c) bottom;
+  background-size: 12px 12px;
+  animation: l7 1s infinite;
+}
+@keyframes l7 {
+  to {
+    transform: rotate(0.5turn);
+  }
+}
+/* End Loading Univ */

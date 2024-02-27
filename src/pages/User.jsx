@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import Layout from "./layout/Index";
 import CardHeaderComponent from "../components/CardHeader";
 import ListComponent from "../components/List";
+import { Avatar, List, Skeleton } from "antd";
+import { Link } from "react-router-dom";
+import { FaRegEdit } from "react-icons/fa";
+import { GrView } from "react-icons/gr";
+import { MdLocationOn } from "react-icons/md";
 
 export default function User() {
   const count = 5;
@@ -50,10 +55,39 @@ export default function User() {
         <CardHeaderComponent title="Users" />
         <ListComponent
           dataSource={list}
-          BASE_URL={BASE_URL}
           loading={loading}
           initLoading={initLoading}
           onLoadMore={onLoadMore}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <Link to={null} key="list-loadmore-edit">
+                  <FaRegEdit />
+                </Link>,
+                <Link to={null} key="list-loadmore-more">
+                  <GrView />
+                </Link>,
+              ]}
+            >
+              <Skeleton avatar title={false} loading={item.loading} active>
+                <List.Item.Meta
+                  avatar={<Avatar src={item.picture.medium} />}
+                  title={
+                    <Link
+                      to={null}
+                      className="text-sm md:text-base md:font-semibold capitalize"
+                    >
+                      {item.email}
+                    </Link>
+                  }
+                  description={item.gender}
+                />
+                <div className="flex items-center gap-2 capitalize">
+                  <MdLocationOn /> Dummy
+                </div>
+              </Skeleton>
+            </List.Item>
+          )}
         />
       </div>
     </Layout>
