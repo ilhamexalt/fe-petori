@@ -4,13 +4,16 @@ import CardHeaderComponent from "../components/CardHeader";
 import { Avatar, Modal, Tooltip } from "antd";
 import { MdLocationOn } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Outlet } from "react-router-dom";
 import Cat from "../assets/cat-run.gif";
 
 import { useState } from "react";
 import ButtonComponent from "../components/Button";
+import Swal from "sweetalert2";
+import { MdOutlineDelete } from "react-icons/md";
+import { RxUpdate } from "react-icons/rx";
+import ModalStoreEdit from "../components/ModalStoreEdit";
 
 const ReadMore = ({ children }) => {
   const text = children;
@@ -39,7 +42,7 @@ const ReadMore = ({ children }) => {
           onOk={handleOk}
           footer={[
             <ButtonComponent
-              className="uppercase ring-1 text-xs md:text-sm hover:ring-indigo-500 bg-indigo-500 w-10 md:w-14 p-1"
+              className="uppercase ring-1 text-xs md:text-sm hover:ring-indigo-500 bg-indigo-500 !w-10 md:!w-14 p-1"
               onClick={handleOk}
             >
               Ok
@@ -68,6 +71,25 @@ const Content = ({ desc }) => {
 };
 
 export default function Store() {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const showModal = (e) => {
+    setOpen(true);
+    return navigate(`/store/${e}`);
+  };
+  const handleOk = () => {
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
   const { data, error, isPending } = useQuery({
     queryKey: ["repoData"],
     queryFn: () =>
@@ -86,7 +108,7 @@ export default function Store() {
     <Layout>
       <div className="p-9">
         <CardHeaderComponent title="Stores" />
-        <div className="grid grid-cols-1 md:grid-cols-2 ">
+        <div className="grid grid-cols-1 ">
           <div>
             {data.map((store) => (
               <div
@@ -116,16 +138,28 @@ export default function Store() {
                 </Tooltip>
 
                 <div className="flex gap-5">
-                  <Link to={`/store/${store.id}`}>
-                    <FaRegEdit className=" hover:text-indigo-500" />
-                  </Link>
+                  <FaRegEdit
+                    onClick={() => showModal(store.id)}
+                    className=" hover:text-indigo-500 hover:cursor-pointer"
+                  />
                 </div>
               </div>
             ))}
           </div>
-          <div className="ml-40 mt-5 hidden md:block">
-            <Outlet />
-          </div>
+          <Modal
+            className="modalStyle"
+            title={
+              <div className="px-2">
+                <ModalStoreEdit />
+              </div>
+            }
+            open={open}
+            onOk={handleOk}
+            okText="Save"
+            okButtonProps={{ style: { background: "green", color: "white" } }}
+            confirmLoading={confirmLoading}
+            onCancel={handleCancel}
+          ></Modal>
         </div>
       </div>
     </Layout>

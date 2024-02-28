@@ -11,12 +11,14 @@ export default function Layout({ children, className }) {
   return (
     <>
       <NavbarComponent />
-      <div className={`${className} min-h-screen`}>
-        {children}{" "}
-        <FloatButton.BackTop
-          icon={<FaArrowCircleUp />}
-          className="bg-white border-none"
-        />
+      <div className={`${className} min-h-screen bg-gray-50`}>
+        {children}
+        {/* <div>
+          <FloatButton.BackTop
+            icon={<FaArrowCircleUp />}
+            className="bg-white border-none"
+          />
+        </div>{" "} */}
       </div>
 
       <FooterComponent />

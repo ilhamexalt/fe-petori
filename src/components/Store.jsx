@@ -1,12 +1,11 @@
 import { MdLocationOn } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
 import SkeletonComponent from "./Skeleton";
-import ButtonComponent from "./Button";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "antd";
 import { useQuery } from "@tanstack/react-query";
 
-export default function StoreComponent() {
+export default function StoreComponent({ title }) {
   const { data, error, isPending } = useQuery({
     queryKey: ["repoData"],
     queryFn: () =>
@@ -25,22 +24,25 @@ export default function StoreComponent() {
 
   return (
     <div>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-5 md:gap-10 justify-items-center pb-5 bg-white">
+      <h1 className="text-center mb-3 md:mb-10 md:text-2xl uppercase font-semibold">
+        {title}
+      </h1>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-5 md:gap-10 justify-items-center pb-5 ">
         {data.map((item, i) => (
           <div
-            className="hover:cursor-pointer box-border shadow-md hover:shadow-lg transition rounded-sm w-full md:h-64 h-60"
+            className="hover:cursor-pointer shadow-md hover:shadow-xl transition delay-50 ease-in-out w-full md:h-64 h-60 bg-white rounded-sm "
             key={item.id}
-            onClick={() => navigate(`/store/${item.id}`)}
+            onClick={() => navigate(`/storedetail/${item.id}`)}
           >
             <div>
               <div className="w-full h-40">
                 <img
-                  className="w-full h-full object-contain shadow-sm rounded-md hover:scale-105 bg-white transition"
+                  className="w-full h-full object-contain shadow-sm rounded-sm hover:scale-105 bg-white transition p-2 md:p-4"
                   src={`${item.image}`}
                   alt="Store"
                 />
               </div>
-              <div className="grid grid-cols-1 py-2 px-2 md:px-3 ">
+              <div className="grid grid-cols-1 py-2 px-2 md:px-3">
                 <div>
                   <h1 className="text-xs text-justify md:text-base capitalize">
                     {item.category}
@@ -51,9 +53,10 @@ export default function StoreComponent() {
                     <MdLocationOn className="text-blue-500" />
                     Location
                   </p>
-                  <p>
-                    <Divider type="vertical" /> 2 Km
-                  </p>
+                  <span>
+                    <Divider type="vertical" className="bg-gray-300 w-[1px]" />2
+                    Km
+                  </span>
                   <div className="md:flex items-center justify-center text-xs md:text-sm gap-1 hidden">
                     <FaStar className="text-yellow-500" /> {item.price}
                   </div>

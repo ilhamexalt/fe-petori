@@ -8,11 +8,17 @@ import Store from "./pages/Store";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import StoreDetail from "./pages/StoreDetail";
+import NotFound from "./pages/NotFound";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import StoreDetail from "./pages/StoreDetail";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
+  {
+    path: "*",
+    element: <NotFound />,
+  },
   {
     path: "/",
     element: <Login />,
@@ -35,9 +41,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/store/:id",
-        element: <StoreDetail />,
+        element: <Store />,
       },
     ],
+  },
+  {
+    path: "/storedetail/:id",
+    element: <StoreDetail />,
   },
 ]);
 

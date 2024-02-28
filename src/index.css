@@ -23,7 +23,7 @@ body {
   min-height: 350px;
 }
 
-/* Modal */
+/* Swal */
 .animate__animated.animate__bounce {
   --animate-duration: 2s;
 }
@@ -32,7 +32,7 @@ body {
   --animate-duration: 800ms;
   --animate-delay: 0.9s;
 }
-/* End Modal */
+/* End Swal */
 
 /* Loading */
 .loader {
@@ -74,3 +74,25 @@ body {
   }
 }
 /* End Loading Univ */
+
+/* Modal */
+.modalStyle .ant-modal-content {
+  font-family: "Poppins", sans-serif;
+}
+/* End Modal */
+
+/* Scrollbar */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollable-element {
+  scrollbar-color: #6366f1 lightgray;
+}

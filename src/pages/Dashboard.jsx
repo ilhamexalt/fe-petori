@@ -11,26 +11,31 @@ import { useEffect } from "react";
 export default function Dashboard() {
   const navigate = useNavigate();
   const [username, setUsername] = useLocalStorage("username", []);
-  const { isPending, error } = useQuery({
+  const { error, isFetching, isLoading } = useQuery({
     queryKey: ["repoData"],
     queryFn: () =>
       fetch("https://fakestoreapi.com/products").then((res) => res.json()),
   });
 
-  if (isPending)
+  if (isLoading)
     return (
       <div className="flex justify-center items-center min-h-screen">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
 
-  if (error) return "An error has occurred: " + error.message;
+  if (error)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        An error has occurred: {error.message}
+      </div>
+    );
 
-  // useEffect(() => {
-  //   if (username === null) {
-  //     return navigate("/");
-  //   }
-  // }, []);
+  // if (username.length === 0) {
+  //   useEffect(() => {
+  //     return navigate("/login");
+  //   }, [username]);
+  // }
 
   return (
     <Layout>
@@ -39,10 +44,7 @@ export default function Dashboard() {
           <CarouselComponent />
         </div>
         <div className="h-auto pt-2 md:pt-10">
-          <h1 className="text-center mb-3 md:mb-10 md:text-2xl uppercase font-semibold">
-            Store
-          </h1>
-          <StoreComponent />
+          <StoreComponent title="Store" />
           <div className="flex justify-center items-center">
             <ButtonComponent
               onClick={() => navigate("/store")}

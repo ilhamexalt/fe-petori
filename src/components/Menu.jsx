@@ -70,10 +70,12 @@ export default function MenuComponet() {
       </div>
       <div className="hidden md:block">
         <div className="flex items-center gap-5">
-          <h1 className="font-semibold capitalize">Hi, {username} </h1>
+          <Link to={"/profile"} className="font-semibold capitalize">
+            Hi, {username}
+          </Link>
           <ButtonComponent
             onClick={handleLogout}
-            className="bg-blue-500 text-white h-8 w-8 flex items-center justify-center hover:ring-blue-500"
+            className="bg-gray-500 text-white h-8 w-8 flex items-center justify-center hover:ring-gray-500"
           >
             <MdLogout />
           </ButtonComponent>
@@ -108,6 +110,9 @@ export default function MenuComponet() {
         onClose={onClose}
         open={open}
         style={{ fontWeight: "bold" }}
+        // onClick={() => {
+        //   navigate("/profile");
+        // }}
       >
         <div>
           <Link
