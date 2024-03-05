@@ -64,6 +64,7 @@ export default function CardHeaderComponent({ title, onChange, value }) {
           <IoMdAddCircle /> {title.substring(0, title.length - 1)}
         </Link>
         <InputComponent
+          className="!w-40 md:w-56"
           placeholder="Search .."
           onChange={onChange}
           handleSearch

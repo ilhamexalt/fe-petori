@@ -4,6 +4,9 @@ import ButtonComponent from "./Button";
 import Swal from "sweetalert2";
 import { MdOutlineDelete } from "react-icons/md";
 import { RxUpdate } from "react-icons/rx";
+import InputComponent from "./Input";
+import SelectComponent from "./Select";
+import LabelComponent from "./Label";
 
 export default function ModalStoreEdit() {
   const params = useParams();
@@ -39,7 +42,7 @@ export default function ModalStoreEdit() {
       setProvinces(results);
     };
     fetchData();
-  }, [provinces]);
+  }, []);
 
   /* Get Cities*/
   const handleChangeState = (e) => {
@@ -82,15 +85,9 @@ export default function ModalStoreEdit() {
         <div className="w-full max-w-lg mt-5">
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-owner-name"
-              >
-                Store Name
-              </label>
+              <LabelComponent label={"Store Name"} />
               <input
                 className="appearance-none text-xs block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                id="grid-owner-name"
                 type="text"
                 value={detail.category}
                 onChange={(e) => setCities(e.target.value)}
@@ -100,47 +97,26 @@ export default function ModalStoreEdit() {
               </p>
             </div>
             <div className="w-full md:w-1/2 px-3">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-last-name"
-              >
-                Owner Name
-              </label>
-              <input
-                className="appearance-none  block w-full text-xs bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-last-name"
+              <LabelComponent label={"Owner Name"} />
+              <InputComponent
                 type="text"
-                value={detail.description}
+                placeholder="Dummy"
                 onChange={(e) => setCities(e.target.value)}
               />
             </div>
           </div>
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-first-name"
-              >
-                Service
-              </label>
-              <input
-                className="appearance-none block w-full text-xs bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                id="grid-first-name"
+              <LabelComponent label={"Service"} />
+              <InputComponent
                 type="text"
                 placeholder="Dummy"
                 onChange={(e) => setCities(e.target.value)}
               />
             </div>
             <div className="w-full md:w-1/2 px-3">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-last-name"
-              >
-                Location
-              </label>
-              <input
-                className="appearance-none block w-full text-xs bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-last-name"
+              <LabelComponent label={"Location"} />
+              <InputComponent
                 type="text"
                 placeholder="Dummy"
                 onChange={(e) => setCities(e.target.value)}
@@ -149,163 +125,60 @@ export default function ModalStoreEdit() {
           </div>
 
           {/* Dropdown*/}
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-state"
-              >
-                State
-              </label>
-              <div className="relative">
-                <select
-                  onChange={handleChangeState}
-                  id="grid-state"
-                  className="block text-xs appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                >
-                  <option>---</option>
-                  {provinces.map((province) => (
-                    <option key={province.id} value={province.id}>
-                      {province.name}
-                    </option>
-                  ))}
-                </select>
+          <div className="flex flex-wrap -mx-3 mb-0 md:mb-6">
+            <SelectComponent onChange={handleChangeState} label={"State"}>
+              {provinces.map((province) => (
+                <option key={province.id} value={province.id}>
+                  {province.name}
+                </option>
+              ))}
+            </SelectComponent>
+            <SelectComponent onChange={handleChangeCity} label={"City"}>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </SelectComponent>
 
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg
-                    className="fill-current h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-city"
-              >
-                City
-              </label>
-              <select
-                onChange={handleChangeCity}
-                id="grid-city"
-                className="block text-xs appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              >
-                <option>---</option>
-                {cities.map((city) => (
-                  <option key={city.id} value={city.id}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label
-                className="block  uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-district"
-              >
-                District
-              </label>
-              <select
-                onChange={handleChangeDistrict}
-                id="grid-district"
-                className="block text-xs appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              >
-                <option>---</option>
-                {districts.map((district) => (
-                  <option key={district.id} value={district.id}>
-                    {district.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <SelectComponent onChange={handleChangeDistrict} label={"District"}>
+              {districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))}
+            </SelectComponent>
           </div>
 
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-village"
-              >
-                Village
-              </label>
-              <div className="relative">
-                <select
-                  onChange={(e) => setCities(e.target.value)}
-                  id="grid-village"
-                  className="block text-xs appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                >
-                  <option>---</option>
-                  {villages.map((village) => (
-                    <option key={village.id} value={village.id}>
-                      {village.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg
-                    className="fill-current h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+            <SelectComponent onChange={null} label={"Village"}>
+              {villages.map((village) => (
+                <option key={village.id} value={village.id}>
+                  {village.name}
+                </option>
+              ))}
+            </SelectComponent>
             {/* End Dropdown*/}
-            <div className="w-full md:w-2/3 px-3 mb-6 md:mb-0">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="grid-number"
-              >
-                Number
-              </label>
-              <input
-                className="appearance-none block w-full text-xs bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                id="grid-number"
+
+            <div className="w-full md:w-2/3 px-3 mb-6 ">
+              <LabelComponent label={"Number"} />
+              <InputComponent
                 type="text"
-                placeholder="Blok G5 No 17"
+                placeholder="Dummy"
                 onChange={(e) => setCities(e.target.value)}
               />
-              {/* <p className="text-red-500 text-xs italic">
-                  Please fill out this field.
-                </p> */}
+            </div>
+            <div className="w-full px-3 mb-6 md:mb-0">
+              <LabelComponent label={"Description"} />
+              <InputComponent
+                type="text"
+                placeholder="Dummy"
+                onChange={(e) => setCities(e.target.value)}
+              />
             </div>
           </div>
-          {/* <div className="flex flex-wrap justify-between">
-            <ButtonComponent
-              onClick={() =>
-                Swal.fire({
-                  title: "Data has been updated",
-                  icon: "success",
-                })
-              }
-              className="bg-green-500 hover:ring-green-500 flex items-center justify-center p-1 "
-            >
-              <RxUpdate />
-            </ButtonComponent>
-            <ButtonComponent
-              onClick={() =>
-                Swal.fire({
-                  title: "Data has been deleted",
-                  icon: "success",
-                })
-              }
-              className="bg-red-500 hover:ring-red-500 flex items-center justify-center p-1 "
-            >
-              <MdOutlineDelete />
-            </ButtonComponent>
-          </div> */}
         </div>
       )}
-
-      {/* <InputComponent value={detail.category} />
-        <InputComponent value={detail.price} /> */}
     </div>
   );
 }

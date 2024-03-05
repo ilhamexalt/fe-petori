@@ -12,6 +12,8 @@ import NotFound from "./pages/NotFound";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import StoreDetail from "./pages/StoreDetail";
+import Setting from "./pages/Setting";
+import Profile from "./pages/Profile";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
@@ -49,9 +51,26 @@ const router = createBrowserRouter([
     path: "/storedetail/:id",
     element: <StoreDetail />,
   },
+  {
+    path: "/setting",
+    element: <Setting />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+  },
 ]);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchIntervalInBackground: false,
+      cacheTime: 10_000,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+// const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -9,9 +9,11 @@ export default function Layout({ children, className }) {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <>
+    <div className="relative">
       <NavbarComponent />
-      <div className={`${className} min-h-screen bg-gray-50`}>
+      <div
+        className={`${className} min-h-screen bg-gray-50 px-5 md:px-9 py-2 md:py-4 `}
+      >
         {children}
         {/* <div>
           <FloatButton.BackTop
@@ -22,6 +24,6 @@ export default function Layout({ children, className }) {
       </div>
 
       <FooterComponent />
-    </>
+    </div>
   );
 }

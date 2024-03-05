@@ -1,94 +1,43 @@
-import { useEffect, useState } from "react";
 import Layout from "./layout/Index";
 import CardHeaderComponent from "../components/CardHeader";
-import ListComponent from "../components/List";
-import { Avatar, List, Skeleton } from "antd";
-import { Link } from "react-router-dom";
-import { FaRegEdit } from "react-icons/fa";
-import { GrView } from "react-icons/gr";
-import { MdLocationOn } from "react-icons/md";
+import { Skeleton } from "antd";
+import StoreList from "../components/StoreList";
+import { useStoresQuery } from "../hooks/UseStoresQuery";
+import Cat from "../assets/cat-run.gif";
 
 export default function User() {
-  const count = 5;
-  const BASE_URL = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+  const { data, isFetching, isLoading, error } = useStoresQuery();
 
-  const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [list, setList] = useState([]);
-
-  useEffect(() => {
-    fetch(BASE_URL)
-      .then((res) => res.json())
-      .then((res) => {
-        setInitLoading(false);
-        setData(res.results);
-        setList(res.results);
-      });
-  }, []);
-
-  const onLoadMore = () => {
-    setLoading(true);
-    setList(
-      data.concat(
-        [...new Array(count)].map(() => ({
-          loading: true,
-          name: {},
-          picture: {},
-        }))
-      )
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <img src={Cat} alt={"loading"} width={300} />
+      </div>
     );
-    fetch(BASE_URL)
-      .then((res) => res.json())
-      .then((res) => {
-        const newData = data.concat(res.results);
-        setData(newData);
-        setList(newData);
-        setLoading(false);
-        // window.dispatchEvent(new Event('resize'));
-      });
-  };
+
+  if (error) return "An error has occurred: " + error.message;
 
   return (
     <Layout>
-      <div className="p-9">
+      <div className="mt-16 md:mt-32 ">
         <CardHeaderComponent title="Users" />
-        <ListComponent
-          dataSource={list}
-          loading={loading}
-          initLoading={initLoading}
-          onLoadMore={onLoadMore}
-          renderItem={(item) => (
-            <List.Item
-              actions={[
-                <Link to={null} key="list-loadmore-edit">
-                  <FaRegEdit />
-                </Link>,
-                <Link to={null} key="list-loadmore-more">
-                  <GrView />
-                </Link>,
-              ]}
+      </div>
+      <div className="grid grid-cols-1 ">
+        <Skeleton loading={isFetching} active avatar>
+          {data.map((store) => (
+            <div
+              key={store.id}
+              className="w-full h-20 flex justify-between px-3 items-center border-b-[1px]"
             >
-              <Skeleton avatar title={false} loading={item.loading} active>
-                <List.Item.Meta
-                  avatar={<Avatar src={item.picture.medium} />}
-                  title={
-                    <Link
-                      to={null}
-                      className="text-sm md:text-base md:font-semibold capitalize"
-                    >
-                      {item.email}
-                    </Link>
-                  }
-                  description={item.gender}
-                />
-                <div className="flex items-center gap-2 capitalize">
-                  <MdLocationOn /> Dummy
-                </div>
-              </Skeleton>
-            </List.Item>
-          )}
-        />
+              <StoreList
+                image={store.image}
+                description={store.description}
+                title={store.category}
+                onClick={() => showModal(store.id)}
+              />
+            </div>
+          ))}
+        </Skeleton>
       </div>
     </Layout>
   );

@@ -2,20 +2,18 @@ export default function InputComponent({
   placeholder,
   className,
   onChange,
-  handleSearch,
   value,
+  id,
+  type,
 }) {
-  function onChange(e) {
-    handleSearch(e.target.value);
-  }
-
   return (
     <input
+      id={id}
       value={value}
       onChange={onChange}
-      type="text"
+      type={type}
       placeholder={placeholder}
-      className={`bg-white border border-gray-300 text-gray-900 rounded-md  focus:ring-blue-500 focus:border-blue-500 block  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-1 md:pl-3 pt-1 pb-1 w-28 md:w-48 text-xs md:text-base ${className}`}
+      className={`appearance-none block w-full text-xs bg-gray-200 text-gray-700 border border-gray-200 rounded-md py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 ${className}`}
     />
   );
 }

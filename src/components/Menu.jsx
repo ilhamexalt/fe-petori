@@ -9,6 +9,7 @@ import { FaRegMoneyBill1 } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 import ButtonComponent from "./Button";
 import useLocalStorage from "../hooks/useLocalStorage";
+import LionProfile from "../assets/lion.png";
 
 export default function MenuComponet() {
   const [open, setOpen] = useState(false);
@@ -43,9 +44,27 @@ export default function MenuComponet() {
       <div className="flex items-center gap-10">
         <Link
           to={"/dashboard"}
-          className="text-gray-800 font-bold items-center"
+          className="text-gray-800 font-bold items-center hidden md:block"
         >
           <img src={Dog} alt={"loading"} width={80} />
+        </Link>
+        <Link
+          to={"/profile"}
+          className="font-semibold capitalize block md:hidden"
+        >
+          <div className="flex items-center gap-4">
+            <img
+              className="rounded-full object-contain ring-2 ring-indigo-500 hover:ring-pink-500 p-1 w-10 h-10"
+              src={LionProfile}
+              alt="Profile"
+            />
+            <div className="font-medium text-sm md:text-base">
+              Hi, <span className="font-bold ">{username}</span>
+              <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                Admin
+              </div>
+            </div>
+          </div>
         </Link>
         <NavLink
           to={"/user"}
@@ -68,14 +87,26 @@ export default function MenuComponet() {
           Stores
         </NavLink>
       </div>
-      <div className="hidden md:block">
+      <div className="hidden md:block ">
         <div className="flex items-center gap-5">
           <Link to={"/profile"} className="font-semibold capitalize">
-            Hi, {username}
+            <div className="flex items-center gap-4">
+              <img
+                className="rounded-full object-contain ring-2 ring-indigo-500 hover:ring-pink-500 p-1 w-10 h-10"
+                src={LionProfile}
+                alt="Profile"
+              />
+              <div className="font-medium dark:text-white">
+                Hi, <span className="font-bold">{username}</span>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Admin
+                </div>
+              </div>
+            </div>
           </Link>
           <ButtonComponent
             onClick={handleLogout}
-            className="bg-gray-500 text-white h-8 w-8 flex items-center justify-center hover:ring-gray-500"
+            className=" text-white h-8 w-8 flex items-center justify-center !bg-gray-500 hover:!ring-gray-500"
           >
             <MdLogout />
           </ButtonComponent>
@@ -104,15 +135,12 @@ export default function MenuComponet() {
         </svg>
       </ButtonComponent>
       <Drawer
-        title={`Hi, ${username}`}
+        title="Petori App"
         placement="right"
         width={500}
         onClose={onClose}
         open={open}
         style={{ fontWeight: "bold" }}
-        // onClick={() => {
-        //   navigate("/profile");
-        // }}
       >
         <div>
           <Link
@@ -142,10 +170,7 @@ export default function MenuComponet() {
         <div>
           <Link
             onClick={() => {
-              Swal.fire({
-                title: "Coming soon!",
-                icon: "info",
-              });
+              navigate("/setting");
             }}
             className="text-body font-bold flex items-center gap-3  py-3 cursor-pointer   hover:text-indigo-500 text-sm transition-all duration-300"
           >
