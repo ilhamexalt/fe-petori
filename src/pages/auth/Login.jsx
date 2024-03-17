@@ -37,6 +37,7 @@ export default function Login() {
             navigate("/dashboard");
           } else {
             reject();
+            console.log("Masuk else");
           }
         }, 1000);
       });
@@ -49,7 +50,7 @@ export default function Login() {
   return (
     <>
       <div className="flex justify-center items-center w-full min-h-screen bg-gray-50">
-        <div className="bg-white md:w-64 shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
+        <div className="bg-white w-72 shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
           <div className="w-full py-3 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-br-2xl rounded-bl-sm rounded-tl-2xl rounded-tr-sm">
             <div className="font-bold text-5xl flex justify-center">
               <img src={Petori} alt="Petori Logo " className="w-24 md:w-44" />

@@ -5,6 +5,7 @@ export const useUsersQuery = () => {
     return useQuery({
         queryKey: ["user"],
         queryFn: () =>
-            fetch(`https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`).then((res) => res.json()),
+            fetch(`https://jsonplaceholder.typicode.com/users`).then((res) => res.json()),
+        // fetch(`https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`).then((res) => res.json()),
     });
 };

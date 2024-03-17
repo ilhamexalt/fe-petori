@@ -1,13 +1,59 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "./layout/Index";
 import useLocalStorage from "../hooks/useLocalStorage";
 import ButtonComponent from "../components/Button";
 import Swal from "sweetalert2";
 import { IoSettingsSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import InputComponent from "../components/Input";
+import Avatar from "../assets/avatar.png";
+import CommentsComponent from "../components/Comments";
+import { Modal, Spin } from "antd";
+import OrderDetail from "../components/OrderDetail";
 
 export default function Profile() {
   const [username, setUsername] = useLocalStorage("username");
+  const [Location, setLocation] = useState("");
+  const [comments, setComments] = useState([]);
+  const [showComments, setShowComments] = useState(false);
+  const [showOrders, setShowOrders] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [activeComment, setActiveComment] = useState(false);
+  const [activeOrder, setActiveOrder] = useState(false);
+
+  useEffect(() => {
+    const getComments = () => {
+      fetch("https://dummyjson.com/comments")
+        .then((res) => res.json())
+        .then((res) => setComments(res.comments));
+    };
+    getComments();
+  }, []);
+
+  const handleComments = () => {
+    setLoading(true);
+    setActiveOrder(false);
+    setActiveComment(true);
+    setTimeout(() => {
+      setShowOrders(false);
+      setShowComments(true);
+      setLoading(false);
+    }, 1000);
+  };
+  const handleOrders = () => {
+    setLoading(true);
+    setActiveComment(false);
+    setActiveOrder(true);
+    setTimeout(() => {
+      setShowComments(false);
+      setShowOrders(true);
+      setLoading(false);
+    }, 1000);
+  };
+
+  const [open, setOpen] = useState(false);
+
   return (
     <Layout className="!p-0">
       <main className="profile-page">
@@ -36,9 +82,11 @@ export default function Profile() {
                   <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
                     <div className="relative">
                       <img
-                        alt="..."
-                        src="https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg"
-                        className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px]"
+                        alt="Profile"
+                        // src="https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg"
+                        src={Avatar}
+                        className=" h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px]"
+                        // shadow-xl rounded-full
                       />
                     </div>
                   </div>
@@ -63,11 +111,28 @@ export default function Profile() {
                   </div>
                   <div className="w-full lg:w-4/12 px-4 lg:order-1">
                     <div className="flex justify-center py-4 lg:pt-4 gap-3">
-                      <div className="text-center min-w-20">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-600">
+                      <div
+                        className="text-center min-w-20 hover:cursor-pointer"
+                        onClick={handleOrders}
+                      >
+                        <span
+                          className={
+                            activeOrder
+                              ? "text-xl font-bold block uppercase tracking-wide text-indigo-500"
+                              : "text-xl font-bold block uppercase tracking-wide text-gray-600"
+                          }
+                        >
                           22
                         </span>
-                        <span className="text-sm text-gray-400">Orders</span>
+                        <span
+                          className={
+                            activeOrder
+                              ? "text-sm text-indigo-300"
+                              : "text-sm text-gray-400"
+                          }
+                        >
+                          Orders
+                        </span>
                       </div>
                       <div className="text-center min-w-20">
                         <span className="text-xl font-bold block uppercase tracking-wide text-gray-600">
@@ -75,35 +140,129 @@ export default function Profile() {
                         </span>
                         <span className="text-sm text-gray-400">Photos</span>
                       </div>
-                      <div className="text-center min-w-20">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-600">
+                      <div
+                        className="text-center min-w-20 hover:cursor-pointer"
+                        onClick={handleComments}
+                      >
+                        <span
+                          className={
+                            activeComment
+                              ? "text-xl font-bold block uppercase tracking-wide text-indigo-500"
+                              : "text-xl font-bold block uppercase tracking-wide text-gray-600"
+                          }
+                        >
                           89
                         </span>
-                        <span className="text-sm text-gray-400">Comments</span>
+                        <span
+                          className={
+                            activeComment
+                              ? "text-sm text-indigo-300"
+                              : "text-sm text-gray-400"
+                          }
+                        >
+                          Comments
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="text-center md:mt-4 pb-6">
-                  <h3 className="text-xl font-semibold leading-normal mb-2 text-gray-700 capitalize">
-                    {username}
-                  </h3>
-                  <div className="text-sm leading-normal mt-0 mb-2 text-gray-400 font-bold uppercase">
-                    <i className="fas fa-map-marker-alt mr-2 text-lg text-gray-400"></i>
-                    Location
+
+                <div className="md:mt-4 pb-6">
+                  <div className="mb-2">
+                    <InputComponent
+                      type={"text"}
+                      placeholder={username}
+                      className={"text-center bg-gray-100 capitalize  "}
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
                   </div>
-                  <div className="mb-2 text-gray-600 mt-4">
-                    <i className="fas fa-briefcase mr-2 text-lg text-gray-400"></i>
-                    Store Name
+                  <div className="mb-2">
+                    <InputComponent
+                      type={"text"}
+                      placeholder={"Location"}
+                      className={"text-center bg-gray-100 capitalize  "}
+                      value={Location}
+                      onChange={(e) => setLocation(e.target.value)}
+                    />
+                  </div>
+                  <div className=" text-gray-600 mb-2">
+                    <InputComponent
+                      type={"text"}
+                      placeholder={"Store Name"}
+                      className={"text-center bg-gray-100 capitalize  "}
+                    />
                   </div>
                   <div className="mb-2 text-gray-600">
-                    <i className="fas fa-university mr-2 text-lg text-gray-400"></i>
-                    Phone Number
+                    <InputComponent
+                      type={"text"}
+                      placeholder={"Phone Number"}
+                      className={"text-center bg-gray-100 capitalize "}
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Comments */}
+          {loading && <Spin className="flex justify-center" />}
+          <div className="container mx-auto px-4 ">
+            {showComments && (
+              <>
+                <div>
+                  <h1 className="mb-5">Comments</h1>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {comments.map((comment, index) => (
+                    <div key={comment.id}>
+                      <CommentsComponent
+                        bodyComment={comment.body}
+                        fullname={comment.user.username}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Orders */}
+          <div className="container mx-auto px-4 ">
+            {showOrders && (
+              <>
+                <div>
+                  <h1 className="mb-5">Orders</h1>
+                </div>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-5">
+                  {comments.map((comment, index) => (
+                    <div key={comment.id}>
+                      <div
+                        class="w-full text-center px-5 py-3 md:py-5 shadow-md rounded-md cursor-pointer "
+                        onClick={() => setOpen(true)}
+                      >
+                        <h1 class="text-sm  dark:text-white font-semibold  text-gray-800">
+                          Ticket ID #13{comment.id}52
+                        </h1>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+          <Modal
+            centered
+            okText="Ok"
+            cancelButtonProps={{ style: { display: "none" } }}
+            okButtonProps={{ style: { display: "none" } }}
+            open={open}
+            onOk={() => setOpen(false)}
+            onCancel={() => setOpen(false)}
+            width={1200}
+          >
+            <OrderDetail />
+          </Modal>
         </section>
       </main>
     </Layout>

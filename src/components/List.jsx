@@ -1,109 +1,106 @@
-import React from "react";
-import { List } from "antd";
-import ButtonComponent from "./Button";
-import { useLocation } from "react-router-dom";
+import { Avatar, Tooltip, Modal } from "antd";
+import React, { useState } from "react";
+import { FaRegEdit } from "react-icons/fa";
+import { MdLocationOn } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
-export default function ListComponent({ initLoading, loading, onLoadMore }) {
-  const location = useLocation();
-  const loadMore =
-    !initLoading && !loading ? (
-      <div
-        style={{
-          textAlign: "center",
-          marginTop: 12,
-          height: 32,
-          lineHeight: "32px",
-        }}
-      >
-        {location.pathname !== "/store" && (
-          <ButtonComponent
-            onClick={onLoadMore}
-            className="bg-indigo-500 hover:ring-indigo-500"
-          >
-            Show More
-          </ButtonComponent>
-        )}
-      </div>
-    ) : null;
+const ReadMore = ({ children }) => {
+  const text = children;
+  const [isReadMore, setIsReadMore] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  //   const count = 5;
-  // const BASE_URL = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1224px)",
+  });
 
-  // const [initLoading, setInitLoading] = useState(true);
-  // const [loading, setLoading] = useState(false);
-  // const [data, setData] = useState([]);
-  // const [list, setList] = useState([]);
+  const handleOk = () => {
+    setIsModalOpen(false);
+    setIsReadMore(!isReadMore);
+  };
 
-  // useEffect(() => {
-  //   fetch(BASE_URL)
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       setInitLoading(false);
-  //       setData(res.results);
-  //       setList(res.results);
-  //     });
-  // }, []);
-
-  // const onLoadMore = () => {
-  //   setLoading(true);
-  //   setList(
-  //     data.concat(
-  //       [...new Array(count)].map(() => ({
-  //         loading: true,
-  //         name: {},
-  //         picture: {},
-  //       }))
-  //     )
-  //   );
-  //   fetch(BASE_URL)
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       const newData = data.concat(res.results);
-  //       setData(newData);
-  //       setList(newData);
-  //       setLoading(false);
-  //       // window.dispatchEvent(new Event('resize'));
-  //     });
-  // };
-
+  const toggleReadMore = () => {
+    setIsReadMore(!isReadMore);
+    setIsModalOpen(true);
+  };
   return (
     <>
-      {/* <ListComponent
-        dataSource={list}
-        loading={loading}
-        initLoading={initLoading}
-        onLoadMore={onLoadMore}
-        renderItem={(item) => (
-          <List.Item
-            actions={[
-              <Link to={null} key="list-loadmore-edit">
-                <FaRegEdit />
-              </Link>,
-              <Link to={null} key="list-loadmore-more">
-                <GrView />
-              </Link>,
-            ]}
-          >
-            <Skeleton avatar title={false} loading={item.loading} active>
-              <List.Item.Meta
-                avatar={<Avatar src={item.picture.medium} />}
-                title={
-                  <Link
-                    to={null}
-                    className="text-sm md:text-base md:font-semibold capitalize"
-                  >
-                    {item.email}
-                  </Link>
-                }
-                description={item.gender}
-              />
-              <div className="flex items-center gap-2 capitalize">
-                <MdLocationOn /> Dummy
-              </div>
-            </Skeleton>
-          </List.Item>
-        )}
-      /> */}
+      {isReadMore ? (
+        isDesktopOrLaptop ? (
+          text.slice(0, 60)
+        ) : (
+          text.slice(0, 25)
+        )
+      ) : (
+        <Modal
+          className="text-justify"
+          title="Description"
+          closable={false}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={false}
+          okText="OK"
+          cancelButtonProps={{ style: { display: "none" } }}
+          okButtonProps={{ style: { background: "#646df4", color: "white" } }}
+        >
+          <span className="text-xs md:text-base">{text}</span>
+        </Modal>
+      )}
+      <span
+        onClick={toggleReadMore}
+        className="text-indigo-500 hover:cursor-pointer"
+      >
+        {isReadMore ? "...read more" : " show less"}
+      </span>
+    </>
+  );
+};
+
+const Content = ({ desc }) => {
+  return (
+    <div>
+      <ReadMore>{desc}</ReadMore>
+    </div>
+  );
+};
+
+export default function List({
+  image,
+  description,
+  title,
+  onClick,
+  url,
+  to,
+  number,
+}) {
+  return (
+    <>
+      <div className="md:w-3/5 flex gap-3 items-center">
+        <div className="text-xs md:text-sm">{number}</div>
+        <div>
+          <Avatar src={image} />
+        </div>
+        <div className="flex-col capitalize">
+          <div className="font-bold text-sm md:text-base ">{title}</div>
+          <div className="text-xs md:text-sm">
+            <Content desc={description} />
+          </div>
+        </div>
+      </div>
+      <Tooltip title={url}>
+        <Link
+          to={to}
+          className="capitalize hidden md:flex items-center gap-2 hover:text-indigo-500"
+        >
+          <MdLocationOn /> Location
+        </Link>
+      </Tooltip>
+      <div className="flex gap-5">
+        <FaRegEdit
+          onClick={onClick}
+          className=" hover:text-indigo-500 hover:cursor-pointer"
+        />
+      </div>
     </>
   );
 }

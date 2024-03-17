@@ -7,7 +7,11 @@ html {
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .link:hover {
@@ -96,3 +100,33 @@ body {
 .scrollable-element {
   scrollbar-color: #6366f1 lightgray;
 }
+/* End Scrollbar */
+
+/* Loader Download */
+.loader-download {
+  width: fit-content;
+  font-weight: bold;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 12px;
+  color: #0000;
+  background: linear-gradient(
+      90deg,
+      rgb(236 72 153 /1) calc(50% + 0.5ch),
+      #ffff 0
+    )
+    right/calc(200% + 1ch) 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: l7 2s infinite steps(11);
+}
+.loader-download:before {
+  content: "Waiting ..";
+}
+@keyframes l7 {
+  to {
+    background-position: left;
+  }
+}
+/* End Loader Download */

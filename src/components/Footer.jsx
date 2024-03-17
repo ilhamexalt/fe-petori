@@ -19,7 +19,7 @@ export default function FooterComponent() {
 
       <div className="text-xs md:text-sm">
         <div className="hover:text-indigo-200 transition delay-50 ease-in-out">
-          <Link>Contact Us</Link>
+          <Link to={"/contactus"}>Contact Us</Link>
         </div>
         <div className="hover:text-indigo-200 transition delay-50 ease-in-out">
           <Link>Privacy and Policy</Link>

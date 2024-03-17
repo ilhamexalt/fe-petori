@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ButtonComponent from "./Button";
-import Swal from "sweetalert2";
-import { MdOutlineDelete } from "react-icons/md";
-import { RxUpdate } from "react-icons/rx";
 import InputComponent from "./Input";
 import SelectComponent from "./Select";
 import LabelComponent from "./Label";
+import useLocalStorage from "../hooks/useLocalStorage";
 
-export default function ModalStoreEdit() {
+export default function ModalStoreEdit({ title }) {
   const params = useParams();
   const [loading, setLoading] = useState(false);
   const [detail, setDetail] = useState([]);
@@ -16,16 +13,23 @@ export default function ModalStoreEdit() {
   const [districts, setDistricts] = useState([]);
   const [villages, setVillages] = useState([]);
   const [provinces, setProvinces] = useState([]);
+  const [username, setUsername] = useLocalStorage("username");
+  const [storeName, setStoreName] = useState("");
 
   /* Get Store By Id */
-  const getData = async () => {
-    const resp = await fetch(`https://fakestoreapi.com/products/${params.id}`);
-    const results = await resp.json();
-    setDetail(results);
-  };
   useEffect(() => {
     setLoading(true);
-    getData();
+    if (params.id !== undefined) {
+      const getData = async () => {
+        const resp = await fetch(
+          `https://fakestoreapi.com/products/${params.id}`
+        );
+        const results = await resp.json();
+        setDetail(results);
+      };
+      getData();
+    }
+    setStoreName("");
     setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -76,7 +80,7 @@ export default function ModalStoreEdit() {
 
   return (
     <div className="gap-y-4">
-      <h1 className="font-semibold text-lg">Edit Store</h1>
+      <h1 className="font-semibold text-lg">{title} Store</h1>
       {loading ? (
         <div className="flex justify-center items-center h-56">
           <div className="loader-univ"> </div>
@@ -89,8 +93,8 @@ export default function ModalStoreEdit() {
               <input
                 className="appearance-none text-xs block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                 type="text"
-                value={detail.category}
-                onChange={(e) => setCities(e.target.value)}
+                value={params.id !== undefined ? detail.category : storeName}
+                onChange={(e) => setStoreName(e.target.value)}
               />
               <p className="text-red-500 text-xs italic">
                 Please fill out this field.
@@ -99,6 +103,7 @@ export default function ModalStoreEdit() {
             <div className="w-full md:w-1/2 px-3">
               <LabelComponent label={"Owner Name"} />
               <InputComponent
+                value={username}
                 type="text"
                 placeholder="Dummy"
                 onChange={(e) => setCities(e.target.value)}

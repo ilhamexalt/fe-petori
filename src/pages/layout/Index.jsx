@@ -3,6 +3,7 @@ import FooterComponent from "../../components/Footer";
 import { NavbarComponent } from "../../components/Navbar";
 import { FloatButton } from "antd";
 import { FaArrowCircleUp } from "react-icons/fa";
+import useLocalStorage from "../../hooks/useLocalStorage";
 // eslint-disable-next-line react/prop-types
 export default function Layout({ children, className }) {
   useEffect(() => {
@@ -12,7 +13,7 @@ export default function Layout({ children, className }) {
     <div className="relative">
       <NavbarComponent />
       <div
-        className={`${className} min-h-screen bg-gray-50 px-5 md:px-9 py-2 md:py-4 `}
+        className={`${className} bg-gray-50 min-h-screen px-5 md:px-9 py-2 md:py-4 `}
       >
         {children}
         {/* <div>

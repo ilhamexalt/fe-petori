@@ -9,12 +9,13 @@ import { FaRegMoneyBill1 } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 import ButtonComponent from "./Button";
 import useLocalStorage from "../hooks/useLocalStorage";
-import LionProfile from "../assets/lion.png";
+import Avatar from "../assets/avatar.png";
 
 export default function MenuComponet() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [username, setUsername] = useLocalStorage("username");
+  const [theme, setTheme] = useLocalStorage("theme");
 
   const showDrawer = () => {
     setOpen(true);
@@ -41,7 +42,7 @@ export default function MenuComponet() {
   return (
     <>
       {/* Desktop Screen */}
-      <div className="flex items-center gap-10">
+      <div className={`flex items-center gap-10`}>
         <Link
           to={"/dashboard"}
           className="text-gray-800 font-bold items-center hidden md:block"
@@ -55,27 +56,30 @@ export default function MenuComponet() {
           <div className="flex items-center gap-4">
             <img
               className="rounded-full object-contain ring-2 ring-indigo-500 hover:ring-pink-500 p-1 w-10 h-10"
-              src={LionProfile}
+              src={Avatar}
               alt="Profile"
             />
             <div className="font-medium text-sm md:text-base">
               Hi, <span className="font-bold ">{username}</span>
               <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-                Admin
+                {username === "admin" ? "Admin" : "Owner"}
               </div>
             </div>
           </div>
         </Link>
-        <NavLink
-          to={"/user"}
-          className={({ isActive }) => {
-            return isActive
-              ? "text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block"
-              : `text-gray-800 font-semibold text-base pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
-          }}
-        >
-          Users
-        </NavLink>
+        {username === "admin" && (
+          <NavLink
+            to={"/user"}
+            className={({ isActive }) => {
+              return isActive
+                ? "text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block"
+                : `text-gray-800 font-semibold text-base pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
+            }}
+          >
+            Users
+          </NavLink>
+        )}
+
         <NavLink
           to={"/store"}
           className={({ isActive }) => {
@@ -84,26 +88,27 @@ export default function MenuComponet() {
               : `text-gray-800 font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
           }}
         >
-          Stores
+          {username === "admin" ? "Stores" : "My Store"}
         </NavLink>
       </div>
       <div className="hidden md:block ">
         <div className="flex items-center gap-5">
-          <Link to={"/profile"} className="font-semibold capitalize">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 font-semibold capitalize">
+            <Link to={"/profile"}>
               <img
                 className="rounded-full object-contain ring-2 ring-indigo-500 hover:ring-pink-500 p-1 w-10 h-10"
-                src={LionProfile}
+                src={Avatar}
                 alt="Profile"
               />
-              <div className="font-medium dark:text-white">
-                Hi, <span className="font-bold">{username}</span>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Admin
-                </div>
+            </Link>
+            <div className="font-medium dark:text-white">
+              Hi, <span className="font-bold">{username}</span>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {username === "admin" ? "Admin" : "Owner"}
               </div>
             </div>
-          </Link>
+          </div>
+
           <ButtonComponent
             onClick={handleLogout}
             className=" text-white h-8 w-8 flex items-center justify-center !bg-gray-500 hover:!ring-gray-500"
@@ -150,20 +155,23 @@ export default function MenuComponet() {
             <MdDashboard /> Dashboard
           </Link>
         </div>
-        <div>
-          <Link
-            to="/user"
-            className="text-body font-bold flex items-center gap-3  py-3 cursor-pointer   hover:text-indigo-500 text-sm transition-all duration-300"
-          >
-            <GrOrganization /> Users
-          </Link>
-        </div>
+        {username === "admin" && (
+          <div>
+            <Link
+              to="/user"
+              className="text-body font-bold flex items-center gap-3  py-3 cursor-pointer   hover:text-indigo-500 text-sm transition-all duration-300"
+            >
+              <GrOrganization /> Users
+            </Link>
+          </div>
+        )}
+
         <div>
           <Link
             to="/store"
             className="text-body font-bold flex items-center gap-3  py-3 cursor-pointer   hover:text-indigo-500 text-sm transition-all duration-300"
           >
-            <FaRegMoneyBill1 /> Stores
+            <FaRegMoneyBill1 /> {username === "admin" ? "Stores" : "My Store"}
           </Link>
         </div>
 

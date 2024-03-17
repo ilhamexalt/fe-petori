@@ -1,15 +1,28 @@
-import { Divider } from "antd";
+import { Divider, Switch } from "antd";
 import Layout from "./layout/Index";
+import Swal from "sweetalert2";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function Setting() {
+  const [theme, setTheme] = useLocalStorage("theme");
+
+  const onChange = (checked) => {
+    if (checked) {
+      setTheme("dark");
+    }
+    if (!checked) {
+      setTheme("light");
+    }
+  };
+
   return (
-    <Layout>
+    <Layout className={theme === "dark" ? "bg-slate-900 text-gray-50" : ""}>
       <div className="mt-16 md:mt-32">
         <div>
           <h1 className="text-sm md:text-lg font-semibold">
             Language and dates
           </h1>
-          <p className="text-xs md:text-base text-justify text-gray-500">
+          <p className="text-xs md:text-base text-justify text-gray-400">
             Choose what language and date format to use throughout your account.
           </p>
           <Divider />
@@ -21,7 +34,7 @@ export default function Setting() {
               <p className="text-left">English</p>
             </div>
             <div className="w-20 px-2 py-1 flex justify-center items-center rounded-md text-white">
-              <p className="text-indigo-500 font-semibold">Update</p>
+              <Switch defaultChecked className="bg-gray-400" />
             </div>
           </div>
           <div className="flex justify-between mb-5 text-xs md:text-base">
@@ -32,22 +45,80 @@ export default function Setting() {
               <p className="text-left">Automatic timezone</p>
             </div>
             <div className="w-20 px-2 py-1 flex justify-center items-center rounded-md text-white">
-              <p className="text-indigo-500 font-semibold">Update</p>
+              <Switch defaultChecked className="bg-gray-400" />
             </div>
           </div>
-          <div className="flex justify-between text-xs md:text-base">
+          <div className="flex justify-between mb-5 text-xs md:text-base">
+            <div className="min-w-36">
+              <p className="">Theme</p>
+            </div>
+            <div className="min-w-36">
+              <p className="text-left">Dark Mode</p>
+            </div>
+            <div className="w-20 px-2 py-1 flex justify-center items-center rounded-md text-white">
+              {/* sementara buat dark mode dulu */}
+              {/* <SwitchComponent /> */}
+              <Switch
+                defaultChecked={theme === "dark"}
+                onChange={onChange}
+                className="bg-gray-400"
+              />
+            </div>
+          </div>
+          <div className="flex justify-between items-center text-xs md:text-base">
             <div className="">
               <p className="font-semibold ">Delete account</p>
             </div>
+            <button
+              onClick={() => {
+                Swal.fire({
+                  icon: "warning",
+                  title: "Delete your account?",
+                  text: `Please type "Delete Permanently" to confirm`,
+                  showCancelButton: true,
+                  confirmButtonText: "OK",
+                  showLoaderOnConfirm: true,
+                  input: "text",
+                  inputAttributes: {
+                    autocapitalize: "off",
+                  },
+                  showClass: {
+                    popup: `
+                    animate__animated
+                    animate__fadeInUp
+                    animate__faster
+                  `,
+                  },
+                  hideClass: {
+                    popup: `
+                    animate__animated
+                    animate__fadeOutDown
+                    animate__faster
+                  `,
+                  },
+                  preConfirm: async (login) => {
+                    try {
+                      if (login === "")
+                        return Swal.showValidationMessage("Cannot be empty");
 
-            <div>
-              <div className="bg-red-500 w-20 px-2 py-1 flex justify-center items-center rounded-md text-white">
-                <p className="font-semibold">Delete</p>
-              </div>
-            </div>
+                      //post data
+                      if (login === "Delete Permanently") {
+                      }
+                    } catch (error) {
+                      Swal.showValidationMessage(`
+                        Request failed: ${error}
+                      `);
+                    }
+                  },
+                });
+              }}
+              className="py-1 bg-red-500 text-white px-3 rounded-md text-center font-semibold"
+            >
+              Delete
+            </button>
           </div>
           <div className="max-w-60 md:max-w-80 text-justify text-xs md:text-base">
-            <p className="text-gray-500">
+            <p className="text-gray-400">
               No longer want to use our service? You can delete your account
               here. This action is not reversible. All information related to
               this account will be deleted permanently.

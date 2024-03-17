@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import Cat from "../assets/cat-run.gif";
 import { useState } from "react";
 import ModalStoreEdit from "../components/ModalStoreEdit";
-import StoreList from "../components/StoreList";
+import List from "../components/List";
 import { useStoresQuery } from "../hooks/UseStoresQuery";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function Store() {
+  const [theme, setTheme] = useLocalStorage("theme");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -17,6 +19,7 @@ export default function Store() {
     setOpen(true);
     return navigate(`/store/${e}`);
   };
+
   const handleSave = () => {
     setConfirmLoading(true);
     //call api post
@@ -43,18 +46,21 @@ export default function Store() {
   if (error) return "An error has occurred: " + error.message;
 
   return (
-    <Layout>
+    <Layout className={theme === "dark" ? "bg-slate-900 text-gray-50" : ""}>
       <div className="mt-16 md:mt-32 ">
         <CardHeaderComponent title="Stores" />
       </div>
       <div className="grid grid-cols-1 ">
         <Skeleton loading={isFetching} active avatar>
-          {data.map((store) => (
+          {/* IF ADMIN FETCH ALL STORE, IF OWNER FETCH STORE BY ID */}
+          {data.map((store, index) => (
             <div
               key={store.id}
               className="w-full h-20 flex justify-between px-3 items-center border-b-[1px]"
             >
-              <StoreList
+              <List
+                number={index + 1}
+                to={`https://hello-iam.netlify.app`}
                 image={store.image}
                 description={store.description}
                 title={store.category}
@@ -63,11 +69,12 @@ export default function Store() {
             </div>
           ))}
         </Skeleton>
+
         <Modal
           className="modalStyle"
           title={
             <div className="px-2">
-              <ModalStoreEdit />
+              <ModalStoreEdit title={"Edit"} />
             </div>
           }
           open={open}
