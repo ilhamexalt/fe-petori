@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import useLocalStorage from "../hooks/useLocalStorage";
+
 export default function FooterComponent() {
   let [year, setYear] = useState("2023");
+  const [theme, setTheme] = useLocalStorage("theme");
 
   useEffect(() => {
     let objectDate = new Date();
@@ -11,7 +14,13 @@ export default function FooterComponent() {
   }, []);
 
   return (
-    <div className="h-28 bg-indigo-500 text-white flex items-center justify-between p-5 md:p-8 w-full sticky">
+    <div
+      className={
+        theme === "dark"
+          ? "bg-gray-800 text-gray-300 h-28 flex items-center justify-between p-5 md:p-8 w-full sticky"
+          : "h-28 bg-indigo-500 text-white flex items-center justify-between p-5 md:p-8 w-full sticky"
+      }
+    >
       <div className="font-thin">
         <h1 className="text-sm md:text-lg font-semibold">Petori</h1>
         <p className="text-xs md:text-sm">© {year}. All right reserved.</p>

@@ -1,20 +1,26 @@
 import Swal from "sweetalert2";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import Dog from "../assets/dog.gif";
-import { Drawer } from "antd";
-import { useState } from "react";
-import { MdDashboard, MdLogout } from "react-icons/md";
+import { ConfigProvider, Drawer, Tour } from "antd";
+import { useRef, useState } from "react";
+import { MdClose, MdDashboard, MdLogout } from "react-icons/md";
 import { GrOrganization } from "react-icons/gr";
 import { FaRegMoneyBill1 } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 import ButtonComponent from "./Button";
 import useLocalStorage from "../hooks/useLocalStorage";
 import Avatar from "../assets/avatar.png";
+import { useMediaQuery } from "react-responsive";
+import { selectDarkMode } from "../redux/features/themeslice";
+import { useSelector } from "react-redux";
 
 export default function MenuComponet() {
+  const darkMode = useSelector(selectDarkMode);
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [username, setUsername] = useLocalStorage("username");
+  const [tour, setTour] = useLocalStorage("tour");
   const [theme, setTheme] = useLocalStorage("theme");
 
   const showDrawer = () => {
@@ -34,15 +40,57 @@ export default function MenuComponet() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("username");
+        localStorage.removeItem("isLoggedIn");
+
         return navigate("/");
       }
     });
   };
 
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const steps = [
+    {
+      title: "Info",
+      description: "You can see your the store here.",
+      nextButtonProps: {
+        children: <p>Next</p>,
+        style: {
+          // backgroundColor: "rgb(99 102 241 / 1)",
+          backgroundColor: "#1890ff",
+        },
+      },
+      target: () => ref1.current,
+    },
+    {
+      title: "Info",
+      description: "You can see your the profile here.",
+      nextButtonProps: {
+        style: {
+          backgroundColor: "#1890ff",
+        },
+        //onClick: () => setTour(true), // insert to database for flagging
+      },
+      target: () => ref2.current,
+    },
+  ];
+
+  const isDesktopScreen = useMediaQuery({
+    query: "(min-width: 1224px)",
+  });
+
+  // if (location.pathname === "/dashboard") {
+  //   if (!isDesktopScreen && !tour)
+  //     useEffect(() => {
+  //       setIsOpen(true);
+  //     }, []);
+  // }
+
   return (
     <>
       {/* Desktop Screen */}
-      <div className={`flex items-center gap-10`}>
+      <div className="flex items-center gap-10">
         <Link
           to={"/dashboard"}
           className="text-gray-800 font-bold items-center hidden md:block"
@@ -59,9 +107,9 @@ export default function MenuComponet() {
               src={Avatar}
               alt="Profile"
             />
-            <div className="font-medium text-sm md:text-base">
+            <div className="font-medium text-sm md:text-base dark:text-gray-300">
               Hi, <span className="font-bold ">{username}</span>
-              <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
                 {username === "admin" ? "Admin" : "Owner"}
               </div>
             </div>
@@ -72,8 +120,8 @@ export default function MenuComponet() {
             to={"/user"}
             className={({ isActive }) => {
               return isActive
-                ? "text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block"
-                : `text-gray-800 font-semibold text-base pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
+                ? `text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block`
+                : `text-gray-800 dark:text-gray-300 font-semibold text-base pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
             }}
           >
             Users
@@ -81,20 +129,29 @@ export default function MenuComponet() {
         )}
 
         <NavLink
+          ref={ref1}
           to={"/store"}
           className={({ isActive }) => {
             return isActive
-              ? "text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block"
-              : `text-gray-800 font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
+              ? `text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block`
+              : `text-gray-800 dark:text-gray-300 font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
           }}
         >
           {username === "admin" ? "Stores" : "My Store"}
         </NavLink>
+
+        <Tour
+          onFinish={() => setIsOpen(false)}
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          steps={steps}
+          placement="bottomRight"
+        />
       </div>
       <div className="hidden md:block ">
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-4 font-semibold capitalize">
-            <Link to={"/profile"}>
+            <Link to={"/profile"} ref={ref2}>
               <img
                 className="rounded-full object-contain ring-2 ring-indigo-500 hover:ring-pink-500 p-1 w-10 h-10"
                 src={Avatar}
@@ -139,51 +196,75 @@ export default function MenuComponet() {
           />
         </svg>
       </ButtonComponent>
+
       <Drawer
-        title="Petori App"
+        closeIcon={
+          <MdClose className={theme === "dark" ? "text-white" : "text-black"} />
+        }
         placement="right"
         width={500}
         onClose={onClose}
         open={open}
-        style={{ fontWeight: "bold" }}
+        // style={{
+        //   fontWeight: "bold"
+        // }}
+        style={
+          theme === "dark"
+            ? { backgroundColor: "#2B3B56", color: "white" }
+            : { backgroundColor: "white", color: "black" }
+        }
       >
-        <div>
-          <Link
+        <div className="-mt-5">
+          <NavLink
             to="/dashboard"
-            className="text-body font-bold flex items-center gap-3 py-3 cursor-pointer hover:text-indigo-500 text-sm transition-all duration-300"
+            className={({ isActive }) => {
+              return isActive
+                ? "text-body font-bold flex items-center gap-3 py-3 cursor-pointer text-indigo-500 hover:text-indigo-500 text-sm transition-all duration-300"
+                : `text-body font-bold flex items-center gap-3 py-3 cursor-pointer hover:text-indigo-500 text-sm transition-all duration-300`;
+            }}
           >
             <MdDashboard /> Dashboard
-          </Link>
+          </NavLink>
         </div>
         {username === "admin" && (
           <div>
-            <Link
+            <NavLink
               to="/user"
-              className="text-body font-bold flex items-center gap-3  py-3 cursor-pointer   hover:text-indigo-500 text-sm transition-all duration-300"
+              className={({ isActive }) => {
+                return isActive
+                  ? "text-body font-bold flex items-center gap-3 py-3 cursor-pointer text-indigo-500 hover:text-indigo-500 text-sm transition-all duration-300"
+                  : `text-body font-bold flex items-center gap-3 py-3 cursor-pointer hover:text-indigo-500 text-sm transition-all duration-300`;
+              }}
             >
               <GrOrganization /> Users
-            </Link>
+            </NavLink>
           </div>
         )}
 
         <div>
-          <Link
+          <NavLink
             to="/store"
-            className="text-body font-bold flex items-center gap-3  py-3 cursor-pointer   hover:text-indigo-500 text-sm transition-all duration-300"
+            className={({ isActive }) => {
+              return isActive
+                ? "text-body font-bold flex items-center gap-3 py-3 cursor-pointer text-indigo-500 hover:text-indigo-500 text-sm transition-all duration-300"
+                : `text-body font-bold flex items-center gap-3 py-3 cursor-pointer hover:text-indigo-500 text-sm transition-all duration-300`;
+            }}
           >
             <FaRegMoneyBill1 /> {username === "admin" ? "Stores" : "My Store"}
-          </Link>
+          </NavLink>
         </div>
 
         <div>
-          <Link
-            onClick={() => {
-              navigate("/setting");
+          <NavLink
+            to="/setting"
+            className={({ isActive }) => {
+              return isActive
+                ? "text-body font-bold flex items-center gap-3 py-3 cursor-pointer text-indigo-500 hover:text-indigo-500 text-sm transition-all duration-300"
+                : `text-body font-bold flex items-center gap-3 py-3 cursor-pointer hover:text-indigo-500 text-sm transition-all duration-300`;
             }}
-            className="text-body font-bold flex items-center gap-3  py-3 cursor-pointer   hover:text-indigo-500 text-sm transition-all duration-300"
           >
             <IoSettingsOutline /> Setting
-          </Link>
+          </NavLink>
         </div>
 
         <div>

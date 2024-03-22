@@ -4,6 +4,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
+import { MdDeleteOutline } from "react-icons/md";
 
 const ReadMore = ({ children }) => {
   const text = children;
@@ -29,7 +30,7 @@ const ReadMore = ({ children }) => {
         isDesktopOrLaptop ? (
           text.slice(0, 60)
         ) : (
-          text.slice(0, 25)
+          text.slice(0, 20)
         )
       ) : (
         <Modal
@@ -69,37 +70,47 @@ export default function List({
   description,
   title,
   onClick,
-  url,
+  onClickDelete,
+  tooltip,
   to,
   number,
+  location,
+  onClickGmaps,
 }) {
   return (
     <>
-      <div className="md:w-3/5 flex gap-3 items-center">
-        <div className="text-xs md:text-sm">{number}</div>
-        <div>
-          <Avatar src={image} />
-        </div>
-        <div className="flex-col capitalize">
-          <div className="font-bold text-sm md:text-base ">{title}</div>
-          <div className="text-xs md:text-sm">
-            <Content desc={description} />
+      <div className="flex justify-between px-3 items-center ">
+        <div className="md:w-3/5 flex gap-3 items-center">
+          <div className="text-xs md:text-sm">{number}</div>
+          <div>
+            <Avatar src={image} />
+          </div>
+          <div className="flex-col capitalize">
+            <div className="font-bold text-sm md:text-base ">{title}</div>
+            <div className="text-xs md:text-sm">
+              <Content desc={description} />
+            </div>
           </div>
         </div>
-      </div>
-      <Tooltip title={url}>
-        <Link
-          to={to}
-          className="capitalize hidden md:flex items-center gap-2 hover:text-indigo-500"
-        >
-          <MdLocationOn /> Location
-        </Link>
-      </Tooltip>
-      <div className="flex gap-5">
-        <FaRegEdit
-          onClick={onClick}
-          className=" hover:text-indigo-500 hover:cursor-pointer"
-        />
+
+        <Tooltip title={tooltip}>
+          <Link
+            onClick={onClickGmaps}
+            className="capitalize hidden md:flex items-center gap-2 hover:text-indigo-500"
+          >
+            <MdLocationOn /> {location}
+          </Link>
+        </Tooltip>
+        <div className="flex gap-5">
+          <FaRegEdit
+            onClick={onClick}
+            className=" hover:text-indigo-500 hover:cursor-pointer"
+          />
+          <MdDeleteOutline
+            onClick={onClickDelete}
+            className=" hover:text-red-500 hover:cursor-pointer"
+          />
+        </div>
       </div>
     </>
   );

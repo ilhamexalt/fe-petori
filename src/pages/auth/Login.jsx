@@ -1,56 +1,92 @@
-import { Spin } from "antd";
-import { useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import ButtonComponent from "../../components/Button";
 import Petori from "../../assets/petori.png";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import loginReducer from "../../hooks/useReducerLogin";
 import InputComponent from "../../components/Input";
-
-const initialState = {
-  phoneNumber: "",
-  password: "",
-  isLoading: false,
-  error: "",
-};
+import Swal from "sweetalert2";
+import { Spin } from "antd";
 
 export default function Login() {
   const navigate = useNavigate();
   const [localStorage, setLocalStorage] = useLocalStorage("username", []);
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn", []);
 
-  const [state, dispatch] = useReducer(loginReducer, initialState);
-  const { phoneNumber, password, isLoading, error } = state;
+  const [phoneNumber, setPhonenumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    dispatch({ type: "login" });
     try {
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (phoneNumber !== "" && password !== "") {
-            setLocalStorage(phoneNumber);
-            resolve();
-            setIsLogin(true);
-            navigate("/dashboard");
-          } else {
-            reject();
-            console.log("Masuk else");
-          }
-        }, 1000);
-      });
-      dispatch({ type: "success" });
+      if (phoneNumber === "" || password === "") {
+        setError(true);
+        Swal.fire("Error", "Please fill all the fields", "error");
+        return;
+      }
+
+      if (phoneNumber === "admin" && password === "1") {
+        setLocalStorage(phoneNumber);
+        setIsLogin(true);
+        navigate("/dashboard");
+      } else if (phoneNumber === "owner1" && password === "1") {
+        //active yet
+        let timerInterval;
+        Swal.fire({
+          icon: "info",
+          title:
+            "<p style='text-align: center; font-size: 20px'>Your account is not active yet! </p>",
+          html: `<p style='text-align: center; font-size: 12px'> you will be directed to the verification page, please wait .. </p>`,
+          timer: 3000,
+          showCancelButton: false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          // didOpen: () => {
+          //   Swal.showLoading();
+          //   const timer = Swal.getPopup().querySelector("b");
+          //   timerInterval = setInterval(async () => {
+          //     timer.textContent = `${Swal.getTimerLeft()}`;
+          //   }, 100);
+          // },
+          // willClose: () => {
+          //   clearInterval(timerInterval);
+          //   return navigate("/verification");
+          // },
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+          willClose: () => {
+            return navigate("/verification");
+          },
+        });
+      } else if (phoneNumber === "owner2" && password === "1") {
+        setLocalStorage(phoneNumber);
+        setIsLogin(true);
+        navigate("/dashboard");
+      } else if (
+        (phoneNumber !== "owner1" && password !== "1") ||
+        (phoneNumber !== "owner2" && password !== "1") ||
+        (phoneNumber !== "admin" && password !== "1")
+      ) {
+        Swal.fire("Error", "Incorrect phone number or password!", "error");
+      }
     } catch (error) {
-      dispatch({ type: "error" });
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Error : " + e.error,
+      });
     }
   };
 
   return (
     <>
       <div className="flex justify-center items-center w-full min-h-screen bg-gray-50">
-        <div className="bg-white w-72 shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
+        <div className="bg-white w-72 md:w-96  shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
           <div className="w-full py-3 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-br-2xl rounded-bl-sm rounded-tl-2xl rounded-tr-sm">
             <div className="font-bold text-5xl flex justify-center">
               <img src={Petori} alt="Petori Logo " className="w-24 md:w-44" />
@@ -63,40 +99,30 @@ export default function Login() {
             {error && (
               <p className="text-red-500 text-center text-xs mb-2">{error}</p>
             )}
-            <form name="basic" onSubmit={onSubmit}>
+            <form name="basic" onSubmit={onSubmit} className="relative">
               <InputComponent
                 type="text"
-                className="mb-5"
+                className={
+                  error && !phoneNumber ? "mb-5 border-red-500" : "mb-5"
+                }
                 placeholder="Phone Number"
                 value={phoneNumber}
-                onChange={(e) =>
-                  dispatch({
-                    type: "field",
-                    fieldName: "phoneNumber",
-                    payload: e.currentTarget.value,
-                  })
-                }
+                onChange={(e) => setPhonenumber(e.target.value)}
               />
 
               <InputComponent
                 type="password"
-                className="mb-5"
+                className={error && !password ? "mb-5 border-red-500" : "mb-5"}
                 placeholder="Password"
                 value={password}
-                onChange={(e) =>
-                  dispatch({
-                    type: "field",
-                    fieldName: "password",
-                    payload: e.currentTarget.value,
-                  })
-                }
+                onChange={(e) => setPassword(e.target.value)}
               />
               <ButtonComponent
-                disabled={isLoading}
+                disabled={loading}
                 type="submit"
                 className="w-full tracking-widest p-1 mb-2"
               >
-                {isLoading ? (
+                {loading ? (
                   <Spin
                     indicator={
                       <LoadingOutlined

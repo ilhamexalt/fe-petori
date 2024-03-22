@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "./layout/Index";
 import useLocalStorage from "../hooks/useLocalStorage";
 import ButtonComponent from "../components/Button";
@@ -8,8 +8,9 @@ import { Link } from "react-router-dom";
 import InputComponent from "../components/Input";
 import Avatar from "../assets/avatar.png";
 import CommentsComponent from "../components/Comments";
-import { Modal, Spin } from "antd";
+import { Modal, Spin, Tour } from "antd";
 import OrderDetail from "../components/OrderDetail";
+import { useMediaQuery } from "react-responsive";
 
 export default function Profile() {
   const [username, setUsername] = useLocalStorage("username");
@@ -21,6 +22,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [activeComment, setActiveComment] = useState(false);
   const [activeOrder, setActiveOrder] = useState(false);
+  const [theme, setTheme] = useLocalStorage("theme");
 
   useEffect(() => {
     const getComments = () => {
@@ -54,8 +56,61 @@ export default function Profile() {
 
   const [open, setOpen] = useState(false);
 
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const steps = [
+    {
+      title: "Info",
+      description: "You can see your order history.",
+      nextButtonProps: {
+        children: <p>Next</p>,
+        style: {
+          // backgroundColor: "rgb(99 102 241 / 1)",
+          backgroundColor: "#1890ff",
+        },
+      },
+      target: () => ref1.current,
+    },
+    {
+      title: "Info",
+      description: "You can see comments on your store.",
+      nextButtonProps: {
+        style: {
+          backgroundColor: "#1890ff",
+        },
+        //onClick: () => setTour(true), // insert to database for flagging
+      },
+      target: () => ref2.current,
+    },
+    {
+      title: "Info",
+      description: "You can setting the website.",
+      nextButtonProps: {
+        style: {
+          backgroundColor: "#1890ff",
+        },
+      },
+      target: () => ref3.current,
+    },
+  ];
+
+  const isDesktopScreen = useMediaQuery({
+    query: "(min-width: 1224px)",
+  });
+
+  if (isDesktopScreen) {
+    useEffect(() => {
+      setIsOpen(true);
+    }, []);
+  }
+
   return (
-    <Layout className="!p-0">
+    <Layout
+      className={theme === "dark" ? "bg-gray-800 text-gray-300 !p-0" : "!p-0"}
+    >
       <main className="profile-page">
         <section className="relative block h-96 md:h-[500px]">
           <div
@@ -76,7 +131,13 @@ export default function Profile() {
         </section>
         <section className="relative py-16">
           <div className="container mx-auto px-4">
-            <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
+            <div
+              className={
+                theme === "dark"
+                  ? "relative flex flex-col min-w-0 break-words bg-gray-800 w-full mb-6 shadow-xl rounded-lg -mt-64"
+                  : "relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64"
+              }
+            >
               <div className="px-6">
                 <div className="flex flex-wrap justify-center">
                   <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
@@ -104,7 +165,11 @@ export default function Profile() {
                       >
                         Update Profile
                       </ButtonComponent>
-                      <Link to="/setting" className="hidden md:block">
+                      <Link
+                        ref={ref3}
+                        to="/setting"
+                        className="hidden md:block"
+                      >
                         <IoSettingsSharp />
                       </Link>
                     </div>
@@ -112,6 +177,7 @@ export default function Profile() {
                   <div className="w-full lg:w-4/12 px-4 lg:order-1">
                     <div className="flex justify-center py-4 lg:pt-4 gap-3">
                       <div
+                        ref={ref1}
                         className="text-center min-w-20 hover:cursor-pointer"
                         onClick={handleOrders}
                       >
@@ -141,6 +207,7 @@ export default function Profile() {
                         <span className="text-sm text-gray-400">Photos</span>
                       </div>
                       <div
+                        ref={ref2}
                         className="text-center min-w-20 hover:cursor-pointer"
                         onClick={handleComments}
                       >
@@ -164,6 +231,14 @@ export default function Profile() {
                         </span>
                       </div>
                     </div>
+
+                    <Tour
+                      onFinish={() => setIsOpen(false)}
+                      open={isOpen}
+                      onClose={() => setIsOpen(false)}
+                      steps={steps}
+                      placement="bottomRight"
+                    />
                   </div>
                 </div>
 
@@ -238,10 +313,10 @@ export default function Profile() {
                   {comments.map((comment, index) => (
                     <div key={comment.id}>
                       <div
-                        class="w-full text-center px-5 py-3 md:py-5 shadow-md rounded-md cursor-pointer "
+                        className="w-full  dark:text-white dark:bg-gray-800 bg-white text-gray-800 text-center px-5 py-3 md:py-5 shadow-md rounded-md cursor-pointer "
                         onClick={() => setOpen(true)}
                       >
-                        <h1 class="text-sm  dark:text-white font-semibold  text-gray-800">
+                        <h1 className="text-sm  dark:text-white dark:bg-gray-800 font-semibold  text-gray-800">
                           Ticket ID #13{comment.id}52
                         </h1>
                       </div>

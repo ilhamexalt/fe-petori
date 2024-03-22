@@ -3,7 +3,7 @@ import LabelComponent from "./Label";
 export default function SelectComponent({ onChange, label, children }) {
   return (
     <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-      <LabelComponent label={label} />
+      <LabelComponent label={label} className={label ? "block" : "hidden"} />
       <div className="relative">
         <select
           onChange={onChange}

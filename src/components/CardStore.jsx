@@ -1,6 +1,7 @@
 import { Divider } from "antd";
 import { FaStar } from "react-icons/fa6";
 import { MdLocationOn } from "react-icons/md";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function CardStoreComponent({
   src,
@@ -12,7 +13,7 @@ export default function CardStoreComponent({
   return (
     <div
       onClick={onClick}
-      className={`hover:cursor-pointer shadow-md hover:shadow-xl transition delay-50 ease-in-out w-40 md:w-60 md:h-64 h-60 bg-white rounded-sm ${className} `}
+      className={`bg-white dark:bg-gray-800 dark:text-gray-300 hover:cursor-pointer shadow-md hover:shadow-xl transition delay-50 ease-in-out w-40 md:w-60 md:h-64 h-60 rounded-sm  ${className}`}
     >
       <div>
         <div className="w-full md:w-full bg-white h-40 flex justify-center items-center">

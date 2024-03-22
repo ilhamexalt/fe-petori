@@ -1,22 +1,22 @@
 import { Divider, Switch } from "antd";
 import Layout from "./layout/Index";
 import Swal from "sweetalert2";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { selectDarkMode, toggleDarkMode } from "../redux/features/themeslice";
 import useLocalStorage from "../hooks/useLocalStorage";
 
-export default function Setting() {
-  const [theme, setTheme] = useLocalStorage("theme");
+const Setting = () => {
+  const darkMode = useSelector(selectDarkMode);
+  const dispatch = useDispatch();
+  const [theme, setTheme] = useLocalStorage("theme", "light");
 
-  const onChange = (checked) => {
-    if (checked) {
-      setTheme("dark");
-    }
-    if (!checked) {
-      setTheme("light");
-    }
+  const handleToggle = () => {
+    dispatch(toggleDarkMode());
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   return (
-    <Layout className={theme === "dark" ? "bg-slate-900 text-gray-50" : ""}>
+    <Layout className={theme === "dark" ? "bg-gray-800 text-gray-300" : ""}>
       <div className="mt-16 md:mt-32">
         <div>
           <h1 className="text-sm md:text-lg font-semibold">
@@ -57,10 +57,10 @@ export default function Setting() {
             </div>
             <div className="w-20 px-2 py-1 flex justify-center items-center rounded-md text-white">
               {/* sementara buat dark mode dulu */}
-              {/* <SwitchComponent /> */}
               <Switch
+                disabled={true}
                 defaultChecked={theme === "dark"}
-                onChange={onChange}
+                onChange={handleToggle}
                 className="bg-gray-400"
               />
             </div>
@@ -128,4 +128,14 @@ export default function Setting() {
       </div>
     </Layout>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  darkMode: state.theme.darkMode,
+});
+
+const mapDispatchToProps = {
+  toggleDarkMode,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Setting);

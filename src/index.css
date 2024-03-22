@@ -82,6 +82,7 @@ body {
 /* Modal */
 .modalStyle .ant-modal-content {
   font-family: "Poppins", sans-serif;
+  background-color: white;
 }
 /* End Modal */
 
@@ -130,3 +131,7 @@ body {
   }
 }
 /* End Loader Download */
+
+/* .modal-backdrop {
+  background-color: red;
+} */

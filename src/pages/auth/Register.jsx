@@ -1,87 +1,128 @@
 import { Button, Input, Form, message, Spin } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert2";
 import { LoadingOutlined } from "@ant-design/icons";
 import Petori from "../../assets/petori.png";
 import InputComponent from "../../components/Input";
 import ButtonComponent from "../../components/Button";
+import { addTodo, deleteTodo } from "../../redux/actions";
+import { connect } from "react-redux";
+import Swal from "sweetalert2";
+import { FaEyeSlash } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 
-export default function Register() {
-  const [name, setName] = useState("");
+const Register = ({ todos, addTodo, deleteTodo }) => {
+  const [fullname, setFullname] = useState("");
   const [address, setAddress] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
 
-  const [messageApi, contextHolder] = message.useMessage();
-  const key = "updatable";
-  const openMessage = () => {
-    messageApi.open({
-      key,
-      type: "loading",
-      content: "Loading...",
-    });
-    setTimeout(() => {
-      messageApi.open({
-        key,
-        type: "warning",
-        content: "Please complete the registration form",
-        duration: 2,
-      });
-    }, 1000);
+  const [validateUppercase, setValidateUppercase] = useState(true);
+  const [validateLength, setValidateLength] = useState(true);
+  const [validateChar, setValidateChar] = useState(true);
+
+  const [isFocused, setIsFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
   };
+
+  const handleInputPassword = (e) => {
+    const pwFill = e.target.value;
+    const uppercaseRegex = /[A-Z]/;
+    const characterRegex = /[0-9]/;
+
+    /* validation min length */
+    if (pwFill.length < 8) {
+      setValidateLength(true);
+    } else {
+      setValidateLength(false);
+    }
+
+    /* validation uppercase */
+    if (pwFill.match(uppercaseRegex)) {
+      setValidateUppercase(false);
+    } else {
+      setValidateUppercase(true);
+    }
+
+    let valPassword = false;
+    /* validation character */
+    if (pwFill.match(characterRegex)) {
+      setValidateChar(false);
+    } else {
+      setValidateChar(true);
+      valPassword = true;
+    }
+
+    if (!validateLength && !validateUppercase && !valPassword) {
+      setPassword(pwFill);
+    }
+
+    if (validateLength || validateUppercase || valPassword) {
+      setPassword(null);
+    }
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (
-      address === "" ||
-      phonenumber === "" ||
-      name === "" ||
-      email === "" ||
-      password === ""
-    ) {
-      openMessage();
+
+    if (!fullname || !address || !email || !password || !phonenumber) {
       setLoading(false);
-      return false;
+      setError(true);
+      Swal.fire("Error", "Please fill all the fields", "error");
+      return;
     }
 
     try {
-      const api = await fetch("https://bluepath.my.id/company/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          company: {
-            address: address,
-            phonenumber: phonenumber,
-            email: email,
-            password: password,
-          },
-          employee: {
-            name: name,
-            address: address,
-            email: email,
-            password: password,
-            phonenumber: phonenumber,
-          },
-        }),
-      });
+      // const api = await fetch("https://bluepath.my.id/company/register", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     company: {
+      //       address: address,
+      //       phonenumber: phonenumber,
+      //       email: email,
+      //       password: password,
+      //     },
+      //     employee: {
+      //       name: name,
+      //       address: address,
+      //       email: email,
+      //       password: password,
+      //       phonenumber: phonenumber,
+      //     },
+      //   }),
+      // });
 
-      const res = await api.json();
-      console.log(res);
-      if (res) {
-        if (res.status === 200) {
-          swal("Success", res.message, "success");
-          navigate("/");
-        } else {
-          swal("Error", res.message, "error");
-          setLoading(false);
-        }
-      }
+      let datas = { fullname, address, phonenumber, email, password };
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Your account has been created!",
+      });
+      setError(false);
+      setLoading(false);
+      setIsFocused(false);
+      setFullname("");
+      setAddress("");
+      setEmail("");
+      setPhonenumber("");
+      // setPassword("");
+      const a = (document.getElementById("pw").value = "");
+      setValidateLength(true);
+      setValidateUppercase(true);
+      setValidateChar(true);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -89,83 +130,6 @@ export default function Register() {
   };
 
   return (
-    // <div className="flex justify-center items-center w-full min-h-screen flex-col bg-bodyBg bg-cover">
-    //   {contextHolder}
-    //   <div className="mb-5 text-center">
-    //     {/* <img src="./src/assets/logo-login.png" alt="Login" width={200} /> */}
-    //     <h1 className="font-bold text-5xl">PETORI</h1>
-    //     <span className="tracking-wide">DEVELOPMENT</span>
-    //   </div>
-    //   <Form name="basic" className="w-72">
-    //     <Form.Item
-    //       onChange={(e) => {
-    //         setName(e.target.value);
-    //       }}
-    //     >
-    //       <Input placeholder="Full Name" />
-    //     </Form.Item>
-    //     <Form.Item
-    //       onChange={(e) => {
-    //         setAddress(e.target.value);
-    //       }}
-    //     >
-    //       <Input.TextArea placeholder="Address" />
-    //     </Form.Item>
-    //     <Form.Item
-    //       onChange={(e) => {
-    //         setPhonenumber(e.target.value);
-    //       }}
-    //     >
-    //       <Input placeholder="Phone Number" />
-    //     </Form.Item>
-    //     <Form.Item
-    //       onChange={(e) => {
-    //         setEmail(e.target.value);
-    //       }}
-    //     >
-    //       <Input placeholder="Email" />
-    //     </Form.Item>
-
-    //     <Form.Item
-    //       onChange={(e) => {
-    //         setPassword(e.target.value);
-    //       }}
-    //     >
-    //       <Input.Password placeholder="Password" />
-    //     </Form.Item>
-
-    //     <Form.Item>
-    //       <Button
-    //         type="primary"
-    //         htmlType="submit"
-    //         className="bg-indigo-500 w-full tracking-widest"
-    //         onClick={handleRegister}
-    //       >
-    //         {loading ? (
-    //           <Spin
-    //             indicator={
-    //               <LoadingOutlined
-    //                 style={{
-    //                   fontSize: 18,
-    //                   color: "white",
-    //                 }}
-    //                 spin
-    //               />
-    //             }
-    //           />
-    //         ) : (
-    //           "REGISTER"
-    //         )}
-    //       </Button>
-    //     </Form.Item>
-    //   </Form>
-    //   <Link
-    //     to="/"
-    //     className="text-body hover:text-indigo-500 transition ease-in-out delay-50 text-xs md:text-sm -mt-4 mb-2"
-    //   >
-    //     Already have an account?
-    //   </Link>
-    // </div>
     <div className="flex justify-center items-center w-full min-h-screen bg-gray-50">
       <div className="bg-white w-72 md:w-96 shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
         <div className="w-full py-3 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-br-2xl rounded-bl-sm rounded-tl-2xl rounded-tr-sm">
@@ -176,35 +140,103 @@ export default function Register() {
             © 2024 - Development
           </p>
         </div>
+
         <div className="pt-5 px-5 py-5">
           <form name="basic">
             <InputComponent
               type="text"
-              className="mb-5"
+              value={fullname}
+              className={error && !fullname ? "mb-5 border-red-500" : "mb-5"}
               placeholder="Full Name"
+              onChange={(e) => setFullname(e.target.value)}
             />
             <InputComponent
               type="text"
-              className="mb-5"
+              value={address}
+              className={error && !address ? "mb-5 border-red-500" : "mb-5"}
               placeholder="Address"
+              onChange={(e) => setAddress(e.target.value)}
             />
-            <InputComponent type="email" className="mb-5" placeholder="Email" />
+            <InputComponent
+              type="email"
+              value={email}
+              className={error && !email ? "mb-5 border-red-500" : "mb-5"}
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
             <InputComponent
               type="number"
-              className="mb-5"
+              value={phonenumber}
+              className={error && !phonenumber ? "mb-5 border-red-500" : "mb-5"}
               placeholder="Phone Number"
+              onChange={(e) => setPhonenumber(e.target.value)}
             />
+            <div className="relative">
+              <InputComponent
+                id={"pw"}
+                type={showPassword ? "text" : "password"}
+                className={error && !password ? "mb-5 border-red-500" : "mb-5"}
+                placeholder="Password"
+                onChange={handleInputPassword}
+                // onBlur={handleBlur}
+                onFocus={handleFocus}
+              />
 
-            <InputComponent
-              type="password"
-              className="mb-5"
-              placeholder="Password"
-            />
+              {showPassword ? (
+                <div className="absolute right-0 top-0 cursor-pointer w-10 h-10">
+                  <FaEye
+                    className="absolute right-3 top-3"
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
+                </div>
+              ) : (
+                <div className="absolute right-0 top-0 cursor-pointer w-10 h-10 ">
+                  <FaEyeSlash
+                    className="absolute right-3 top-3"
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
+                </div>
+              )}
+            </div>
+            {isFocused && (
+              <div className="-mt-3 mb-3 space-y-1 transition-all ease-in-out">
+                <p className="text-xs md:text-sm">Password must containts</p>
+                <li
+                  className={
+                    validateLength
+                      ? "text-red-500 text-xs md:text-sm"
+                      : "text-green-500 text-xs md:text-sm"
+                  }
+                >
+                  At least 8 characters{" "}
+                </li>
+                <li
+                  className={
+                    validateUppercase
+                      ? "text-red-500 text-xs md:text-sm"
+                      : "text-green-500 text-xs md:text-sm"
+                  }
+                >
+                  At least 1 uppercase letter
+                </li>
+                <li
+                  className={
+                    validateChar
+                      ? "text-red-500 text-xs md:text-sm"
+                      : "text-green-500 text-xs md:text-sm"
+                  }
+                >
+                  At least 1 number or special character
+                </li>
+              </div>
+            )}
+
             <ButtonComponent
+              onClick={handleRegister}
               type="submit"
-              className="w-full tracking-widest p-1 mb-2"
+              className="w-full tracking-widest mb-2"
             >
-              Register
+              {loading ? <LoadingOutlined /> : "Register"}
             </ButtonComponent>
           </form>
 
@@ -228,4 +260,16 @@ export default function Register() {
       </div>
     </div>
   );
-}
+};
+
+// const mapStateToProps = (state) => ({
+//   todos: state.todos,
+// });
+
+// const mapDispatchToProps = {
+//   addTodo,
+//   deleteTodo,
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default Register;

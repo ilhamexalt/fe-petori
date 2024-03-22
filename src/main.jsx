@@ -15,6 +15,11 @@ import StoreDetail from "./pages/StoreDetail";
 import Setting from "./pages/Setting";
 import Profile from "./pages/Profile";
 import ContactUs from "./pages/ContactUs";
+import Verification from "./pages/Verification";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
@@ -29,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Register />,
+  },
+  {
+    path: "/forgotpassword",
+    element: <ForgotPassword />,
   },
   {
     path: "/dashboard",
@@ -70,22 +79,28 @@ const router = createBrowserRouter([
     path: "/contactus",
     element: <ContactUs />,
   },
+  {
+    path: "/verification",
+    element: <Verification />,
+  },
 ]);
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchIntervalInBackground: false,
-      cacheTime: 10_000,
-      refetchOnWindowFocus: false,
-    },
-  },
+  // defaultOptions: {
+  //   queries: {
+  //     refetchIntervalInBackground: false,
+  //     cacheTime: 10_000,
+  //     refetchOnWindowFocus: false,
+  //   },
+  // },
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
       {/* <ReactQueryDevtools /> */}
     </QueryClientProvider>
   </React.StrictMode>
