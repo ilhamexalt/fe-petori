@@ -1,5 +1,5 @@
 
-const baseUrl = "http://175.41.165.127";
+const baseUrl = "https://175.41.165.127";
 
 export function register({ fullname, phoneNumber, email, password, address }) {
     const data = {
