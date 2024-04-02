@@ -8,7 +8,6 @@ import useLocalStorage from "../hooks/useLocalStorage";
 const Setting = () => {
   const darkMode = useSelector(selectDarkMode);
   const dispatch = useDispatch();
-  const [theme, setTheme] = useLocalStorage("theme", "light");
 
   const handleToggle = () => {
     dispatch(toggleDarkMode());
@@ -16,8 +15,8 @@ const Setting = () => {
   };
 
   return (
-    <Layout className={theme === "dark" ? "bg-gray-800 text-gray-300" : ""}>
-      <div className="mt-16 md:mt-32">
+    <Layout>
+      <div className="mt-16 md:mt-32 px-4">
         <div>
           <h1 className="text-sm md:text-lg font-semibold">
             Language and dates
@@ -59,7 +58,6 @@ const Setting = () => {
               {/* sementara buat dark mode dulu */}
               <Switch
                 disabled={true}
-                defaultChecked={theme === "dark"}
                 onChange={handleToggle}
                 className="bg-gray-400"
               />

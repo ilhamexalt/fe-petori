@@ -1,152 +1,85 @@
 import Layout from "./layout/Index";
 import CardHeaderComponent from "../components/CardHeader";
-import { Empty, Skeleton, Spin } from "antd";
+import { Divider, Empty, Skeleton, Spin } from "antd";
 import List from "../components/List";
 import { useUsersQuery } from "../hooks/useUsersQuery";
 import Cat from "../assets/cat-run.gif";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ModalComponent from "../components/Modal";
 import useLocalStorage from "../hooks/useLocalStorage";
 import LabelComponent from "../components/Label";
 import InputComponent from "../components/Input";
-import SelectComponent from "../components/Select";
-import ButtonComponent from "../components/Button";
 import Swal from "sweetalert2";
 import AvatarUser from "../assets/man.png";
-// import { selectDarkMode } from "../redux/features/themeslice";
-// import { useSelector } from "react-redux";
+import { getUser } from "../services/service";
 
 const Avatar = "https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
 
 export default function User() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const params = useParams();
-  const [loading, setLoading] = useState(false);
+  const [isRole, setIsRole] = useLocalStorage("isRole");
+  const [isToken, setIsToken] = useLocalStorage("isToken");
+  const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
 
-  const [detail, setDetail] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [villages, setVillages] = useState([]);
-  const [provinces, setProvinces] = useState([]);
-  const [fullname, setFullname] = useLocalStorage("username");
   const [phoneNumber, setPhoneNumber] = useState(0);
-  const [password, setPassword] = useState("");
-  const [number, setNumber] = useState("");
-  const [saving, setSaving] = useState(false);
+  const [email, setEmail] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [address, setAddress] = useState("");
+  const [role, setRole] = useState("");
+  const [status, setStatus] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+  const [updatedAt, setUpdatedAt] = useState("");
 
   const [searchItem, setSearchItem] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [theme, setTheme] = useLocalStorage("theme");
+  const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    const getAllData = async () => {
-      const resp = await fetch(`https://jsonplaceholder.typicode.com/users`);
-      const results = await resp.json();
-      setDetail(results);
-      setFilteredUsers(results);
-    };
-    getAllData();
-  }, []);
+  const {
+    data: datas,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useUsersQuery(isToken);
+
+  //   const getDatausers = async () => {
+  //     const response = await fetch("http://175.41.165.127/users", {
+  //       method: "GET",
+  //     });
+  //     const data = await response.json();
+  //     setDetail(data.data);
+  //     setFilteredUsers(data.data);
+  //   };
+  //   getDatausers();
+
+  // }, []);
 
   const handleSearchInputChange = (e) => {
-    setLoading(true);
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
-
-    const filteredItems = data.filter(
+    const filteredItems = users.filter(
       (user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
     setFilteredUsers(filteredItems);
-    setLoading(false);
   };
 
-  /* Get User By Id */
-  useEffect(() => {
-    setLoading(true);
-    /* Edit User By Id */
-    if (params.id !== undefined) {
-      const getDataById = async () => {
-        const resp = await fetch(
-          `https://jsonplaceholder.typicode.com/users/${params.id}`
-        );
-        const results = await resp.json();
-        setDetail(results);
-
-        setFullname(results.name);
-        setPhoneNumber(results.phone);
-        setPassword(results.email);
-        setNumber(results.website);
-      };
-      getDataById();
-    }
-    setLoading(false);
-    window.scrollTo(0, 0);
-  }, [params]);
-
-  /* Get State */
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetch(
-        "https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json"
-      );
-      const results = await data.json();
-      setProvinces(results);
-    };
-    fetchData();
-  }, []);
-
-  /* Get Cities*/
-  const handleChangeState = (e) => {
-    const provinceId = e.target.value;
-    fetch(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`
-    )
-      .then((response) => response.json())
-      .then((provincies) => setCities(provincies));
-  };
-
-  /* Get District*/
-  const handleChangeCity = (e) => {
-    const regencyId = e.target.value;
-    fetch(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regencyId}.json`
-    )
-      .then((response) => response.json())
-      .then((regencies) => setDistricts(regencies));
-  };
-
-  /* Get Village*/
-  const handleChangeDistrict = (e) => {
-    const villageId = e.target.value;
-    fetch(
-      `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${villageId}.json`
-    )
-      .then((response) => response.json())
-      .then((villagies) => setVillages(villagies));
-  };
-
-  const showModal = (e) => {
+  const showModal = async (id) => {
+    const data = await getUser(id, isToken);
+    setFullname(data.fullname);
+    setPhoneNumber(data.phoneNumber);
+    setAddress(data.address);
+    setEmail(data.email);
+    setRole(data.isRole);
+    setStatus(data.isActive === 1 ? "Active" : "Inactive");
+    setCreatedAt(data.createdDate);
+    setUpdatedAt(data.updatedDate);
     setOpen(true);
-    return navigate(`/user/${e}`);
-  };
-
-  const handleSave = () => {
-    setSaving(true);
-    //call api post
-    setTimeout(() => {
-      setSaving(false);
-      setOpen(false);
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Your store has been created!",
-      });
-    }, 1000);
+    return navigate(`/user/${id}`);
   };
 
   const handleDelete = ({ user }) => {
@@ -154,8 +87,8 @@ export default function User() {
       title: "Are you sure?",
       html:
         "<p style='font-size: 16px'> The user " +
-        "<span style='font-weight: 700'>" +
-        user.name +
+        "<span style='font-weight: 700; text-transform: capitalize'>" +
+        user.fullname +
         "</span>" +
         " will deleted </p>",
       icon: "warning",
@@ -165,43 +98,96 @@ export default function User() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
+        fetch(`http://175.41.165.127/Users/${user.id}`, {
+          headers: {
+            Authorization: `Bearer ${isToken}`,
+          },
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(response.statusText);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            Swal.fire({
+              title: "Deleted!",
+              text: data.message,
+              icon: "success",
+              timer: 1000,
+              showConfirmButton: false,
+            });
+          });
+        refetch().catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.message,
+            timer: 1000,
+            showConfirmButton: false,
+          });
+          setOpen(false);
         });
       }
     });
   };
 
   const handleCancel = () => {
+    setFullname("");
+    setPhoneNumber("");
+    setAddress("");
+    setEmail("");
+    setRole("");
+    setStatus("");
+    setCreatedAt("");
+    setUpdatedAt("");
     setOpen(false);
   };
 
-  const { data, isFetching, isLoading, error } = useUsersQuery();
+  let data = [];
+  if (!isFetching) {
+    data = datas?.data || [];
+  }
+
+  useEffect(() => {
+    setUsers(data);
+    setFilteredUsers(data);
+    window.scrollTo(0, 0);
+  }, [!isFetching]);
 
   if (isLoading)
     return (
-      <div
-        className={
-          theme === "dark"
-            ? "bg-gray-800 text-gray-300 flex justify-center items-center min-h-screen"
-            : "bg-white flex justify-center items-center min-h-screen"
-        }
-      >
+      <div className="flex justify-center items-center min-h-screen">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
 
-  if (error) return "An error has occurred: " + error.message;
+  if (isError && isToken.length > 0 && isLogin.length > 0)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        An error has occurred: {error.message}
+      </div>
+    );
+
+  if (isToken.length === 0 && isLogin.length === 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Session expired. Please login again",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    return navigate("/");
+  }
 
   return (
-    <Layout className={theme === "dark" ? "bg-gray-800 text-gray-300" : ""}>
+    <Layout>
       <div className="mt-16 md:mt-32 ">
         <CardHeaderComponent title="Users" />
       </div>
 
-      <div className="mt-5 flex items-center justify-between">
+      <div className="mt-5 flex items-center justify-between px-4">
         <div></div>
         <div className="flex items-center justify-between bg-red-200">
           <InputComponent
@@ -213,158 +199,157 @@ export default function User() {
         </div>
       </div>
       <div className="grid grid-cols-1 ">
-        {loading ? (
+        {isFetching ? (
           <Spin className="mt-10" />
         ) : (
           <>
             {filteredUsers.length === 0 ? (
               <Empty className="mt-14" />
             ) : (
-              <ul>
-                <Skeleton loading={isFetching} active avatar>
-                  {filteredUsers.map((user, index) => (
-                    <div
-                      key={user.id}
-                      className="w-full h-20 mt-5 border-b-[1px]"
-                    >
-                      <List
-                        number={index + 1}
-                        tooltip={
-                          "https://www.google.com/maps/dir/" +
-                          user.address.geo.lat +
-                          "," +
-                          user.address.geo.lng
-                        }
-                        onClickGmaps={() =>
-                          window.open(
-                            "https://www.google.com/maps/dir/" +
-                              user.address.geo.lat +
-                              "," +
-                              user.address.geo.lng,
-                            "_blank"
-                          )
-                        }
-                        image={user.image ? user.image : AvatarUser}
-                        description={user.email}
-                        title={user.name}
-                        location={user.address.city}
-                        onClick={() => showModal(user.id)}
-                        onClickDelete={() => handleDelete({ user })}
-                      />
-                    </div>
-                  ))}
-                </Skeleton>
-              </ul>
+              isRole === "Super Admin" && (
+                <>
+                  <Skeleton loading={isFetching} active avatar>
+                    {filteredUsers.map((user, index) => (
+                      <div
+                        key={user.id}
+                        className="w-full h-20 mt-5 border-b-[1px]  px-4"
+                      >
+                        <List
+                          number={index + 1}
+                          tooltip={
+                            "https://www.google.com/maps/dir/" + user.address
+                          }
+                          image={user.image ? user.image : AvatarUser}
+                          title={user.fullname}
+                          email={user.email}
+                          location={user.address.split(",")[0]}
+                          onClickGmaps={() =>
+                            window.open(
+                              "https://www.google.com/maps/dir/" + user.address,
+                              "_blank"
+                            )
+                          }
+                          onClickEdit={() => showModal(user.id)}
+                          onClickDelete={() => handleDelete({ user })}
+                        />
+                      </div>
+                    ))}
+                  </Skeleton>
+                  <p className="text-sm text-right mt-3">
+                    Total Data :{" "}
+                    <span className="font-semibold">
+                      {filteredUsers.length}
+                    </span>
+                  </p>
+                </>
+              )
             )}
           </>
         )}
-
-        {/* Modal */}
-        <ModalComponent open={open} onOk={handleSave} onCancel={handleCancel}>
-          <div className="gap-y-4">
-            <h1 className="font-semibold text-lg">Edit User</h1>
-            {loading ? (
-              <div className="flex justify-center items-center h-56">
-                <Spin />
-              </div>
-            ) : (
-              <div className="w-full max-w-lg mt-5">
-                <div className="flex flex-wrap -mx-3 mb-6">
-                  <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <LabelComponent label={"Full Name"} />
-                    <input
-                      className="appearance-none text-xs block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                      type="text"
-                      value={fullname}
-                      onChange={(e) => setFullname(e.target.value)}
-                    />
-                    <p className="text-red-500 text-xs italic">
-                      Please fill out this field.
-                    </p>
-                  </div>
-                  <div className="w-full md:w-1/2 px-3">
-                    <LabelComponent label={"Phone Number"} />
-                    <InputComponent
-                      type="text"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-wrap -mx-3 mb-6 ">
-                  <div className="w-full px-3 ">
-                    <LabelComponent label={"Password"} />
-                    <InputComponent
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                {/* Dropdown*/}
-                <div className="flex flex-wrap -mx-3 mb-0 md:mb-6">
-                  <SelectComponent onChange={handleChangeState} label={"State"}>
-                    {provinces.map((province) => (
-                      <option key={province.id} value={province.id}>
-                        {province.name}
-                      </option>
-                    ))}
-                  </SelectComponent>
-                  <SelectComponent onChange={handleChangeCity} label={"City"}>
-                    {cities.map((city) => (
-                      <option key={city.id} value={city.id}>
-                        {city.name}
-                      </option>
-                    ))}
-                  </SelectComponent>
-
-                  <SelectComponent
-                    onChange={handleChangeDistrict}
-                    label={"District"}
-                  >
-                    {districts.map((district) => (
-                      <option key={district.id} value={district.id}>
-                        {district.name}
-                      </option>
-                    ))}
-                  </SelectComponent>
-                </div>
-
-                <div className="flex flex-wrap -mx-3 mb-3">
-                  <SelectComponent onChange={null} label={"Village"}>
-                    {villages.map((village) => (
-                      <option key={village.id} value={village.id}>
-                        {village.name}
-                      </option>
-                    ))}
-                  </SelectComponent>
-                  {/* End Dropdown*/}
-
-                  <div className="w-full md:w-2/3 px-3 mb-6 ">
-                    <LabelComponent label={"Number"} />
-                    <InputComponent
-                      type="text"
-                      value={number}
-                      onChange={(e) => setNumber(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <ButtonComponent
-                    className="py-1"
-                    disabled={loading}
-                    type="submit"
-                    onClick={handleSave}
-                  >
-                    {saving ? "Saving..." : "Save"}
-                  </ButtonComponent>
-                </div>
-              </div>
-            )}
-          </div>
-        </ModalComponent>
       </div>
+      {/* Modal */}
+      <ModalComponent open={open} onCancel={handleCancel}>
+        <div className="gap-y-4">
+          <h1 className="font-semibold text-lg">Detail User</h1>
+          {isFetching ? (
+            <div className="flex justify-center items-center h-56">
+              <Spin />
+            </div>
+          ) : (
+            <div className="w-full max-w-lg mt-5">
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <LabelComponent label={"Full Name"} />
+                  <span className="uppercase text-sm">{fullname}</span>
+                </div>
+                <div className="w-full md:w-1/2 px-3">
+                  <LabelComponent label={"Phone Number"} />
+                  <span className="uppercase text-sm">
+                    {phoneNumber ? phoneNumber : "-"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full px-3 ">
+                  <LabelComponent label={"Email"} />
+                  <span className="uppercase text-sm">
+                    {email ? email : "-"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <LabelComponent label={"Province"} />
+                  <span className="uppercase text-sm">
+                    {address.split(",")[0] ? address.split(",")[0] : "-"}
+                  </span>
+                </div>
+                <div className="w-full md:w-1/2 px-3">
+                  <LabelComponent label={"City"} />
+                  <span className="uppercase text-sm">
+                    {address.split(",")[1] ? address.split(",")[1] : "-"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <LabelComponent label={"District"} />
+                  <span className="uppercase text-sm">
+                    {address.split(",")[2] ? address.split(",")[2] : "-"}
+                  </span>
+                </div>
+                <div className="w-full md:w-1/2 px-3">
+                  <LabelComponent label={"Village"} />
+                  <span className="uppercase text-sm">
+                    {address.split(",")[3] ? address.split(",")[3] : "-"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full px-3">
+                  <LabelComponent label={"Number or street"} />
+                  <span className="uppercase text-sm">
+                    {address.split(",")[4] ? address.split(",")[4] : "-"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <LabelComponent label={"Role"} />
+                  <span className="uppercase text-sm">{role ? role : "-"}</span>
+                </div>
+                <div className="w-full md:w-1/2 px-3">
+                  <LabelComponent label={"Status"} />
+                  <span className="uppercase text-sm">
+                    {status ? status : "-"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                  <LabelComponent label={"Created At"} />
+                  <span className="uppercase text-sm">
+                    {createdAt ? createdAt : "-"}
+                  </span>
+                </div>
+                <div className="w-full md:w-1/2 px-3">
+                  <LabelComponent label={"Updated At"} />
+                  <span className="uppercase text-sm">
+                    {updatedAt ? updatedAt : "-"}
+                  </span>
+                </div>
+              </div>
+              <Divider />
+            </div>
+          )}
+        </div>
+      </ModalComponent>
     </Layout>
   );
 }

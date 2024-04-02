@@ -23,54 +23,47 @@ export default function ForgotPassword() {
   const [localStorage, setLocalStorage] = useLocalStorage("username", []);
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn", []);
 
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState(false);
-
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
-  const handleChangePassword = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
+    if (!phoneNumber) {
       Swal.fire("Error", "Please fill all the fields", "error");
       setError(true);
       setLoading(false);
       return;
     }
 
-    if (newPassword !== confirmPassword) {
-      setError("New password and confirm password do not match.");
+    const response = await fetch(
+      "http://175.41.165.127/ForgotPassword?phoneNumber=" + phoneNumber,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
       setLoading(false);
-      return;
+      return Swal.fire("Error", response.statusText, "error");
     }
 
-    Swal.fire({
-      icon: "success",
-      title: "Password changed successfully!",
-      text: "You can now login with your new password.",
-      timer: 1000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    }).then(() => {
-      navigate("/", {});
-    });
-
-    // setCurrentPassword("");
-    // setNewPassword("");
-    // setConfirmPassword("");
-    // setError("");
+    if (response.ok) {
+      setLoading(false);
+      navigate("/verification", { state: phoneNumber });
+    }
   };
 
   return (
     <>
       <div className="flex justify-center items-center w-full min-h-screen bg-gray-50">
-        <div className="bg-white w-72 md:w-96 shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
+        <div className="bg-white w-80 md:w-[400px] shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
           <div className="w-full py-3 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-br-2xl rounded-bl-sm rounded-tl-2xl rounded-tr-sm">
             <div className="font-bold text-5xl flex justify-center">
               <img src={Petori} alt="Petori Logo " className="w-24 md:w-44" />
@@ -87,81 +80,19 @@ export default function ForgotPassword() {
             >
               <div className="relative">
                 <InputComponent
-                  // required={true}
-                  id="currentPassword"
-                  value={currentPassword}
-                  type="password"
+                  id="phoneNumber"
+                  value={phoneNumber}
+                  type="number"
                   className={
-                    error && !currentPassword ? "mb-5 border-red-500" : "mb-5"
+                    error && !phoneNumber ? "mb-5 border-red-500" : "mb-5"
                   }
-                  placeholder="Current Password"
-                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Phone Number"
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                 />
               </div>
-              <div className="relative">
-                <InputComponent
-                  id="newPassword"
-                  value={newPassword}
-                  type={showNewPassword ? "text" : "password"}
-                  className={
-                    error && !showNewPassword ? "mb-5 border-red-500" : "mb-5"
-                  }
-                  placeholder="New Password"
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-                {showNewPassword ? (
-                  <div className="absolute right-0 top-0 cursor-pointer w-10 h-10">
-                    <FaEye
-                      className="absolute right-3 top-3"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                    />
-                  </div>
-                ) : (
-                  <div className="absolute right-0 top-0 cursor-pointer w-10 h-10 ">
-                    <FaEyeSlash
-                      className="absolute right-3 top-3"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="relative">
-                <InputComponent
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  type={showConfirmPassword ? "text" : "password"}
-                  className={
-                    error && !showConfirmPassword
-                      ? "mb-5 border-red-500"
-                      : "mb-5"
-                  }
-                  placeholder="Confirm New Password"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                {showConfirmPassword ? (
-                  <div className="absolute right-0 top-0 cursor-pointer w-10 h-10">
-                    <FaEye
-                      className="absolute right-3 top-3"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                    />
-                  </div>
-                ) : (
-                  <div className="absolute right-0 top-0 cursor-pointer w-10 h-10 ">
-                    <FaEyeSlash
-                      className="absolute right-3 top-3"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                    />
-                  </div>
-                )}
-                {error && (
-                  <p className="text-red-500 text-xs mb-3 -mt-3">{error}</p>
-                )}
-              </div>
+
               <ButtonComponent
+                disabled={loading}
                 type="submit"
                 className="w-full tracking-widest p-1 mb-2"
               >

@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { getStoresByUserId } from "../services/service";
 
-export const useStoresQuery = (count) => {
+export const useStoresQuery = (isToken, userId) => {
   return useQuery({
     queryKey: ["store"],
-    queryFn: () =>
-      fetch(`https://fakestoreapi.com/products?limit=${count}`).then((res) => res.json()),
-
+    queryFn: () => getStoresByUserId(isToken, userId),
+    refetchOnWindowFocus: false,
   });
 
 };
+
 

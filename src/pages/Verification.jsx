@@ -1,61 +1,149 @@
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import useLocalStorage from "../hooks/useLocalStorage";
+import { verification } from "../services/service";
+
 export default function Verification() {
-  //   const form = document.getElementById("otp-form");
-  //   const inputs = [...form.querySelectorAll("input[type=text]")];
-  //   const submit = form.querySelector("button[type=submit]");
+  const param = useParams();
+  const urlLocation = useLocation();
+  console.log(urlLocation);
 
-  const handleKeyDown = (e) => {
-    if (
-      !/^[0-9]{1}$/.test(e.key) &&
-      e.key !== "Backspace" &&
-      e.key !== "Delete" &&
-      e.key !== "Tab" &&
-      !e.metaKey
-    ) {
-      e.preventDefault();
+  const [fullname, setFullname] = useLocalStorage("fullName", []);
+  const [isRole, setIsRole] = useLocalStorage("isRole", []);
+  const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn", []);
+  const [isToken, setIsToken] = useLocalStorage("isToken", []);
+  const [id, setId] = useLocalStorage("id", []);
+  const [otp, setOtp] = useState(new Array(4).fill(""));
+  const otpBoxReference = useRef([]);
+  const navigate = useNavigate();
+
+  function handleChange(value, index) {
+    let newArr = [...otp];
+    newArr[index] = value;
+    setOtp(newArr);
+
+    if (value && index < 4 - 1) {
+      otpBoxReference.current[index + 1].focus();
     }
+  }
 
-    if (e.key === "Delete" || e.key === "Backspace") {
-      const index = inputs.indexOf(e.target);
-      if (index > 0) {
-        inputs[index - 1].value = "";
-        inputs[index - 1].focus();
-      }
+  function handleBackspaceAndEnter(e, index) {
+    if (e.key === "Backspace" && !e.target.value && index > 0) {
+      otpBoxReference.current[index - 1].focus();
     }
-  };
-
-  const handleInput = (e) => {
-    const { target } = e;
-    const index = inputs.indexOf(target);
-    if (target.value) {
-      if (index < inputs.length - 1) {
-        inputs[index + 1].focus();
-      } else {
-        submit.focus();
-      }
+    if (e.key === "Enter" && e.target.value && index < 4 - 1) {
+      otpBoxReference.current[index + 1].focus();
     }
-  };
+  }
 
-  const handleFocus = (e) => {
-    e.target.select();
-  };
-
-  const handlePaste = (e) => {
+  const handleVerifyAccount = async (e) => {
     e.preventDefault();
-    const text = e.clipboardData.getData("text");
-    if (!new RegExp(`^[0-9]{${inputs.length}}$`).test(text)) {
-      return;
-    }
-    const digits = text.split("");
-    inputs.forEach((input, index) => (input.value = digits[index]));
-    submit.focus();
-  };
+    let id = param.id;
+    const otpParse = otp[0] + otp[1] + otp[2] + otp[3];
 
-  //   inputs.forEach((input) => {
-  //     input.addEventListener("input", handleInput);
-  //     input.addEventListener("keydown", handleKeyDown);
-  //     input.addEventListener("focus", handleFocus);
-  //     input.addEventListener("paste", handlePaste);
-  //   });
+    if (urlLocation.state !== null) {
+      Swal.fire({
+        icon: "info",
+        title: "Change your password",
+        text: `Please enter new your password`,
+        showCancelButton: false,
+        confirmButtonText: "SUBMIT",
+        showLoaderOnConfirm: true,
+        input: "password",
+        inputAttributes: {
+          autocapitalize: "off",
+        },
+        showClass: {
+          popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `,
+        },
+        hideClass: {
+          popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `,
+        },
+        preConfirm: async (newPassword) => {
+          try {
+            if (newPassword === "")
+              return Swal.showValidationMessage("Cannot be empty");
+
+            //post data
+            const response = await fetch(
+              "http://175.41.165.127/ChangePassword",
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  phoneNumber: urlLocation.state.phoneNumber,
+                  password: newPassword,
+                  otp: otpParse,
+                }),
+              }
+            );
+            if (!response.ok) {
+              Swal.showValidationMessage(
+                `Request failed: ${response.statusText}`
+              );
+            } else {
+              Swal.fire({
+                icon: "success",
+                title: "Password changed successfully!",
+                text: "You can now login with your new password.",
+                timer: 1000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+              }).then(() => {
+                navigate("/");
+              });
+            }
+          } catch (error) {
+            Swal.showValidationMessage(`
+              Request failed: ${error}
+            `);
+          }
+        },
+      });
+    } else {
+      const response = await verification({
+        id,
+        otp: otpParse,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: data.message,
+          timer: 1000,
+          showConfirmButton: false,
+        });
+        setFullname(data.data.fullname);
+        setIsRole(data.data.isRole);
+        setIsToken(data.token);
+        setIsLogin(true);
+        setId(data.data.id);
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
+        clearTimeout();
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: data.message,
+        });
+      }
+    }
+  };
 
   return (
     <div className="relative font-inter antialiased">
@@ -72,34 +160,30 @@ export default function Verification() {
                   phone number.
                 </p>
               </header>
-              <form id="otp-form">
+              <form id="otp-form" onSubmit={handleVerifyAccount}>
                 <div className="flex items-center justify-center gap-3">
-                  <input
-                    type="text"
-                    className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-                    pattern="\d*"
-                    maxLength="1"
-                  />
-                  <input
-                    type="text"
-                    className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-                    maxLength="1"
-                  />
-                  <input
-                    type="text"
-                    className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-                    maxLength="1"
-                  />
-                  <input
-                    type="text"
-                    className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-                    maxLength="1"
-                  />
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      value={digit}
+                      maxLength={1}
+                      onChange={(e) => handleChange(e.target.value, index)}
+                      onKeyUp={(e) => handleBackspaceAndEnter(e, index)}
+                      ref={(reference) =>
+                        (otpBoxReference.current[index] = reference)
+                      }
+                      type="text"
+                      pattern="[0-9]+"
+                      className="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                      required
+                    />
+                  ))}
                 </div>
                 <div className="max-w-[260px] mx-auto mt-4">
                   <button
+                    // cursor-not-allowed
                     type="submit"
-                    className="w-full inline-flex justify-center whitespace-nowrap rounded-lg bg-indigo-500 px-3.5 py-2.5 text-sm font-medium text-white shadow-sm shadow-indigo-950/10 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-indigo-300 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300 transition-colors duration-150"
+                    className=" w-full inline-flex justify-center whitespace-nowrap rounded-lg bg-indigo-500 px-3.5 py-2.5 text-sm font-medium text-white shadow-sm shadow-indigo-950/10 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-indigo-300 focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300 transition-colors duration-150"
                   >
                     Verify Account
                   </button>
@@ -107,12 +191,12 @@ export default function Verification() {
               </form>
               <div className="text-sm text-slate-500 mt-4">
                 Didn't receive code?{" "}
-                <a
+                <Link
                   className="font-medium text-indigo-500 hover:text-indigo-600"
-                  href="#0"
+                  onClick={handleVerifyAccount}
                 >
                   Resend
-                </a>
+                </Link>
               </div>
             </div>
           </div>

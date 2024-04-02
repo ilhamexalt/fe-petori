@@ -1,10 +1,11 @@
 import { Avatar, Tooltip, Modal } from "antd";
 import React, { useState } from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit, FaEye } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import { MdDeleteOutline } from "react-icons/md";
+import { FaRegTrashAlt } from "react-icons/fa";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const ReadMore = ({ children }) => {
   const text = children;
@@ -34,7 +35,7 @@ const ReadMore = ({ children }) => {
         )
       ) : (
         <Modal
-          className="text-justify"
+          className="text-justify capitalize"
           title="Description"
           closable={false}
           open={isModalOpen}
@@ -44,7 +45,7 @@ const ReadMore = ({ children }) => {
           cancelButtonProps={{ style: { display: "none" } }}
           okButtonProps={{ style: { background: "#646df4", color: "white" } }}
         >
-          <span className="text-xs md:text-base">{text}</span>
+          {text}
         </Modal>
       )}
       <span
@@ -60,7 +61,7 @@ const ReadMore = ({ children }) => {
 const Content = ({ desc }) => {
   return (
     <div>
-      <ReadMore>{desc}</ReadMore>
+      <ReadMore className="text-xs md:text-sm">{desc}</ReadMore>
     </div>
   );
 };
@@ -69,14 +70,15 @@ export default function List({
   image,
   description,
   title,
-  onClick,
-  onClickDelete,
   tooltip,
-  to,
   number,
   location,
+  email,
   onClickGmaps,
+  onClickEdit,
+  onClickDelete,
 }) {
+  const [isRole, setIsRole] = useLocalStorage("isRole");
   return (
     <>
       <div className="flex justify-between px-3 items-center ">
@@ -85,10 +87,10 @@ export default function List({
           <div>
             <Avatar src={image} />
           </div>
-          <div className="flex-col capitalize">
-            <div className="font-bold text-sm md:text-base ">{title}</div>
+          <div className={`flex-col ${email ? "lowercase" : "capitalize"}`}>
+            <div className="font-bold text-sm md:text-base">{title}</div>
             <div className="text-xs md:text-sm">
-              <Content desc={description} />
+              {email ? email : <Content desc={description} />}
             </div>
           </div>
         </div>
@@ -96,19 +98,26 @@ export default function List({
         <Tooltip title={tooltip}>
           <Link
             onClick={onClickGmaps}
-            className="capitalize hidden md:flex items-center gap-2 hover:text-indigo-500"
+            className="uppercase hidden md:flex text-sm items-center gap-2 hover:text-indigo-500"
           >
             <MdLocationOn /> {location}
           </Link>
         </Tooltip>
         <div className="flex gap-5">
-          <FaRegEdit
-            onClick={onClick}
-            className=" hover:text-indigo-500 hover:cursor-pointer"
-          />
-          <MdDeleteOutline
+          {isRole !== "Super Admin" ? (
+            <FaRegEdit
+              onClick={onClickEdit}
+              className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
+            />
+          ) : (
+            <FaEye
+              onClick={onClickEdit}
+              className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
+            />
+          )}
+          <FaRegTrashAlt
             onClick={onClickDelete}
-            className=" hover:text-red-500 hover:cursor-pointer"
+            className=" text-red-500 hover:cursor-pointer text-xs md:text-sm"
           />
         </div>
       </div>

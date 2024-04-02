@@ -26,11 +26,7 @@ export default function CardHeaderComponent({ title }) {
       <CardHeader
         floated={false}
         shadow={false}
-        className={
-          theme === "dark"
-            ? "bg-gray-800 text-gray-300 rounded-sm shadow-lg  h-20 flex justify-between items-center px-3 md:px-5"
-            : "rounded-sm shadow-md h-20 flex justify-between items-center px-3 md:px-5"
-        }
+        className="rounded-sm shadow-md h-20 flex justify-between items-center px-3 md:px-5"
       >
         <div>
           <h1 className="font-semibold text-sm md:text-lg"> {title}</h1>

@@ -4,17 +4,28 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import ButtonComponent from "../components/Button";
 import Swal from "sweetalert2";
 import { IoSettingsSharp } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InputComponent from "../components/Input";
 import Avatar from "../assets/avatar.png";
 import CommentsComponent from "../components/Comments";
 import { Modal, Spin, Tour } from "antd";
 import OrderDetail from "../components/OrderDetail";
 import { useMediaQuery } from "react-responsive";
+import { useUserQuery } from "../hooks/useUserQuery";
+import Cat from "../assets/cat-run.gif";
 
 export default function Profile() {
-  const [username, setUsername] = useLocalStorage("username");
-  const [Location, setLocation] = useState("");
+  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
+  const [isToken, setIsToken] = useLocalStorage("isToken");
+  const [id, setId] = useLocalStorage("id");
+
+  const [address, setAddress] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
   const [showOrders, setShowOrders] = useState(false);
@@ -22,7 +33,21 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [activeComment, setActiveComment] = useState(false);
   const [activeOrder, setActiveOrder] = useState(false);
-  const [theme, setTheme] = useLocalStorage("theme");
+  const [openForm, setOpenForm] = useState(false);
+
+  const { data, isLoading, isFetching, isError, error } = useUserQuery(
+    id,
+    isToken
+  );
+
+  const handleOpenForm = () => {
+    setOpenForm(true);
+    setFullname(data.fullname);
+    setAddress(data.address);
+    setEmail(data.email);
+    setPhoneNumber(data.phoneNumber);
+    setPassword(data.password);
+  };
 
   useEffect(() => {
     const getComments = () => {
@@ -31,7 +56,7 @@ export default function Profile() {
         .then((res) => setComments(res.comments));
     };
     getComments();
-  }, []);
+  }, [data]);
 
   const handleComments = () => {
     setLoading(true);
@@ -54,8 +79,57 @@ export default function Profile() {
     }, 1000);
   };
 
-  const [open, setOpen] = useState(false);
+  const handleUpdateProfile = () => {
+    Swal.fire({
+      icon: "info",
+      title: " Mobile Phone Verification",
+      text: "Please enter the 4-digit verification code that was sent to your phone number.",
+      confirmButtonText: "VERIFY OTP",
+      showLoaderOnConfirm: true,
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showClass: {
+        popup: `
+        animate__animated
+        animate__fadeInUp
+        animate__faster
+      `,
+      },
+      hideClass: {
+        popup: `
+        animate__animated
+        animate__fadeOutDown
+        animate__faster
+      `,
+      },
+      preConfirm: async (code) => {
+        console.log(code);
+        try {
+          if (code === "") return Swal.showValidationMessage("Cannot be empty");
 
+          //post data
+          if (code === "1234") {
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Your profile has been updated!",
+              timer: 1000,
+            });
+          } else {
+            Swal.showValidationMessage(`Incorrect code`);
+          }
+        } catch (error) {
+          Swal.showValidationMessage(`
+            Request failed: ${error}
+          `);
+        }
+      },
+    });
+  };
+
+  const [open, setOpen] = useState(false);
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
@@ -102,15 +176,38 @@ export default function Profile() {
   });
 
   if (isDesktopScreen) {
-    useEffect(() => {
-      setIsOpen(true);
-    }, []);
+    // useEffect(() => {
+    //   setIsOpen(true);
+    // }, []);
+  }
+
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <img src={Cat} alt={"loading"} width={300} />
+      </div>
+    );
+
+  if (isError && isToken.length > 0 && isLogin.length > 0)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        An error has occurred: {error.message}
+      </div>
+    );
+
+  if (isToken.length === 0 && isLogin.length === 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Session expired. Please login again",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    return navigate("/");
   }
 
   return (
-    <Layout
-      className={theme === "dark" ? "bg-gray-800 text-gray-300 !p-0" : "!p-0"}
-    >
+    <Layout className={"!p-0"}>
       <main className="profile-page">
         <section className="relative block h-96 md:h-[500px]">
           <div
@@ -133,9 +230,7 @@ export default function Profile() {
           <div className="container mx-auto px-4">
             <div
               className={
-                theme === "dark"
-                  ? "relative flex flex-col min-w-0 break-words bg-gray-800 w-full mb-6 shadow-xl rounded-lg -mt-64"
-                  : "relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64"
+                "relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64"
               }
             >
               <div className="px-6">
@@ -156,14 +251,9 @@ export default function Profile() {
                       <ButtonComponent
                         className="bg-indigo-500 w-full md:w-40 active:bg-indigo-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
                         type="button"
-                        onClick={() =>
-                          Swal.fire({
-                            icon: "success",
-                            text: "Profile Updated",
-                          })
-                        }
+                        onClick={handleOpenForm}
                       >
-                        Update Profile
+                        Open Form
                       </ButtonComponent>
                       <Link
                         ref={ref3}
@@ -245,36 +335,61 @@ export default function Profile() {
                 <div className="md:mt-4 pb-6">
                   <div className="mb-2">
                     <InputComponent
+                      id="fullname"
+                      disabled={openForm ? false : true}
                       type={"text"}
-                      placeholder={username}
-                      className={"text-center bg-gray-100 capitalize  "}
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder={"Full Name"}
+                      className={"text-center bg-gray-100 capitalize"}
+                      value={fullname || data.fullname}
+                      onChange={(e) => setFullname(e.target.value)}
                     />
                   </div>
                   <div className="mb-2">
                     <InputComponent
+                      disabled={openForm ? false : true}
                       type={"text"}
-                      placeholder={"Location"}
-                      className={"text-center bg-gray-100 capitalize  "}
-                      value={Location}
-                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder={"Address"}
+                      className={"text-center bg-gray-100 capitalize"}
+                      value={address || data.address}
+                      onChange={(e) => setAddress(e.target.value)}
                     />
                   </div>
                   <div className=" text-gray-600 mb-2">
                     <InputComponent
-                      type={"text"}
-                      placeholder={"Store Name"}
-                      className={"text-center bg-gray-100 capitalize  "}
+                      disabled={openForm ? false : true}
+                      type={"email"}
+                      placeholder={"Email"}
+                      value={email || data.email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={"text-center bg-gray-100"}
                     />
                   </div>
                   <div className="mb-2 text-gray-600">
                     <InputComponent
+                      disabled={openForm ? false : true}
                       type={"text"}
                       placeholder={"Phone Number"}
+                      value={phoneNumber || data.phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className={"text-center bg-gray-100"}
+                    />
+                  </div>
+                  <div className="mb-2 text-gray-600">
+                    <InputComponent
+                      disabled={openForm ? false : true}
+                      type={"password"}
+                      placeholder={"Password"}
+                      value={password || data.password}
+                      onChange={(e) => setPassword(e.target.value)}
                       className={"text-center bg-gray-100 capitalize "}
                     />
                   </div>
+                  <ButtonComponent
+                    onClick={handleUpdateProfile}
+                    className="w-full uppercase text-sm font-semibold"
+                  >
+                    Update Profile
+                  </ButtonComponent>
                 </div>
               </div>
             </div>

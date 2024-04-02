@@ -13,15 +13,15 @@ import Avatar from "../assets/avatar.png";
 import { useMediaQuery } from "react-responsive";
 import { selectDarkMode } from "../redux/features/themeslice";
 import { useSelector } from "react-redux";
+import { GrServices } from "react-icons/gr";
 
 export default function MenuComponet() {
   const darkMode = useSelector(selectDarkMode);
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [username, setUsername] = useLocalStorage("username");
+  const [fullname, setFullname] = useLocalStorage("fullName");
   const [tour, setTour] = useLocalStorage("tour");
-  const [theme, setTheme] = useLocalStorage("theme");
 
   const showDrawer = () => {
     setOpen(true);
@@ -39,10 +39,22 @@ export default function MenuComponet() {
       showCancelButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem("username");
+        localStorage.removeItem("fullName");
         localStorage.removeItem("isLoggedIn");
-
-        return navigate("/");
+        localStorage.removeItem("isToken");
+        localStorage.removeItem("isRole");
+        localStorage.removeItem("id");
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Successfully logged out.",
+          timer: 1000,
+          showConfirmButton: false,
+        });
+        setTimeout(() => {
+          clearTimeout();
+          return navigate("/");
+        }, 1000);
       }
     });
   };
@@ -108,14 +120,14 @@ export default function MenuComponet() {
               alt="Profile"
             />
             <div className="font-medium text-sm md:text-base dark:text-gray-300">
-              Hi, <span className="font-bold ">{username}</span>
+              Hi, <span className="font-bold ">{fullname}</span>
               <div className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
-                {username === "admin" ? "Admin" : "Owner"}
+                {fullname === "Super Admin" ? "Super Admin" : "Owner"}
               </div>
             </div>
           </div>
         </Link>
-        {username === "admin" && (
+        {fullname === "Super Admin" && (
           <NavLink
             to={"/user"}
             className={({ isActive }) => {
@@ -137,7 +149,19 @@ export default function MenuComponet() {
               : `text-gray-800 dark:text-gray-300 font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
           }}
         >
-          {username === "admin" ? "Stores" : "My Store"}
+          {fullname === "Super Admin" ? "Stores" : "My Store"}
+        </NavLink>
+
+        <NavLink
+          // ref={ref1}
+          to={"/service"}
+          className={({ isActive }) => {
+            return isActive
+              ? `text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block`
+              : `text-gray-800 dark:text-gray-300 font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
+          }}
+        >
+          {fullname === "Super Admin" ? "Services" : "My Services"}
         </NavLink>
 
         <Tour
@@ -159,9 +183,9 @@ export default function MenuComponet() {
               />
             </Link>
             <div className="font-medium dark:text-white">
-              Hi, <span className="font-bold">{username}</span>
+              Hi, <span className="font-bold">{fullname}</span>
               <div className="text-sm text-gray-500 dark:text-gray-400">
-                {username === "admin" ? "Admin" : "Owner"}
+                {fullname === "Super Admin" ? "Super Admin" : "Owner"}
               </div>
             </div>
           </div>
@@ -198,21 +222,12 @@ export default function MenuComponet() {
       </ButtonComponent>
 
       <Drawer
-        closeIcon={
-          <MdClose className={theme === "dark" ? "text-white" : "text-black"} />
-        }
+        closeIcon={<MdClose />}
         placement="right"
         width={500}
         onClose={onClose}
         open={open}
-        // style={{
-        //   fontWeight: "bold"
-        // }}
-        style={
-          theme === "dark"
-            ? { backgroundColor: "#2B3B56", color: "white" }
-            : { backgroundColor: "white", color: "black" }
-        }
+        // style={}
       >
         <div className="-mt-5">
           <NavLink
@@ -226,7 +241,7 @@ export default function MenuComponet() {
             <MdDashboard /> Dashboard
           </NavLink>
         </div>
-        {username === "admin" && (
+        {fullname === "Super Admin" && (
           <div>
             <NavLink
               to="/user"
@@ -250,10 +265,23 @@ export default function MenuComponet() {
                 : `text-body font-bold flex items-center gap-3 py-3 cursor-pointer hover:text-indigo-500 text-sm transition-all duration-300`;
             }}
           >
-            <FaRegMoneyBill1 /> {username === "admin" ? "Stores" : "My Store"}
+            <FaRegMoneyBill1 />{" "}
+            {fullname === "Super Admin" ? "Stores" : "My Store"}
           </NavLink>
         </div>
 
+        <div>
+          <NavLink
+            to="/service"
+            className={({ isActive }) => {
+              return isActive
+                ? "text-body font-bold flex items-center gap-3 py-3 cursor-pointer text-indigo-500 hover:text-indigo-500 text-sm transition-all duration-300"
+                : `text-body font-bold flex items-center gap-3 py-3 cursor-pointer hover:text-indigo-500 text-sm transition-all duration-300`;
+            }}
+          >
+            <GrServices /> Service
+          </NavLink>
+        </div>
         <div>
           <NavLink
             to="/setting"

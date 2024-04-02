@@ -13,7 +13,7 @@ export default function Layout({ children, className }) {
     <div className="relative">
       <NavbarComponent />
       <div
-        className={`${className} bg-gray-50 dark:bg-gray-800 min-h-screen px-5 md:px-9 py-2 md:py-4 `}
+        className={`${className} bg-gray-50 dark:bg-gray-800 min-h-screen md:px-9 py-2 md:py-4 `}
       >
         {children}
         {/* <div>

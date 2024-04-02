@@ -1,6 +1,6 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Layout from "./layout/Index";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CardStoreComponent from "../components/CardStore";
 import ButtonComponent from "../components/Button";
 import { FloatButton, Skeleton } from "antd";
@@ -8,36 +8,52 @@ import { HomeOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import { useMediaQuery } from "react-responsive";
 import useLocalStorage from "../hooks/useLocalStorage";
+import { useStoreQuery } from "../hooks/UseStoreQuery";
+import Cat from "../assets/cat-run.gif";
 
 export default function StoreDetail() {
-  const params = useParams();
-  const [detail, setDetail] = useState([]);
-  const [showForm, setShowFom] = useState(false);
-  const [isFetching, setIsFetching] = useState(true);
-  const [theme, setTheme] = useLocalStorage("theme");
-
-  /* Get Store By Id */
-  useEffect(() => {
-    const getData = async () => {
-      const resp = await fetch(
-        `https://fakestoreapi.com/products/${params.id}`
-      );
-      const results = await resp.json();
-      setDetail(results);
-      if (results) setIsFetching(false);
-    };
-    getData();
-  }, [params]);
+  const { id } = useParams();
+  const [isToken, setIsToken] = useLocalStorage("isToken");
+  const navigate = useNavigate();
 
   const isDesktopScreen = useMediaQuery({
     query: "(min-width: 1224px)",
   });
 
+  const { data, isLoading, isFetching, isError, error } = useStoreQuery(
+    isToken,
+    id
+  );
+
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <img src={Cat} alt={"loading"} width={300} />
+      </div>
+    );
+
+  if (isError && isToken.length > 0)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        An error has occurred: {error.message}
+      </div>
+    );
+
+  if (isError && isToken.length === 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Session expired. Please login again",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    return navigate("/");
+  }
   return (
-    <Layout className={theme === "dark" ? "bg-gray-800 text-gray-300" : ""}>
-      <div className="mt-16 md:mt-32 ">
+    <Layout>
+      <div className="mt-16 md:mt-32  md:px-0 px-4 ">
         <h1 className="text-center my-5 md:mb-10 md:text-xl text-sm font-semibold capitalize">
-          {detail.category} Store
+          {data?.data.storeName} Store
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Left */}
@@ -56,9 +72,10 @@ export default function StoreDetail() {
               ) : (
                 <CardStoreComponent
                   className="!w-full md:!w-3/4"
-                  src={detail.image}
-                  category={detail.category}
-                  price={detail.price}
+                  title={data?.data.storeName}
+                  src={data?.data.storeImage}
+                  location={data?.data.address.split(",")[2]}
+                  category={data?.data.description}
                 />
               )}
             </div>
@@ -69,42 +86,28 @@ export default function StoreDetail() {
             {isFetching ? (
               <Skeleton active />
             ) : (
-              <div
-                className={
-                  theme === "dark"
-                    ? "px-3 py-2 shadow-md bg-gray-800 text-gray-300 hover:shadow-lg md:max-h-64 md:min-h-64 max-h-60 overflow-y-auto scrollable-element"
-                    : "px-3 py-2 shadow-md bg-white hover:shadow-lg md:max-h-64 md:min-h-64 max-h-60 overflow-y-auto scrollable-element"
-                }
-              >
-                <table>
+              <div className="px-3 py-3 shadow-md bg-white hover:shadow-lg md:max-h-64 md:min-h-64 max-h-60 overflow-y-auto scrollable-element">
+                <table class="table-auto text-[10px] md:text-sm  text-justify">
+                  <thead>
+                    <tr>
+                      <th>Location</th>
+                      <th>Desc</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     <tr>
-                      <td className="text-xs md:text-sm">Category</td>
-                      <td className="text-xs md:text-sm">
-                        : {detail.category}
+                      <td>
+                        <Link
+                          className="text-blue-500"
+                          to={"https://hello-iam.netlify.app"}
+                        >
+                          https://hello-iam.netlify.app
+                        </Link>
                       </td>
-                    </tr>
-                    <tr>
-                      <td className="text-xs md:text-sm">Price</td>
-                      <td className="text-xs md:text-sm">: ${detail.price}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-xs md:text-sm">Rating</td>
-                      <td className="text-xs md:text-sm">
-                        : {detail.rating.rate}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="text-xs md:text-sm">Count</td>
-                      <td className="text-xs md:text-sm">
-                        : {detail.rating.count}
-                      </td>
+                      <td>{data?.data.description}</td>
                     </tr>
                   </tbody>
                 </table>
-                <p className="text-justify text-xs md:text-sm mt-2">
-                  {detail.description}
-                </p>
               </div>
             )}
 

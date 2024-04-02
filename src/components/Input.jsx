@@ -9,9 +9,15 @@ export default function InputComponent({
   onFocus,
   onBlur,
   required,
+  disabled,
+  ref,
+  autoFocus,
 }) {
   return (
     <input
+      autoFocus={autoFocus}
+      ref={ref}
+      disabled={disabled}
       required={required}
       {...props}
       id={id}

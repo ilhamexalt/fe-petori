@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import NotFound from "./pages/NotFound";
+import Error from "./pages/Error";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import StoreDetail from "./pages/StoreDetail";
@@ -19,8 +20,8 @@ import Verification from "./pages/Verification";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Service from "./pages/Service";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
   {
@@ -30,22 +31,27 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Login />,
+    errorElement: <Error />,
   },
   {
     path: "/signup",
     element: <Register />,
+    errorElement: <Error />,
   },
   {
     path: "/forgotpassword",
     element: <ForgotPassword />,
+    errorElement: <Error />,
   },
   {
     path: "/dashboard",
     element: <Dashboard />,
+    errorElement: <Error />,
   },
   {
     path: "/user",
     element: <User />,
+    errorElement: <Error />,
     children: [
       {
         path: "/user/:id",
@@ -56,6 +62,7 @@ const router = createBrowserRouter([
   {
     path: "/store",
     element: <Store />,
+    errorElement: <Error />,
     children: [
       {
         path: "/store/:id",
@@ -66,22 +73,43 @@ const router = createBrowserRouter([
   {
     path: "/storedetail/:id",
     element: <StoreDetail />,
+    errorElement: <Error />,
   },
   {
     path: "/setting",
     element: <Setting />,
+    errorElement: <Error />,
   },
   {
     path: "/profile",
     element: <Profile />,
+    errorElement: <Error />,
   },
   {
     path: "/contactus",
     element: <ContactUs />,
+    errorElement: <Error />,
   },
   {
     path: "/verification",
     element: <Verification />,
+    errorElement: <Error />,
+    children: [
+      {
+        path: "/verification/:id",
+      },
+    ],
+  },
+  {
+    path: "/service",
+    element: <Service />,
+    errorElement: <Error />,
+    children: [
+      {
+        path: "/service/:id",
+        element: <Service />,
+      },
+    ],
   },
 ]);
 
@@ -101,7 +129,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
-      {/* <ReactQueryDevtools /> */}
+      <ReactQueryDevtools />
     </QueryClientProvider>
   </React.StrictMode>
 );
