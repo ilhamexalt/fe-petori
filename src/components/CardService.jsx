@@ -37,7 +37,10 @@ export default function CardServiceComponent({
 
         <div className="flex gap-3">
           {isRole !== "Super Admin" ? (
-            <FaRegEdit onClick={onClickEdit} className=" text-xs md:text-sm" />
+            <FaRegEdit
+              onClick={onClickEdit}
+              className=" text-xs md:text-sm hover:cursor-pointer"
+            />
           ) : (
             <FaEye
               onClick={onClickEdit}
@@ -46,7 +49,7 @@ export default function CardServiceComponent({
           )}
           <FaRegTrashAlt
             onClick={onClickDelete}
-            className="text-red-500  text-xs md:text-sm"
+            className="text-red-500  text-xs md:text-sm hover:cursor-pointer"
           />
         </div>
       </div>

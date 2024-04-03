@@ -17,6 +17,7 @@ import Lion from "../assets/service.png";
 import CardServiceComponent from "../components/CardService";
 import { getService, patchService, postService } from "../services/service";
 import { MdOutlinePets } from "react-icons/md";
+import { FaStore } from "react-icons/fa";
 
 const Service = () => {
   const [username, setUsername] = useLocalStorage("fullName");
@@ -307,9 +308,11 @@ const Service = () => {
             <div className="w-full max-w-lg mt-5">
               <div className="flex flex-wrap -mx-3 mb-6">
                 <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                  <LabelComponent label={"Service Name"} />
+                  <LabelComponent>
+                    Service Name<span className="text-red-500 ml-1">*</span>
+                  </LabelComponent>
                   <InputComponent
-                    disabled={params.id !== undefined ? true : false}
+                    disabled={isRole === "Super Admin" ? true : false}
                     type="text"
                     placeholder="Dummy"
                     value={params.id !== undefined ? serviceName : serviceName}
@@ -317,12 +320,14 @@ const Service = () => {
                   />
                 </div>
                 <div className="w-full md:w-1/2 px-3">
-                  <LabelComponent label={"Service Price"} />
+                  <LabelComponent>
+                    Service Price <span className="text-red-500 ml-1">*</span>
+                  </LabelComponent>
                   <InputComponent
                     value={
                       params.id !== undefined ? servicePrice : servicePrice
                     }
-                    disabled={params.id !== undefined ? true : false}
+                    disabled={isRole === "Super Admin" ? true : false}
                     type="number"
                     placeholder="Dummy"
                     onChange={(e) => setServicePrice(e.target.value)}
@@ -331,12 +336,15 @@ const Service = () => {
               </div>
 
               <div className="w-full  mb-6 md:mb-0">
-                <LabelComponent> Store Name </LabelComponent>
+                <LabelComponent>
+                  {" "}
+                  Store Name <span className="text-red-500 ml-1">*</span>
+                </LabelComponent>
                 <SelectComponent
                   onChange={handleChangeStore}
                   label={"Store Name"}
                   className="!w-full"
-                  disabled={params.id !== undefined ? true : false}
+                  disabled={isRole === "Super Admin" ? true : false}
                 >
                   {storeId ? (
                     <option value={storeId.id}>{storeId.storeName}</option>

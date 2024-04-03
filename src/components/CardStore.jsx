@@ -26,7 +26,7 @@ export default function CardStoreComponent({
         </div>
         <div className="grid grid-cols-1 py-2 px-2 md:px-3">
           <div>
-            <p className="text-[10px] text-justify md:text-base capitalize">
+            <p className="text-[10px] text-justify md:text-sm capitalize">
               {title}
             </p>
           </div>

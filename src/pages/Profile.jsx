@@ -335,11 +335,14 @@ export default function Profile() {
                 <div className="md:mt-4 pb-6">
                   <div className="mb-2">
                     <InputComponent
+                      autoFocus
                       id="fullname"
                       disabled={openForm ? false : true}
                       type={"text"}
                       placeholder={"Full Name"}
-                      className={"text-center bg-gray-100 capitalize"}
+                      className={`text-center  bg-gray-100 capitalize px-2 ${
+                        openForm ? "" : "cursor-not-allowed"
+                      } `}
                       value={fullname || data.fullname}
                       onChange={(e) => setFullname(e.target.value)}
                     />
@@ -349,7 +352,9 @@ export default function Profile() {
                       disabled={openForm ? false : true}
                       type={"text"}
                       placeholder={"Address"}
-                      className={"text-center bg-gray-100 capitalize"}
+                      className={`text-center bg-gray-100 capitalize ${
+                        openForm ? "" : "cursor-not-allowed"
+                      } `}
                       value={address || data.address}
                       onChange={(e) => setAddress(e.target.value)}
                     />
@@ -361,7 +366,9 @@ export default function Profile() {
                       placeholder={"Email"}
                       value={email || data.email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={"text-center bg-gray-100"}
+                      className={`text-center bg-gray-100 lowercase ${
+                        openForm ? "" : "cursor-not-allowed"
+                      } `}
                     />
                   </div>
                   <div className="mb-2 text-gray-600">
@@ -371,7 +378,9 @@ export default function Profile() {
                       placeholder={"Phone Number"}
                       value={phoneNumber || data.phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
-                      className={"text-center bg-gray-100"}
+                      className={`text-center bg-gray-100 capitalize ${
+                        openForm ? "" : "cursor-not-allowed"
+                      } `}
                     />
                   </div>
                   <div className="mb-2 text-gray-600">
@@ -381,12 +390,17 @@ export default function Profile() {
                       placeholder={"Password"}
                       value={password || data.password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className={"text-center bg-gray-100 capitalize "}
+                      className={`text-center bg-gray-100 capitalize ${
+                        openForm ? "" : "cursor-not-allowed"
+                      } `}
                     />
                   </div>
                   <ButtonComponent
+                    disabled={openForm ? false : true}
                     onClick={handleUpdateProfile}
-                    className="w-full uppercase text-sm font-semibold"
+                    className={`w-full uppercase text-sm font-semibold ${
+                      openForm ? "cursor-pointer" : "cursor-not-allowed"
+                    }`}
                   >
                     Update Profile
                   </ButtonComponent>

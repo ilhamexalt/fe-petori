@@ -123,6 +123,8 @@ export default function Store() {
       setLoading(false);
       //call api store by id
       const store = await getStore(isToken, id);
+      isRole === "Super Admin" && setOwnerName(store?.data.idUser);
+
       setStoreName(store?.data.storeName);
       setState(store?.data.address.split(",")[0]);
       setCity(store?.data.address.split(",")[1]);

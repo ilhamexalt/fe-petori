@@ -45,18 +45,6 @@ export default function User() {
     refetch,
   } = useUsersQuery(isToken);
 
-  //   const getDatausers = async () => {
-  //     const response = await fetch("http://175.41.165.127/users", {
-  //       method: "GET",
-  //     });
-  //     const data = await response.json();
-  //     setDetail(data.data);
-  //     setFilteredUsers(data.data);
-  //   };
-  //   getDatausers();
-
-  // }, []);
-
   const handleSearchInputChange = (e) => {
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
