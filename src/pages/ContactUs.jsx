@@ -6,11 +6,9 @@ import InputComponent from "../components/Input";
 import ButtonComponent from "../components/Button";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
-import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function ContactUs() {
   const [sending, setSending] = useState(false);
-  const [theme, setTheme] = useLocalStorage("theme");
 
   const {
     register,
@@ -63,22 +61,10 @@ export default function ContactUs() {
         <div className="max-w-screen-xl px-8 grid gap-8 grid-cols-1 md:grid-cols-2 md:px-12 lg:px-16 xl:px-32 py-10 md:py-16 mx-auto text-gray-900 ">
           <div className="flex flex-col justify-between ">
             <div>
-              <h2
-                className={
-                  theme === "dark"
-                    ? "text-2xl text-gray-300 lg:text-5xl font-bold leading-tight"
-                    : "text-2xl lg:text-5xl font-bold leading-tight"
-                }
-              >
+              <h2 className="text-2xl dark:text-white lg:text-5xl font-bold leading-tight">
                 Lets talk about everything!
               </h2>
-              <div
-                className={
-                  theme === "dark"
-                    ? " text-gray-300  mt-5 md:mt-8 text-sm md:text-sm"
-                    : "text-gray-700 mt-5 md:mt-8 text-sm md:text-sm"
-                }
-              >
+              <div className="text-gray-700 dark:text-gray-300 mt-5 md:mt-8 text-sm md:text-sm">
                 Hate forms? Send us an <span className="underline">email</span>{" "}
                 instead.
               </div>
@@ -90,7 +76,7 @@ export default function ContactUs() {
               <div>
                 <LabelComponent
                   label={"Fullname"}
-                  className={theme === "dark" ? "text-gray-200" : ""}
+                  className="text-gray-200 dark:text-white"
                 />
                 <InputComponent
                   props={{
@@ -111,7 +97,7 @@ export default function ContactUs() {
               <div className="mt-8">
                 <LabelComponent
                   label={"Email"}
-                  className={theme === "dark" ? "text-gray-200" : ""}
+                  className="text-gray-200 dark:text-white"
                 />
                 <InputComponent
                   props={{ ...register("email") }}
@@ -122,7 +108,7 @@ export default function ContactUs() {
               <div className="mt-8">
                 <LabelComponent
                   label={"Message"}
-                  className={theme === "dark" ? "text-gray-200" : ""}
+                  className="text-gray-200 dark:text-white"
                 />
                 <textarea
                   {...register("message")}
