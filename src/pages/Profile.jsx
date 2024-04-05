@@ -256,7 +256,7 @@ export default function Profile() {
                   <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
                     <div className="md:py-6 py-3 px-3 mt-24 sm:mt-0 flex items-center gap-x-5">
                       <ButtonComponent
-                        className="bg-indigo-500 w-full md:w-40 active:bg-indigo-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
+                        className="!bg-white w-full md:w-40  uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
                         type="button"
                         onClick={handleOpenForm}
                       >
