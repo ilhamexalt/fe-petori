@@ -6,6 +6,7 @@ export default function ModalComponent({
   onCancel,
   children,
   confirmLoading,
+  width,
 }) {
   return (
     <Modal
@@ -18,6 +19,7 @@ export default function ModalComponent({
       confirmLoading={confirmLoading}
       onCancel={onCancel}
       footer={null}
+      width={width}
     >
       {children}
     </Modal>

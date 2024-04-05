@@ -17,11 +17,13 @@ import Swal from "sweetalert2";
 import StoreImage from "../assets/store.png";
 import { MdOutlinePets } from "react-icons/md";
 import { getStore } from "../services/service";
-import { ExportAsExcel } from "react-export-table";
+import ServiceComponent from "../components/Service";
 
 export default function Store() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openService, setOpenService] = useState(false);
+
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
 
@@ -312,6 +314,14 @@ export default function Store() {
     setOpen(false);
   };
 
+  const showService = () => {
+    setOpenService(true);
+  };
+
+  const hiddenService = () => {
+    setOpenService(false);
+  };
+
   //hooks get all data store
   const { data, error, isError, isLoading, isFetching, refetch } =
     useStoresQuery(isToken, paramIduser);
@@ -421,19 +431,6 @@ export default function Store() {
     return navigate("/");
   }
 
-  const dummy = [
-    { Name: "John Doe", Age: 30, Email: "john.doe@example.com" },
-    { Name: "Jane Smith", Age: 25, Email: "jane.smith@example.com" },
-    // Add more data as needed
-  ];
-
-  const columns = [
-    { title: "Name", dataKey: "Name" },
-    { title: "Age", dataKey: "Age" },
-    { title: "Email", dataKey: "Email" },
-    // Add more columns as needed
-  ];
-
   return (
     <Layout>
       <div className="mt-16 md:mt-32 px-4 md:px-0 ">
@@ -461,7 +458,6 @@ export default function Store() {
           value={searchItem}
         />
       </div>
-
       <div className="grid grid-cols-1 px-4">
         {/* if empty data as admin or owner won't rendered */}
         {isFetching ? (
@@ -490,6 +486,7 @@ export default function Store() {
                   }
                   onClickEdit={() => showModal(item.id)}
                   onClickDelete={() => handleDelete({ item })}
+                  onClickService={() => showService()}
                 />
               </Skeleton>
             </div>
@@ -503,6 +500,8 @@ export default function Store() {
           </span>
         </p>
       </div>
+
+      {/* Modal Add/Edit */}
       <ModalComponent open={open} onOk={handleSave} onCancel={handleCancel}>
         <div className="gap-y-4">
           <h1 className="font-semibold text-lg flex items-center gap-2">
@@ -698,6 +697,11 @@ export default function Store() {
             </div>
           )}
         </div>
+      </ModalComponent>
+
+      {/* Modal Service */}
+      <ModalComponent open={openService} onCancel={hiddenService} width={1000}>
+        <ServiceComponent />
       </ModalComponent>
     </Layout>
   );

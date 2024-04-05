@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { FaRegTrashAlt } from "react-icons/fa";
 import useLocalStorage from "../hooks/useLocalStorage";
+import { GrServices } from "react-icons/gr";
 
 const ReadMore = ({ children }) => {
   const text = children;
@@ -77,6 +78,7 @@ export default function List({
   onClickGmaps,
   onClickEdit,
   onClickDelete,
+  onClickService,
 }) {
   const [isRole, setIsRole] = useLocalStorage("isRole");
   return (
@@ -104,6 +106,10 @@ export default function List({
           </Link>
         </Tooltip>
         <div className="flex gap-5">
+          <GrServices
+            onClick={onClickService}
+            className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
+          />
           {isRole !== "Super Admin" ? (
             <FaRegEdit
               onClick={onClickEdit}

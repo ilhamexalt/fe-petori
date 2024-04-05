@@ -152,7 +152,7 @@ export default function MenuComponet() {
           {fullname === "Super Admin" ? "Stores" : "My Store"}
         </NavLink>
 
-        <NavLink
+        {/* <NavLink
           // ref={ref1}
           to={"/service"}
           className={({ isActive }) => {
@@ -162,7 +162,7 @@ export default function MenuComponet() {
           }}
         >
           {fullname === "Super Admin" ? "Services" : "My Services"}
-        </NavLink>
+        </NavLink> */}
 
         <Tour
           onFinish={() => setIsOpen(false)}

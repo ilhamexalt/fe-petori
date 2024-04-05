@@ -50,10 +50,11 @@ export default function Login() {
     try {
       const response = await login({ phoneNumber, password });
       if (!response.ok) {
+        const data = await response.json();
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: response.statusText,
+          text: data.message,
           timer: 1000,
           showConfirmButton: false,
         });
@@ -67,8 +68,7 @@ export default function Login() {
           setLoading(false);
           Swal.fire({
             icon: "info",
-            title:
-              "<p style='text-align: center; font-size: 20px'>Your account is not active yet! </p>",
+            title: `<p style='text-align: center; font-size: 12px'>${data.message}</p>`,
             html: `<p style='text-align: center; font-size: 12px'> you will be directed to the verification page, please wait... </p>`,
             timer: 3000,
             showCancelButton: false,
@@ -92,7 +92,7 @@ export default function Login() {
           Swal.fire({
             icon: "success",
             title: "Success",
-            html: `<p style='text-align: center; font-size: 20px; text-transform: capitalize;'> ${data.message}.</p>`,
+            html: `<p style='text-align: center; font-size: 20px; '> ${data.message}</p>`,
             timer: 1000,
             showConfirmButton: false,
             willClose: () => {

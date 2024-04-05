@@ -19,6 +19,8 @@ export default function Dashboard() {
   const { data, error, isFetching, isLoading, isError, refetch } =
     useStoresQuery(isToken, 1);
 
+  console.log(data);
+
   const isDesktopScreen = useMediaQuery({
     query: "(min-width: 1224px)",
   });
@@ -48,9 +50,9 @@ export default function Dashboard() {
     return navigate("/");
   }
 
-  // const handleShowAll = async () => {
-  //   alert("");
-  // };
+  const handleShowAll = async () => {
+    alert("belum dibuat");
+  };
 
   return (
     <Layout>
@@ -99,7 +101,7 @@ export default function Dashboard() {
               Total Data :
               <span className="font-semibold ml-1"> {data.data.length}</span>
             </h1>
-            {/* <div className="flex justify-center items-center mt-5 mb-2">
+            <div className="flex justify-center items-center mt-5 mb-2">
               {isFetching ? (
                 <Skeleton.Input size="default" active={true} />
               ) : (
@@ -110,7 +112,7 @@ export default function Dashboard() {
                   {isFetching ? "Loading..." : "View All"}
                 </ButtonComponent>
               )}
-            </div> */}
+            </div>
           </>
         )}
       </div>

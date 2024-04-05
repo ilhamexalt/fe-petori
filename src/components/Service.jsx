@@ -1,25 +1,21 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
-import CardHeaderComponent from "../components/CardHeader";
-import Layout from "./layout/Index";
-import { IoMdAddCircle } from "react-icons/io";
-import InputComponent from "../components/Input";
+import React, { useEffect, useState } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { Divider, Empty, Skeleton, Spin } from "antd";
-import { useEffect, useState } from "react";
-import ModalComponent from "../components/Modal";
-import LabelComponent from "../components/Label";
-import SelectComponent from "../components/Select";
-import ButtonComponent from "../components/Button";
-import Swal from "sweetalert2";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useServicesQuery } from "../hooks/useServicesQuery";
 import { useStoresQuery } from "../hooks/UseStoresQuery";
-import Lion from "../assets/service.png";
-import CardServiceComponent from "../components/CardService";
-import { getService, patchService, postService } from "../services/service";
+import { IoMdAddCircle } from "react-icons/io";
+import InputComponent from "./Input";
+import CardServiceComponent from "./CardService";
 import { MdOutlinePets } from "react-icons/md";
-import { FaStore } from "react-icons/fa";
+import ModalComponent from "./Modal";
+import SelectComponent from "./Select";
+import LabelComponent from "./Label";
+import ButtonComponent from "./Button";
+import { Divider, Empty, Skeleton, Spin } from "antd";
+import Service from "../assets/service.png";
+import { getService } from "../services/service";
 
-const Service = () => {
+const ServiceComponent = () => {
   const [username, setUsername] = useLocalStorage("fullName");
   const [isToken, setIsToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
@@ -72,7 +68,7 @@ const Service = () => {
         (store) => store.id === data?.data.storeId
       );
       setStoreId(store[0]);
-      return navigate(`/service/${id}`);
+      return navigate(`/store/${id}`);
     }
   };
 
@@ -159,30 +155,30 @@ const Service = () => {
     }
   };
 
-  const handleDelete = ({ data }) => {
-    Swal.fire({
-      title: "Are you sure?",
-      html:
-        "<p style='font-size: 16px'> The service " +
-        "<span style='font-weight: 700'>" +
-        data.serviceName +
-        "</span>" +
-        " will deleted </p>",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your data has been deleted.",
-          icon: "success",
-        });
-      }
-    });
-  };
+  //   const handleDelete = ({ data }) => {
+  //     Swal.fire({
+  //       title: "Are you sure?",
+  //       html:
+  //         "<p style='font-size: 16px'> The service " +
+  //         "<span style='font-weight: 700'>" +
+  //         data.serviceName +
+  //         "</span>" +
+  //         " will deleted </p>",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#3085d6",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, delete it!",
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         Swal.fire({
+  //           title: "Deleted!",
+  //           text: "Your data has been deleted.",
+  //           icon: "success",
+  //         });
+  //       }
+  //     });
+  //   };
 
   const handleCancel = () => {
     setOpen(false);
@@ -205,23 +201,9 @@ const Service = () => {
       </div>
     );
 
-  if (isToken.length === 0 && isLogin.length === 0) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Session expired. Please login again",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-    return navigate("/");
-  }
-
   return (
-    <Layout>
-      <div className="mt-16 md:mt-32 px-4 md:px-0">
-        <CardHeaderComponent title="Services" />
-      </div>
-      <div className="mt-5 flex items-center justify-between px-4">
+    <div>
+      <div className="mt-8 flex items-center justify-between px-4">
         {username !== "Super Admin" && (
           <Link
             onClick={() => showModal()}
@@ -251,11 +233,11 @@ const Service = () => {
               <div key={item.id} className="w-full mt-2 flex justify-center  ">
                 <CardServiceComponent
                   storeName={item.storeId}
-                  img={Lion}
+                  img={Service}
                   serviceName={item.serviceName}
                   servicePrice={item.servicePrice}
                   onClickEdit={() => showModal(item.id)}
-                  onClickDelete={() => handleDelete({ data: item })}
+                  onClickDelete={() => alert("Not ready")}
                 />
               </div>
             ))}
@@ -357,8 +339,8 @@ const Service = () => {
           )}
         </div>
       </ModalComponent>
-    </Layout>
+    </div>
   );
 };
 
-export default Service;
+export default ServiceComponent;
