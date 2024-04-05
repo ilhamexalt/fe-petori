@@ -436,7 +436,7 @@ export default function Store() {
 
   return (
     <Layout>
-      <div className="mt-16 md:mt-32 ">
+      <div className="mt-16 md:mt-32 px-4 md:px-0 ">
         <CardHeaderComponent title="Stores" />
       </div>
       <div className="mt-5 flex items-center justify-between px-4">
@@ -472,7 +472,10 @@ export default function Store() {
           </div>
         ) : (
           filteredStores?.map((item, index) => (
-            <div key={index} className="w-full h-20 mt-5 border-b-[1px]">
+            <div
+              key={index}
+              className="w-full h-20 mt-5 border-b-[1px] dark:text-gray-300"
+            >
               <Skeleton loading={isFetching} active avatar>
                 <List
                   number={index + 1}
@@ -493,7 +496,7 @@ export default function Store() {
           ))
         )}
 
-        <p className="text-sm text-right mt-3">
+        <p className="text-sm text-right mt-3 dark:text-gray-300">
           Total Data :{" "}
           <span className="font-semibold">
             {!isFetching && filteredStores?.length}
