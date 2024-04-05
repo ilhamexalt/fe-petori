@@ -119,7 +119,7 @@ export default function Login() {
             <div className="font-bold text-5xl flex justify-center">
               <img src={Petori} alt="Petori Logo " className="w-24 md:w-44" />
             </div>
-            <p className="text-center text-xs font-thin text-white">
+            <p className="text-center text-xs font-light text-white">
               © 2024 - Development
             </p>
           </div>
