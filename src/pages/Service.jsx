@@ -242,7 +242,7 @@ const Service = () => {
 
   return (
     <Layout>
-      <div className="mt-16 md:mt-32">
+      <div className="mt-16 md:mt-32 px-4 md:px-0">
         <CardHeaderComponent title="Services" />
       </div>
       <div className="mt-5 flex items-center justify-between px-4">
@@ -287,7 +287,7 @@ const Service = () => {
         </div>
       )}
 
-      <p className="text-sm text-right mt-3  px-4">
+      <p className="text-sm text-right mt-3  px-4 dark:text-gray-300">
         Total Data :{" "}
         <span className="font-semibold">
           {!isFetching && data?.data.length}
