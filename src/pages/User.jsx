@@ -171,7 +171,7 @@ export default function User() {
 
   return (
     <Layout>
-      <div className="mt-16 md:mt-32 ">
+      <div className="mt-16 md:mt-32 px-4 md:px-0 ">
         <CardHeaderComponent title="Users" />
       </div>
 
@@ -200,7 +200,7 @@ export default function User() {
                     {filteredUsers.map((user, index) => (
                       <div
                         key={user.id}
-                        className="w-full h-20 mt-5 border-b-[1px]  px-4"
+                        className="w-full h-20 mt-5 border-b-[1px]  px-4 dark:text-gray-300"
                       >
                         <List
                           number={index + 1}
@@ -223,7 +223,7 @@ export default function User() {
                       </div>
                     ))}
                   </Skeleton>
-                  <p className="text-sm text-right mt-3">
+                  <p className="text-sm text-right mt-3 px-4 md:px-0 dark:text-gray-300">
                     Total Data :{" "}
                     <span className="font-semibold">
                       {filteredUsers.length}

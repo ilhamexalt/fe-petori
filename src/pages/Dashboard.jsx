@@ -95,7 +95,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            <h1 className="flex justify-end text-xs md:text-sm -mt-2">
+            <h1 className="flex justify-end text-xs md:text-sm -mt-2 dark:text-gray-300">
               Total Data :
               <span className="font-semibold ml-1"> {data.data.length}</span>
             </h1>
