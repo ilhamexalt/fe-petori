@@ -56,7 +56,7 @@ export default function ContactUs() {
   };
 
   return (
-    <Layout className={theme === "dark" ? "bg-gray-800 text-gray-300" : ""}>
+    <Layout>
       <div className="mt-16 md:mt-32">
         <div className="max-w-screen-xl px-8 grid gap-8 grid-cols-1 md:grid-cols-2 md:px-12 lg:px-16 xl:px-32 py-10 md:py-16 mx-auto text-gray-900 ">
           <div className="flex flex-col justify-between ">

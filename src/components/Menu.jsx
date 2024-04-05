@@ -270,7 +270,7 @@ export default function MenuComponet() {
           </NavLink>
         </div>
 
-        <div>
+        {/* <div>
           <NavLink
             to="/service"
             className={({ isActive }) => {
@@ -281,7 +281,7 @@ export default function MenuComponet() {
           >
             <GrServices /> Service
           </NavLink>
-        </div>
+        </div> */}
         <div>
           <NavLink
             to="/setting"
