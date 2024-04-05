@@ -3,7 +3,7 @@ import { getStoresByUserId } from "../services/service";
 
 export const useStoresQuery = (isToken, userId) => {
   return useQuery({
-    queryKey: ["store"],
+    queryKey: ["stores"],
     queryFn: () => getStoresByUserId(isToken, userId),
     refetchOnWindowFocus: false,
   });

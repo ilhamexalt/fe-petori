@@ -1,6 +1,7 @@
 
 const baseUrl = "http://175.41.165.127";
 
+// AUTH : #POST 
 export function register({ fullname, phoneNumber, email, password, address }) {
     const data = {
         fullname,
@@ -26,7 +27,9 @@ export async function login({ phoneNumber, password }) {
         },
     })
 }
+//END AUTH
 
+//VERIF : #PATCH
 export async function verification({ id, otp }) {
     const data = {
         id, otp
@@ -40,31 +43,31 @@ export async function verification({ id, otp }) {
     });
 }
 
-//Users GET
+//Users #GET
 export async function getUsers(isToken) {
     const res = await fetch(`${baseUrl}/users`, {
         method: "GET", headers: {
             Authorization: `Bearer ${isToken}`,
         }
     });
-    if (!res.ok) throw new Error(data.message);
+    if (!res.ok) throw new Error(res.statusText);
     const data = res.json();
     return data;
 }
 
-// User : GET // By Id 
+// User : #GET // By ID
 export async function getUser(id, isToken) {
     const res = await fetch(`${baseUrl}/users/${id}`, {
         method: "GET", headers: {
             Authorization: `Bearer ${isToken}`,
         }
     });
-    if (!res.ok) throw new Error(data.message);
+    if (!res.ok) throw new Error(res.statusText);
     const data = res.json();
     return data;
 }
 
-//Stores : GET // By User ID
+//Stores : #GET // By User ID
 export async function getStoresByUserId(isToken, userId) {
     const res = await fetch(`${baseUrl}/Store?userId=${userId}`, {
         method: "GET",
@@ -73,12 +76,11 @@ export async function getStoresByUserId(isToken, userId) {
         },
     });
     if (!res.ok) throw new Error(res.statusText)
-
     const data = await res.json()
     return data;
 }
 
-//Store : GET // By Id 
+//Store : #GET // By Id 
 export async function getStore(isToken, id) {
     const res = await fetch(`${baseUrl}/Store/${id}`, {
         method: "GET",
@@ -91,8 +93,7 @@ export async function getStore(isToken, id) {
     return data;
 }
 
-
-//Services : GET // By Store ID 
+//Services : #GET // By Store ID 
 export async function getServices(isToken) {
     const res = await fetch(`${baseUrl}/Service`, {
         method: "GET",
@@ -106,7 +107,7 @@ export async function getServices(isToken) {
     return data;
 }
 
-//Services : GET // By ID 
+//Services : #GET // By ID 
 export async function getService(isToken, id) {
     const res = await fetch(`${baseUrl}/Service/${id}`, {
         method: "GET",
@@ -119,7 +120,7 @@ export async function getService(isToken, id) {
     return data;
 }
 
-//Services : POST // 
+//Services : #POST // 
 export async function postService(isToken, data) {
     return await fetch(`${baseUrl}/Service`, {
         method: "POST",
@@ -131,7 +132,7 @@ export async function postService(isToken, data) {
     });
 }
 
-//Services : PATCH // 
+//Services : #PATCH // 
 export async function patchService(isToken, id, data) {
     return await fetch(`${baseUrl}/Service/${id}`, {
         method: "PATCH",

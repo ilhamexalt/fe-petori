@@ -21,7 +21,7 @@ export default function Layout({ children, className }) {
             icon={<FaArrowCircleUp />}
             className="bg-white border-none"
           />
-        </div>{" "} */}
+        </div> */}
       </div>
 
       <FooterComponent />

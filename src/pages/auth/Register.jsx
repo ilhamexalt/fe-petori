@@ -110,7 +110,13 @@ const Register = ({ todos, addTodo, deleteTodo }) => {
       if (district === "NULL") setErrorDistrict(true);
       if (village === "NULL") setErrorVillage(true);
 
-      Swal.fire("Error", "Please fill all the fields", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please fill all the fields",
+        timer: 1000,
+        showConfirmButton: false,
+      });
       return;
     }
 
@@ -159,6 +165,8 @@ const Register = ({ todos, addTodo, deleteTodo }) => {
           icon: "error",
           title: "Error",
           text: data.message,
+          timer: 1000,
+          showConfirmButton: false,
         });
         setLoading(false);
       }
@@ -167,6 +175,8 @@ const Register = ({ todos, addTodo, deleteTodo }) => {
         icon: "error",
         title: "Error",
         text: error,
+        timer: 1000,
+        showConfirmButton: false,
       });
       setLoading(false);
     }

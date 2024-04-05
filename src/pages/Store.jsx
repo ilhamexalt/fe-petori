@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 import StoreImage from "../assets/store.png";
 import { MdOutlinePets } from "react-icons/md";
 import { getStore } from "../services/service";
+import { ExportAsExcel } from "react-export-table";
 
 export default function Store() {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ export default function Store() {
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [searchItem, setSearchItem] = useState("");
+  const [storeId, setStoreId] = useState("");
 
   /* Get State */
   useEffect(() => {
@@ -125,6 +127,7 @@ export default function Store() {
       const store = await getStore(isToken, id);
       isRole === "Super Admin" && setOwnerName(store?.data.idUser);
 
+      setStoreId(id);
       setStoreName(store?.data.storeName);
       setState(store?.data.address.split(",")[0]);
       setCity(store?.data.address.split(",")[1]);
@@ -418,6 +421,19 @@ export default function Store() {
     return navigate("/");
   }
 
+  const dummy = [
+    { Name: "John Doe", Age: 30, Email: "john.doe@example.com" },
+    { Name: "Jane Smith", Age: 25, Email: "jane.smith@example.com" },
+    // Add more data as needed
+  ];
+
+  const columns = [
+    { title: "Name", dataKey: "Name" },
+    { title: "Age", dataKey: "Age" },
+    { title: "Email", dataKey: "Email" },
+    // Add more columns as needed
+  ];
+
   return (
     <Layout>
       <div className="mt-16 md:mt-32 ">
@@ -429,7 +445,12 @@ export default function Store() {
             onClick={() => showModal()}
             className="text-indigo-500 text-xs md:text-base flex items-center gap-1 pl-2 pr-2 md:pl-5 md:pr-5"
           >
-            <IoMdAddCircle /> Store
+            <IoMdAddCircle /> Store{" "}
+            {/* <ExportAsExcel
+              data={data}
+              columns={columns}
+              exportFilename="SampleData"
+            /> */}
           </Link>
         )}
         <div></div>
@@ -479,11 +500,10 @@ export default function Store() {
           </span>
         </p>
       </div>
-
       <ModalComponent open={open} onOk={handleSave} onCancel={handleCancel}>
         <div className="gap-y-4">
           <h1 className="font-semibold text-lg flex items-center gap-2">
-            <MdOutlinePets /> Store
+            <MdOutlinePets /> Store ID #{storeId}
           </h1>
           <Divider />
           {loading ? (

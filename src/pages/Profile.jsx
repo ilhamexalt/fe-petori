@@ -18,6 +18,8 @@ export default function Profile() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
   const [isToken, setIsToken] = useLocalStorage("isToken");
+  const [isRole, setIsRole] = useLocalStorage("isRole");
+
   const [id, setId] = useLocalStorage("id");
 
   const [address, setAddress] = useState("");
@@ -34,6 +36,12 @@ export default function Profile() {
   const [activeComment, setActiveComment] = useState(false);
   const [activeOrder, setActiveOrder] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
 
   const { data, isLoading, isFetching, isError, error } = useUserQuery(
     id,
@@ -41,7 +49,12 @@ export default function Profile() {
   );
 
   const handleOpenForm = () => {
-    setOpenForm(true);
+    if (openForm) {
+      setOpenForm(false);
+    } else {
+      setOpenForm(true);
+    }
+
     setFullname(data.fullname);
     setAddress(data.address);
     setEmail(data.email);
@@ -56,7 +69,7 @@ export default function Profile() {
         .then((res) => setComments(res.comments));
     };
     getComments();
-  }, [data]);
+  }, []);
 
   const handleComments = () => {
     setLoading(true);
@@ -129,12 +142,6 @@ export default function Profile() {
     });
   };
 
-  const [open, setOpen] = useState(false);
-  const ref1 = useRef(null);
-  const ref2 = useRef(null);
-  const ref3 = useRef(null);
-
-  const [isOpen, setIsOpen] = useState(false);
   const steps = [
     {
       title: "Info",
@@ -247,13 +254,13 @@ export default function Profile() {
                     </div>
                   </div>
                   <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
-                    <div className="py-6 px-3 mt-24 sm:mt-0 flex items-center gap-x-5">
+                    <div className="md:py-6 py-3 px-3 mt-24 sm:mt-0 flex items-center gap-x-5">
                       <ButtonComponent
                         className="bg-indigo-500 w-full md:w-40 active:bg-indigo-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
                         type="button"
                         onClick={handleOpenForm}
                       >
-                        Open Form
+                        {openForm ? "CANCEL" : "UPDATE PROFILE"}
                       </ButtonComponent>
                       <Link
                         ref={ref3}
@@ -264,147 +271,174 @@ export default function Profile() {
                       </Link>
                     </div>
                   </div>
-                  <div className="w-full lg:w-4/12 px-4 lg:order-1">
-                    <div className="flex justify-center py-4 lg:pt-4 gap-3">
-                      <div
-                        ref={ref1}
-                        className="text-center min-w-20 hover:cursor-pointer"
-                        onClick={handleOrders}
-                      >
-                        <span
-                          className={
-                            activeOrder
-                              ? "text-xl font-bold block uppercase tracking-wide text-indigo-500"
-                              : "text-xl font-bold block uppercase tracking-wide text-gray-600"
-                          }
+
+                  {isRole !== "Super Admin" ? (
+                    <div className="w-full lg:w-4/12 px-4 lg:order-1">
+                      <div className="flex justify-center py-4 lg:pt-4 gap-3">
+                        <div
+                          ref={ref1}
+                          className="text-center min-w-20 hover:cursor-pointer"
+                          onClick={handleOrders}
                         >
-                          22
-                        </span>
-                        <span
-                          className={
-                            activeOrder
-                              ? "text-sm text-indigo-300"
-                              : "text-sm text-gray-400"
-                          }
+                          <span
+                            className={
+                              activeOrder
+                                ? "text-xl font-bold block uppercase tracking-wide text-indigo-500"
+                                : "text-xl font-bold block uppercase tracking-wide text-gray-600"
+                            }
+                          >
+                            22
+                          </span>
+                          <span
+                            className={
+                              activeOrder
+                                ? "text-sm text-indigo-300"
+                                : "text-sm text-gray-400"
+                            }
+                          >
+                            Orders
+                          </span>
+                        </div>
+                        <div className="text-center min-w-20">
+                          <span className="text-xl font-bold block uppercase tracking-wide text-gray-600">
+                            10
+                          </span>
+                          <span className="text-sm text-gray-400">Photos</span>
+                        </div>
+                        <div
+                          ref={ref2}
+                          className="text-center min-w-20 hover:cursor-pointer"
+                          onClick={handleComments}
                         >
-                          Orders
-                        </span>
+                          <span
+                            className={
+                              activeComment
+                                ? "text-xl font-bold block uppercase tracking-wide text-indigo-500"
+                                : "text-xl font-bold block uppercase tracking-wide text-gray-600"
+                            }
+                          >
+                            89
+                          </span>
+                          <span
+                            className={
+                              activeComment
+                                ? "text-sm text-indigo-300"
+                                : "text-sm text-gray-400"
+                            }
+                          >
+                            Comments
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-center min-w-20">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-600">
-                          10
-                        </span>
-                        <span className="text-sm text-gray-400">Photos</span>
-                      </div>
-                      <div
-                        ref={ref2}
-                        className="text-center min-w-20 hover:cursor-pointer"
-                        onClick={handleComments}
-                      >
-                        <span
-                          className={
-                            activeComment
-                              ? "text-xl font-bold block uppercase tracking-wide text-indigo-500"
-                              : "text-xl font-bold block uppercase tracking-wide text-gray-600"
-                          }
-                        >
-                          89
-                        </span>
-                        <span
-                          className={
-                            activeComment
-                              ? "text-sm text-indigo-300"
-                              : "text-sm text-gray-400"
-                          }
-                        >
-                          Comments
-                        </span>
-                      </div>
+
+                      <Tour
+                        onFinish={() => setIsOpen(false)}
+                        open={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        steps={steps}
+                        placement="bottomRight"
+                      />
                     </div>
+                  ) : (
+                    <div className="w-full lg:w-4/12 px-4 lg:order-1">
+                      <div className="flex justify-center py-4 lg:pt-4 gap-3"></div>
+                    </div>
+                  )}
 
-                    <Tour
-                      onFinish={() => setIsOpen(false)}
-                      open={isOpen}
-                      onClose={() => setIsOpen(false)}
-                      steps={steps}
-                      placement="bottomRight"
-                    />
-                  </div>
+                  <Tour
+                    onFinish={() => setIsOpen(false)}
+                    open={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    steps={steps}
+                    placement="bottomRight"
+                  />
                 </div>
 
-                <div className="md:mt-4 pb-6">
-                  <div className="mb-2">
-                    <InputComponent
-                      autoFocus
-                      id="fullname"
+                {/* FORM */}
+                {openForm ? (
+                  <div className="md:mt-4 mt-0 pb-6">
+                    <div className="mb-2">
+                      <InputComponent
+                        autoFocus
+                        id="fullname"
+                        disabled={openForm ? false : true}
+                        type={"text"}
+                        placeholder={"Full Name"}
+                        className={`text-center  bg-gray-100 capitalize px-2 ${
+                          openForm ? "" : "cursor-not-allowed"
+                        } `}
+                        value={fullname}
+                        onChange={(e) => setFullname(e.target.value)}
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <InputComponent
+                        disabled={openForm ? false : true}
+                        type={"text"}
+                        placeholder={
+                          "Format : Province, City, District, Village, Street"
+                        }
+                        className={`text-center bg-gray-100 capitalize ${
+                          openForm ? "" : "cursor-not-allowed"
+                        } `}
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                      />
+                    </div>
+                    <div className=" text-gray-600 mb-2">
+                      <InputComponent
+                        disabled={openForm ? false : true}
+                        type={"email"}
+                        placeholder={"Email"}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`text-center bg-gray-100 lowercase ${
+                          openForm ? "" : "cursor-not-allowed"
+                        } `}
+                      />
+                    </div>
+                    <div className="mb-2 text-gray-600">
+                      <InputComponent
+                        disabled={openForm ? false : true}
+                        type={"text"}
+                        placeholder={"Phone Number"}
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className={`text-center bg-gray-100 capitalize ${
+                          openForm ? "" : "cursor-not-allowed"
+                        } `}
+                      />
+                    </div>
+                    <div className="mb-2 text-gray-600">
+                      <InputComponent
+                        disabled={openForm ? false : true}
+                        type={"password"}
+                        placeholder={"Password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={`text-center bg-gray-100 capitalize ${
+                          openForm ? "" : "cursor-not-allowed"
+                        } `}
+                      />
+                    </div>
+                    <ButtonComponent
                       disabled={openForm ? false : true}
-                      type={"text"}
-                      placeholder={"Full Name"}
-                      className={`text-center  bg-gray-100 capitalize px-2 ${
-                        openForm ? "" : "cursor-not-allowed"
-                      } `}
-                      value={fullname || data.fullname}
-                      onChange={(e) => setFullname(e.target.value)}
-                    />
+                      onClick={handleUpdateProfile}
+                      className={`w-full uppercase text-sm font-semibold ${
+                        openForm ? "cursor-pointer" : "cursor-not-allowed"
+                      }`}
+                    >
+                      SAVE
+                    </ButtonComponent>
                   </div>
-                  <div className="mb-2">
-                    <InputComponent
-                      disabled={openForm ? false : true}
-                      type={"text"}
-                      placeholder={"Address"}
-                      className={`text-center bg-gray-100 capitalize ${
-                        openForm ? "" : "cursor-not-allowed"
-                      } `}
-                      value={address || data.address}
-                      onChange={(e) => setAddress(e.target.value)}
-                    />
+                ) : (
+                  <div className="md:mt-4 mt-0 pb-6 space-y-2 text-xs md:text-sm">
+                    <div className="text-center"> {data?.fullname}</div>
+                    <div className="text-center"> {data?.address}</div>
+                    <div className="text-center"> {data?.email}</div>
+                    <div className="text-center"> {data?.phoneNumber}</div>
                   </div>
-                  <div className=" text-gray-600 mb-2">
-                    <InputComponent
-                      disabled={openForm ? false : true}
-                      type={"email"}
-                      placeholder={"Email"}
-                      value={email || data.email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={`text-center bg-gray-100 lowercase ${
-                        openForm ? "" : "cursor-not-allowed"
-                      } `}
-                    />
-                  </div>
-                  <div className="mb-2 text-gray-600">
-                    <InputComponent
-                      disabled={openForm ? false : true}
-                      type={"text"}
-                      placeholder={"Phone Number"}
-                      value={phoneNumber || data.phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      className={`text-center bg-gray-100 capitalize ${
-                        openForm ? "" : "cursor-not-allowed"
-                      } `}
-                    />
-                  </div>
-                  <div className="mb-2 text-gray-600">
-                    <InputComponent
-                      disabled={openForm ? false : true}
-                      type={"password"}
-                      placeholder={"Password"}
-                      value={password || data.password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className={`text-center bg-gray-100 capitalize ${
-                        openForm ? "" : "cursor-not-allowed"
-                      } `}
-                    />
-                  </div>
-                  <ButtonComponent
-                    disabled={openForm ? false : true}
-                    onClick={handleUpdateProfile}
-                    className={`w-full uppercase text-sm font-semibold ${
-                      openForm ? "cursor-pointer" : "cursor-not-allowed"
-                    }`}
-                  >
-                    Update Profile
-                  </ButtonComponent>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -418,7 +452,7 @@ export default function Profile() {
                   <h1 className="mb-5">Comments</h1>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                  {comments.map((comment, index) => (
+                  {comments.map((comment) => (
                     <div key={comment.id}>
                       <CommentsComponent
                         bodyComment={comment.body}

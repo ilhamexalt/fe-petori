@@ -344,7 +344,11 @@ const Service = () => {
                   onChange={handleChangeStore}
                   label={"Store Name"}
                   className="!w-full"
-                  disabled={isRole === "Super Admin" ? true : false}
+                  disabled={
+                    isRole === "Super Admin" || params.id !== undefined
+                      ? true
+                      : false
+                  }
                 >
                   {storeId ? (
                     <option value={storeId.id}>{storeId.storeName}</option>

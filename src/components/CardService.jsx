@@ -14,7 +14,7 @@ export default function CardServiceComponent({
   return (
     <div className="bg-white w-full md:w-48 py-5 shadow-md relative ">
       <div className="absolute w-full flex justify-center items-center  text-xs md:text-sm py-1 text-white bg-indigo-500 top-0  ">
-        {storeName}
+        STORE ID #{storeName}
       </div>
       <div className="flex justify-center mt-5">
         <img

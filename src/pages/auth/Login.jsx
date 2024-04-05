@@ -40,6 +40,8 @@ export default function Login() {
         icon: "error",
         title: "Oops...",
         text: "Please fill all the fields",
+        timer: 1000,
+        showConfirmButton: false,
       });
       setLoading(false);
       return;
@@ -52,6 +54,8 @@ export default function Login() {
           icon: "error",
           title: "Oops...",
           text: response.statusText,
+          timer: 1000,
+          showConfirmButton: false,
         });
         setLoading(false);
         return null;
