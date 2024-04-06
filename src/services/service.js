@@ -18,10 +18,10 @@ export function register({ fullname, phoneNumber, email, password, address }) {
     })
 }
 
-export async function login({ phoneNumber, password }) {
+export async function login({ phoneNumber, password, location }) {
     return await fetch(`${baseUrl}/login/`, {
         method: "POST",
-        body: JSON.stringify({ phoneNumber, password }),
+        body: JSON.stringify({ phoneNumber, password, location }),
         headers: {
             "Content-Type": "application/json",
         },

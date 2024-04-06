@@ -13,74 +13,47 @@ import LabelComponent from "./Label";
 import ButtonComponent from "./Button";
 import { Divider, Empty, Skeleton, Spin } from "antd";
 import Service from "../assets/service.png";
-import { getService } from "../services/service";
+import { getService, patchService, postService } from "../services/service";
+import Swal from "sweetalert2";
 
-const ServiceComponent = () => {
+const ServiceComponent = ({ props }) => {
   const [username, setUsername] = useLocalStorage("fullName");
   const [isToken, setIsToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
   const [paramIduser, setParamIdUser] = useLocalStorage("id");
   const [isRole, setIsRole] = useLocalStorage("isRole");
-
-  const [datas, setDatas] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const params = useParams();
-
   const [serviceName, setServiceName] = useState("");
   const [servicePrice, setServicePrice] = useState("");
-  const [storeId, setStoreId] = useState("");
-
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
-  const [storeDropdown, setStoreDropdown] = useState([]);
-
-  const { data, isFetching, isError, error, refetch } =
-    useServicesQuery(isToken);
-  const { data: stores, isFetching: isFetchingStore } = useStoresQuery(
-    isToken,
-    paramIduser
-  );
-
-  let storesName = [];
-  if (!isFetchingStore) {
-    for (let i = 0; i < stores?.data.length; i++) {
-      storesName.push({
-        id: stores?.data[i].id,
-        storeName: stores?.data[i].storeName,
-      });
-    }
-  }
-  useEffect(() => {
-    setStoreDropdown(storesName);
-  }, [!isFetchingStore]);
+  const [services, setServices] = useState([]);
+  const [filteredServices, setFilteredServices] = useState([]);
+  const [searchItem, setSearchItem] = useState("");
 
   const showModal = async (id) => {
+    setLoading(true);
     setOpen(true);
     if (!id) {
+      setLoading(false);
       return null;
     } else {
       //call api service by id
       const data = await getService(isToken, id);
       setServiceName(data?.data.serviceName);
       setServicePrice(data?.data.servicePrice);
-      const store = storeDropdown.filter(
-        (store) => store.id === data?.data.storeId
-      );
-      setStoreId(store[0]);
+      setLoading(false);
       return navigate(`/store/${id}`);
     }
-  };
-
-  const handleChangeStore = (e) => {
-    setStoreId(e.target.value);
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
 
-    if (!serviceName || !servicePrice || !storeId) {
+    if (!serviceName || !servicePrice) {
       setSaving(false);
       Swal.fire({
         icon: "error",
@@ -96,7 +69,7 @@ const ServiceComponent = () => {
     let body = {
       serviceName: serviceName,
       servicePrice: servicePrice,
-      storeId: storeId,
+      storeId: props?.id,
     };
     if (params.id === undefined) {
       const res = await postService(isToken, body);
@@ -108,6 +81,7 @@ const ServiceComponent = () => {
           text: res.statusText,
         });
       } else {
+        const data = await res.json();
         setSaving(false);
         Swal.fire({
           icon: "success",
@@ -118,17 +92,13 @@ const ServiceComponent = () => {
         });
         setServiceName("");
         setServicePrice("");
-        setStoreDropdown(null);
         setOpen(false);
-        refetch();
       }
     } else {
       body = {
         serviceName: serviceName,
         servicePrice: servicePrice,
-        storeId: storeId.id,
       };
-      console.log(body);
       const res = await patchService(isToken, params.id, body);
       if (!res.ok) {
         setSaving(false);
@@ -138,6 +108,7 @@ const ServiceComponent = () => {
           text: res.statusText,
         });
       } else {
+        const data = res.json();
         setSaving(false);
         Swal.fire({
           icon: "success",
@@ -148,62 +119,90 @@ const ServiceComponent = () => {
         });
         setServiceName("");
         setServicePrice("");
-        // setStoreDropdown(null);
         setOpen(false);
-        refetch();
       }
     }
   };
 
-  //   const handleDelete = ({ data }) => {
-  //     Swal.fire({
-  //       title: "Are you sure?",
-  //       html:
-  //         "<p style='font-size: 16px'> The service " +
-  //         "<span style='font-weight: 700'>" +
-  //         data.serviceName +
-  //         "</span>" +
-  //         " will deleted </p>",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonColor: "#3085d6",
-  //       cancelButtonColor: "#d33",
-  //       confirmButtonText: "Yes, delete it!",
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         Swal.fire({
-  //           title: "Deleted!",
-  //           text: "Your data has been deleted.",
-  //           icon: "success",
-  //         });
-  //       }
-  //     });
-  //   };
+  const handleDelete = ({ data }) => {
+    Swal.fire({
+      title: "Are you sure?",
+      html:
+        "<p style='font-size: 16px'> The service " +
+        "<span style='font-weight: 700'>" +
+        data.serviceName +
+        "</span>" +
+        " will deleted </p>",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`https://petori-service.my.id/Service/${data.id}`, {
+          headers: {
+            Authorization: `Bearer ${isToken}`,
+          },
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(response.statusText);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            Swal.fire({
+              title: "Deleted!",
+              text: data.message,
+              icon: "success",
+              timer: 1000,
+              showConfirmButton: false,
+            });
+          })
+          .catch((error) => {
+            setSaving(false);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: error.message,
+              timer: 1000,
+              showConfirmButton: false,
+            });
+            setOpen(false);
+          });
+      }
+    });
+  };
 
   const handleCancel = () => {
     setOpen(false);
     setServiceName("");
     setServicePrice("");
-    setStoreId(null);
   };
 
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <img src={Cat} alt={"loading"} width={300} />
-      </div>
+  useEffect(() => {
+    setServices(props?.services);
+    setFilteredServices(props?.services);
+  }, []);
+
+  const handleSearchInputChange = (e) => {
+    setLoading(true);
+    const searchItem = e.target.value;
+    setSearchItem(searchItem);
+
+    const filteredItems = services?.filter((service) =>
+      service.serviceName.toLowerCase().includes(searchItem.toLowerCase())
     );
 
-  if (isError && isToken.length > 0 && isLogin.length > 0)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        An error has occurred: {error.message}
-      </div>
-    );
+    setFilteredServices(filteredItems);
+    setLoading(false);
+  };
 
   return (
     <div>
-      <div className="mt-8 flex items-center justify-between px-4">
+      <div className="mt-8 flex items-center justify-between px-4 ">
         {username !== "Super Admin" && (
           <Link
             onClick={() => showModal()}
@@ -216,28 +215,33 @@ const ServiceComponent = () => {
         <InputComponent
           className="!w-40 md:w-56"
           placeholder="Search .."
-          onChange={null}
+          onChange={handleSearchInputChange}
         />
       </div>
 
-      {isFetching ? (
-        <Spin className="mt-10 flex justify-center" />
-      ) : data?.data.length === 0 ? (
+      {props?.services.length === 0 ? (
         <div className="mt-14">
           <Empty />
         </div>
+      ) : loading ? (
+        <div className="flex justify-center">
+          <Spin />
+        </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-5 px-4 gap-3">
-          <Skeleton loading={isFetching} active avatar>
-            {data?.data.map((item) => (
-              <div key={item.id} className="w-full mt-2 flex justify-center  ">
+        <div className="grid grid-cols-1 md:grid-cols-5 px-4 gap-3">
+          <Skeleton loading={loading} active avatar>
+            {filteredServices?.map((service) => (
+              <div
+                key={service.id}
+                className="w-full mt-2 flex justify-center  "
+              >
                 <CardServiceComponent
-                  storeName={item.storeId}
+                  storeName={props.storeName}
                   img={Service}
-                  serviceName={item.serviceName}
-                  servicePrice={item.servicePrice}
-                  onClickEdit={() => showModal(item.id)}
-                  onClickDelete={() => alert("Not ready")}
+                  serviceName={service.serviceName}
+                  servicePrice={service.servicePrice}
+                  onClickEdit={() => showModal(service.id)}
+                  onClickDelete={() => handleDelete({ data: service })}
                 />
               </div>
             ))}
@@ -245,11 +249,9 @@ const ServiceComponent = () => {
         </div>
       )}
 
-      <p className="text-sm text-right mt-3  px-4 dark:text-gray-300">
+      <p className="text-sm text-right mt-3  px-4 ">
         Total Data :{" "}
-        <span className="font-semibold">
-          {!isFetching && data?.data.length}
-        </span>
+        <span className="font-semibold">{filteredServices?.length}</span>
       </p>
 
       <ModalComponent open={open} onOk={handleSave} onCancel={handleCancel}>
@@ -258,7 +260,7 @@ const ServiceComponent = () => {
             <MdOutlinePets /> Service
           </h1>
           <Divider />
-          {isLoading ? (
+          {loading ? (
             <div className="flex justify-center items-center h-56">
               <Spin />
             </div>
@@ -291,35 +293,6 @@ const ServiceComponent = () => {
                     onChange={(e) => setServicePrice(e.target.value)}
                   />
                 </div>
-              </div>
-
-              <div className="w-full  mb-6 md:mb-0">
-                <LabelComponent>
-                  {" "}
-                  Store Name <span className="text-red-500 ml-1">*</span>
-                </LabelComponent>
-                <SelectComponent
-                  onChange={handleChangeStore}
-                  label={"Store Name"}
-                  className="!w-full"
-                  disabled={
-                    isRole === "Super Admin" || params.id !== undefined
-                      ? true
-                      : false
-                  }
-                >
-                  {storeId ? (
-                    <option value={storeId.id}>{storeId.storeName}</option>
-                  ) : (
-                    <option value={null}>---</option>
-                  )}
-
-                  {storeDropdown.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.storeName}
-                    </option>
-                  ))}
-                </SelectComponent>
               </div>
 
               <Divider />

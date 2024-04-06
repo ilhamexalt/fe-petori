@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import Dog from "../assets/dog.gif";
-import { ConfigProvider, Drawer, Tour } from "antd";
-import { useRef, useState } from "react";
+import { Drawer, Tour } from "antd";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { MdClose, MdDashboard, MdLogout } from "react-icons/md";
 import { GrOrganization } from "react-icons/gr";
 import { FaRegMoneyBill1 } from "react-icons/fa6";
@@ -11,17 +11,15 @@ import ButtonComponent from "./Button";
 import useLocalStorage from "../hooks/useLocalStorage";
 import Avatar from "../assets/avatar.png";
 import { useMediaQuery } from "react-responsive";
-import { selectDarkMode } from "../redux/features/themeslice";
-import { useSelector } from "react-redux";
-import { GrServices } from "react-icons/gr";
 
 export default function MenuComponet() {
-  const darkMode = useSelector(selectDarkMode);
+  console.log(state);
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [fullname, setFullname] = useLocalStorage("fullName");
-  const [tour, setTour] = useLocalStorage("tour");
+  const [isTour, setIsTour] = useLocalStorage("isTour");
+  const [isToken, setToken] = useLocalStorage("isToken");
 
   const showDrawer = () => {
     setOpen(true);
@@ -69,7 +67,6 @@ export default function MenuComponet() {
       nextButtonProps: {
         children: <p>Next</p>,
         style: {
-          // backgroundColor: "rgb(99 102 241 / 1)",
           backgroundColor: "#1890ff",
         },
       },
@@ -82,22 +79,32 @@ export default function MenuComponet() {
         style: {
           backgroundColor: "#1890ff",
         },
-        //onClick: () => setTour(true), // insert to database for flagging
+        onClick: () => handleUpdateIsTour(), // insert to database for flagging
       },
       target: () => ref2.current,
     },
   ];
 
+  const handleUpdateIsTour = async () => {
+    const response = await fetch(`https://petori-service.my.id/CompleteTour`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${isToken}`,
+      },
+    });
+    // setIsTour(1);
+  };
+
   const isDesktopScreen = useMediaQuery({
     query: "(min-width: 1224px)",
   });
 
-  // if (location.pathname === "/dashboard") {
-  //   if (!isDesktopScreen && !tour)
-  //     useEffect(() => {
-  //       setIsOpen(true);
-  //     }, []);
-  // }
+  if (location.pathname === "/dashboard") {
+    if (!isDesktopScreen && isTour === 0)
+      useEffect(() => {
+        setIsOpen(true);
+      }, []);
+  }
 
   return (
     <>

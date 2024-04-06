@@ -13,5 +13,9 @@ export const deleteTodo = (id) => ({
     payload: id
 });
 
-
-
+export const initializeState = (initialState) => {
+    return {
+        type: 'INITIALIZE_STATE',
+        payload: initialState,
+    };
+};

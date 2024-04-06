@@ -18,6 +18,8 @@ export default function Login() {
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn", []);
   const [isToken, setIsToken] = useLocalStorage("isToken", []);
   const [id, setId] = useLocalStorage("id", []);
+  const [isTour, setIsTour] = useLocalStorage("isTour", []);
+  const [location, setLocation] = useLocalStorage("currentLocation", []);
 
   const [phoneNumber, setPhonenumber] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +36,13 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
-    if (phoneNumber === "" || password === "") {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      setLocation(lat + " " + lng);
+    });
+
+    if (phoneNumber === "" || password === "" || location === "") {
       setError(true);
       Swal.fire({
         icon: "error",
@@ -48,13 +56,14 @@ export default function Login() {
     }
 
     try {
-      const response = await login({ phoneNumber, password });
+      const response = await login({ phoneNumber, password, location });
+      console.log(response);
       if (!response.ok) {
         const data = await response.json();
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: data.message,
+          text: data.message + response.statusText,
           timer: 1000,
           showConfirmButton: false,
         });
@@ -83,6 +92,7 @@ export default function Login() {
             },
           });
         } else {
+          setIsTour(data.data.isTour);
           setLoading(false);
           setId(data.data.id);
           setFullname(data.data.fullname);
@@ -96,7 +106,7 @@ export default function Login() {
             timer: 1000,
             showConfirmButton: false,
             willClose: () => {
-              return navigate("/dashboard");
+              return navigate("/dashboard", { state: data.data });
             },
           });
         }

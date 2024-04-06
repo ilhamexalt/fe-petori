@@ -1,19 +1,8 @@
 import { Divider, Switch } from "antd";
 import Layout from "./layout/Index";
 import Swal from "sweetalert2";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { selectDarkMode, toggleDarkMode } from "../redux/features/themeslice";
-import useLocalStorage from "../hooks/useLocalStorage";
 
 const Setting = () => {
-  const darkMode = useSelector(selectDarkMode);
-  const dispatch = useDispatch();
-
-  const handleToggle = () => {
-    dispatch(toggleDarkMode());
-    setTheme(theme === "light" ? "dark" : "light");
-  };
-
   return (
     <Layout>
       <div className="mt-16 md:mt-32 px-4">
@@ -128,12 +117,4 @@ const Setting = () => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  darkMode: state.theme.darkMode,
-});
-
-const mapDispatchToProps = {
-  toggleDarkMode,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Setting);
+export default Setting;

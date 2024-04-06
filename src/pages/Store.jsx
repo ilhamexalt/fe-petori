@@ -314,12 +314,14 @@ export default function Store() {
     setOpen(false);
   };
 
-  const showService = () => {
+  const showService = ({ item }) => {
+    setStores(item);
     setOpenService(true);
   };
 
   const hiddenService = () => {
     setOpenService(false);
+    setStores(datas);
   };
 
   //hooks get all data store
@@ -486,7 +488,7 @@ export default function Store() {
                   }
                   onClickEdit={() => showModal(item.id)}
                   onClickDelete={() => handleDelete({ item })}
-                  onClickService={() => showService()}
+                  onClickService={() => showService({ item })}
                 />
               </Skeleton>
             </div>
@@ -701,7 +703,7 @@ export default function Store() {
 
       {/* Modal Service */}
       <ModalComponent open={openService} onCancel={hiddenService} width={1000}>
-        <ServiceComponent />
+        <ServiceComponent props={stores} />
       </ModalComponent>
     </Layout>
   );

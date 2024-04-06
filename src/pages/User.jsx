@@ -5,7 +5,7 @@ import List from "../components/List";
 import { useUsersQuery } from "../hooks/useUsersQuery";
 import Cat from "../assets/cat-run.gif";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import ModalComponent from "../components/Modal";
 import useLocalStorage from "../hooks/useLocalStorage";
 import LabelComponent from "../components/Label";

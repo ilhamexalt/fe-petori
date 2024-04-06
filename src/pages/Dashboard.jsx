@@ -2,7 +2,7 @@ import Layout from "./layout/Index";
 import CarouselComponent from "../components/Carousel";
 import Cat from "../assets/cat-run.gif";
 import ButtonComponent from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useStoresQuery } from "../hooks/UseStoresQuery";
 import { Empty, Skeleton } from "antd";
@@ -11,15 +11,17 @@ import { useMediaQuery } from "react-responsive";
 import StoreImage from "../assets/store.png";
 import Swal from "sweetalert2";
 
-export default function Dashboard() {
+const Dashboard = () => {
+  const props = useLocation();
+
   const navigate = useNavigate();
   const [isToken, setToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
 
-  const { data, error, isFetching, isLoading, isError, refetch } =
-    useStoresQuery(isToken, 1);
-
-  console.log(data);
+  const { data, error, isFetching, isLoading, isError } = useStoresQuery(
+    isToken,
+    1
+  );
 
   const isDesktopScreen = useMediaQuery({
     query: "(min-width: 1224px)",
@@ -58,6 +60,11 @@ export default function Dashboard() {
     <Layout>
       <div className="mt-16 md:mt-32  md:px-0 px-4">
         <CarouselComponent />
+        <button onClick={() => setValue("message", "Hello, world!")}>
+          Set Message
+        </button>
+
+        <button onClick={() => alert(getValue("message"))}>Get Message</button>
       </div>
       <div className="h-auto pt-2 md:pt-10 md:px-0 px-4 ">
         <h1 className="font-bold dark:text-gray-300 text-base md:text-2xl text-center mb-2">
@@ -118,4 +125,6 @@ export default function Dashboard() {
       </div>
     </Layout>
   );
-}
+};
+
+export default Dashboard;

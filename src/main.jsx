@@ -20,7 +20,6 @@ import Verification from "./pages/Verification";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-import Service from "./pages/Service";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
@@ -97,17 +96,6 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/verification/:id",
-      },
-    ],
-  },
-  {
-    path: "/service",
-    element: <Service />,
-    errorElement: <Error />,
-    children: [
-      {
-        path: "/service/:id",
-        element: <Service />,
       },
     ],
   },
