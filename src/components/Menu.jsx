@@ -11,14 +11,13 @@ import ButtonComponent from "./Button";
 import useLocalStorage from "../hooks/useLocalStorage";
 import Avatar from "../assets/avatar.png";
 import { useMediaQuery } from "react-responsive";
+import { useSelector } from "react-redux";
 
 export default function MenuComponet() {
-  console.log(state);
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [fullname, setFullname] = useLocalStorage("fullName");
-  const [isTour, setIsTour] = useLocalStorage("isTour");
   const [isToken, setToken] = useLocalStorage("isToken");
 
   const showDrawer = () => {
@@ -79,7 +78,7 @@ export default function MenuComponet() {
         style: {
           backgroundColor: "#1890ff",
         },
-        onClick: () => handleUpdateIsTour(), // insert to database for flagging
+        // onClick: () => handleUpdateIsTour(), // insert to database for flagging
       },
       target: () => ref2.current,
     },
@@ -92,7 +91,6 @@ export default function MenuComponet() {
         Authorization: `Bearer ${isToken}`,
       },
     });
-    // setIsTour(1);
   };
 
   const isDesktopScreen = useMediaQuery({
@@ -100,7 +98,8 @@ export default function MenuComponet() {
   });
 
   if (location.pathname === "/dashboard") {
-    if (!isDesktopScreen && isTour === 0)
+    if (!isDesktopScreen)
+      //&& location.state.isTour === 0
       useEffect(() => {
         setIsOpen(true);
       }, []);

@@ -10,10 +10,9 @@ import CardStoreComponent from "../components/CardStore";
 import { useMediaQuery } from "react-responsive";
 import StoreImage from "../assets/store.png";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
-  const props = useLocation();
-
   const navigate = useNavigate();
   const [isToken, setToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
@@ -60,11 +59,6 @@ const Dashboard = () => {
     <Layout>
       <div className="mt-16 md:mt-32  md:px-0 px-4">
         <CarouselComponent />
-        <button onClick={() => setValue("message", "Hello, world!")}>
-          Set Message
-        </button>
-
-        <button onClick={() => alert(getValue("message"))}>Get Message</button>
       </div>
       <div className="h-auto pt-2 md:pt-10 md:px-0 px-4 ">
         <h1 className="font-bold dark:text-gray-300 text-base md:text-2xl text-center mb-2">

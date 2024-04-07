@@ -106,15 +106,17 @@ export default function List({
           </Link>
         </Tooltip>
         <div className="flex gap-5">
-          <GrServices
-            onClick={onClickService}
-            className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
-          />
           {isRole !== "Super Admin" ? (
-            <FaRegEdit
-              onClick={onClickEdit}
-              className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
-            />
+            <>
+              <GrServices
+                onClick={onClickService}
+                className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
+              />
+              <FaRegEdit
+                onClick={onClickEdit}
+                className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
+              />
+            </>
           ) : (
             <FaEye
               onClick={onClickEdit}
