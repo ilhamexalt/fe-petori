@@ -22,7 +22,6 @@ export default function User() {
   const [isRole, setIsRole] = useLocalStorage("isRole");
   const [isToken, setIsToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
-
   const [phoneNumber, setPhoneNumber] = useState(0);
   const [email, setEmail] = useState("");
   const [fullname, setFullname] = useState("");

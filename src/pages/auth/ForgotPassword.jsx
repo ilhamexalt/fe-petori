@@ -1,31 +1,19 @@
-import { useEffect, useReducer, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import ButtonComponent from "../../components/Button";
 import Petori from "../../assets/petori.png";
-import Cat from "../../assets/cat-run.gif";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import InputComponent from "../../components/Input";
 import Swal from "sweetalert2";
-import { Spin } from "antd";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
-
-const initialState = {
-  phoneNumber: "",
-  password: "",
-  isLoading: false,
-  error: "",
-};
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const [localStorage, setLocalStorage] = useLocalStorage("username", []);
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn", []);
-
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState(false);
-
   const [loading, setLoading] = useState(false);
 
   const handleChangePassword = async (e) => {
@@ -40,7 +28,7 @@ export default function ForgotPassword() {
     }
 
     const response = await fetch(
-      "http://175.41.165.127/ForgotPassword?phoneNumber=" + phoneNumber,
+      "https://petori-service.my.id/ForgotPassword?phoneNumber=" + phoneNumber,
       {
         method: "POST",
         headers: {
@@ -56,7 +44,7 @@ export default function ForgotPassword() {
 
     if (response.ok) {
       setLoading(false);
-      navigate("/verification", { state: phoneNumber });
+      navigate("/verification/reset-password", { state: phoneNumber });
     }
   };
 

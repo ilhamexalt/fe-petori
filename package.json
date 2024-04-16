@@ -19,6 +19,7 @@
     "@utilityjs/use-persisted-state": "^1.1.3",
     "animate.css": "^4.1.1",
     "antd": "^5.14.1",
+    "crypto-js": "^4.2.0",
     "framer-motion": "^11.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

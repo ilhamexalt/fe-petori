@@ -10,9 +10,10 @@ import CardStoreComponent from "../components/CardStore";
 import { useMediaQuery } from "react-responsive";
 import StoreImage from "../assets/store.png";
 import Swal from "sweetalert2";
-import { useSelector } from "react-redux";
 
 const Dashboard = () => {
+  // const props = useLocation();
+  // console.log(props);
   const navigate = useNavigate();
   const [isToken, setToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
@@ -33,14 +34,12 @@ const Dashboard = () => {
       </div>
     );
 
-  if (isError && isToken && isLogin.length > 0)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        An error has occurred: {error.message}
-      </div>
-    );
-
-  if (isError && isLogin.length === 0) {
+  if (
+    isError &&
+    (isLogin === undefined || isLogin.length === 0) &&
+    (isToken === undefined || isToken.length === 0) &&
+    data === undefined
+  ) {
     Swal.fire({
       icon: "error",
       title: "Error",

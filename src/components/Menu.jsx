@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import Dog from "../assets/dog.gif";
 import { Drawer, Tour } from "antd";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { MdClose, MdDashboard, MdLogout } from "react-icons/md";
 import { GrOrganization } from "react-icons/gr";
 import { FaRegMoneyBill1 } from "react-icons/fa6";
@@ -11,13 +11,18 @@ import ButtonComponent from "./Button";
 import useLocalStorage from "../hooks/useLocalStorage";
 import Avatar from "../assets/avatar.png";
 import { useMediaQuery } from "react-responsive";
-import { useSelector } from "react-redux";
+import CryptoJS from "crypto-js";
 
 export default function MenuComponet() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [fullname, setFullname] = useLocalStorage("fullName");
+  // const decrypted = CryptoJS.AES.decrypt(fullname, "p3t0r1p3t0r1").toString(
+  //   CryptoJS.enc.Utf8
+  // );
+  // console.log("This : ", decrypted);
+
   const [isToken, setToken] = useLocalStorage("isToken");
 
   const showDrawer = () => {
@@ -97,13 +102,13 @@ export default function MenuComponet() {
     query: "(min-width: 1224px)",
   });
 
-  if (location.pathname === "/dashboard") {
-    if (!isDesktopScreen)
-      //&& location.state.isTour === 0
-      useEffect(() => {
-        setIsOpen(true);
-      }, []);
-  }
+  // if (location.pathname === "/dashboard") {
+  //   if (!isDesktopScreen)
+  //     //&& location.state.isTour === 0
+  //     useEffect(() => {
+  //       setIsOpen(true);
+  //     }, []);
+  // }
 
   return (
     <>

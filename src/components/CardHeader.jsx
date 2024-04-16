@@ -8,7 +8,6 @@ import useLocalStorage from "../hooks/useLocalStorage";
 export default function CardHeaderComponent({ title }) {
   const [loading, setLoading] = useState(false);
   const titleName = title.substring(0, title.length - 1);
-  const [theme, setTheme] = useLocalStorage("theme");
 
   useEffect(() => {
     document.documentElement.style.setProperty("--animate-duration", "2s");

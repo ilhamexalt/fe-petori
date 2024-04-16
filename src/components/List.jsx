@@ -99,7 +99,8 @@ export default function List({
 
         <Tooltip title={tooltip}>
           <Link
-            onClick={onClickGmaps}
+            to={onClickGmaps}
+            target="_blank"
             className="uppercase hidden md:flex text-sm items-center gap-2 hover:text-indigo-500"
           >
             <MdLocationOn /> {location}

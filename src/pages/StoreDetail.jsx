@@ -39,7 +39,12 @@ export default function StoreDetail() {
       </div>
     );
 
-  if (isError && isToken.length === 0) {
+  if (
+    isError &&
+    (isLogin === undefined || isLogin.length === 0) &&
+    (isToken === undefined || isToken.length === 0) &&
+    data === undefined
+  ) {
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -101,7 +106,7 @@ export default function StoreDetail() {
                           className="text-blue-500"
                           to={"https://hello-iam.netlify.app"}
                         >
-                          https://hello-iam.netlify.app
+                          {data?.data.location}
                         </Link>
                       </td>
                       <td>{data?.data.description}</td>

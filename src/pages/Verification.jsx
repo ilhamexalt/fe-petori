@@ -1,14 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { verification } from "../services/service";
 
 export default function Verification() {
-  const param = useParams();
   const urlLocation = useLocation();
-  console.log(urlLocation);
-
   const [fullname, setFullname] = useLocalStorage("fullName", []);
   const [isRole, setIsRole] = useLocalStorage("isRole", []);
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn", []);
@@ -39,10 +36,10 @@ export default function Verification() {
 
   const handleVerifyAccount = async (e) => {
     e.preventDefault();
-    let id = param.id;
+    let id = urlLocation.state.id;
     const otpParse = otp[0] + otp[1] + otp[2] + otp[3];
 
-    if (urlLocation.state !== null) {
+    if (urlLocation.pathname === "/verification/reset-password") {
       Swal.fire({
         icon: "info",
         title: "Change your password",
@@ -75,14 +72,14 @@ export default function Verification() {
 
             //post data
             const response = await fetch(
-              "http://175.41.165.127/ChangePassword",
+              "https://petori-service.my.id/ChangePassword",
               {
                 method: "PATCH",
                 headers: {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  phoneNumber: urlLocation.state.phoneNumber,
+                  phoneNumber: urlLocation.state,
                   password: newPassword,
                   otp: otpParse,
                 }),
@@ -145,6 +142,35 @@ export default function Verification() {
     }
   };
 
+  const resendOtp = async () => {
+    const response = await fetch(
+      `https://petori-service.my.id/ResendOTP?phoneNumber=${urlLocation.state.phoneNumber}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: data.message,
+        timer: 1000,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: response.statusText,
+      });
+    }
+  };
+
   return (
     <div className="relative font-inter antialiased">
       <main className="relative min-h-screen flex flex-col justify-center bg-slate-50 overflow-hidden">
@@ -191,12 +217,12 @@ export default function Verification() {
               </form>
               <div className="text-sm text-slate-500 mt-4">
                 Didn't receive code?{" "}
-                <Link
+                <button
                   className="font-medium text-indigo-500 hover:text-indigo-600"
-                  onClick={handleVerifyAccount}
+                  onClick={resendOtp}
                 >
                   Resend
-                </Link>
+                </button>
               </div>
             </div>
           </div>

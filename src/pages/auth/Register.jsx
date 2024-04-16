@@ -1,21 +1,16 @@
-import { Button, Input, Form, message, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import swal from "sweetalert2";
 import { LoadingOutlined } from "@ant-design/icons";
 import Petori from "../../assets/petori.png";
 import InputComponent from "../../components/Input";
 import ButtonComponent from "../../components/Button";
-import { addTodo, deleteTodo } from "../../redux/actions";
-import { connect } from "react-redux";
 import Swal from "sweetalert2";
 import { FaEyeSlash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import SelectComponent from "../../components/Select";
 import { register } from "../../services/service";
-import LabelComponent from "../../components/Label";
 
-const Register = ({ todos, addTodo, deleteTodo }) => {
+const Register = () => {
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [villages, setVillages] = useState([]);
@@ -469,14 +464,4 @@ const Register = ({ todos, addTodo, deleteTodo }) => {
   );
 };
 
-// const mapStateToProps = (state) => ({
-//   todos: state.todos,
-// });
-
-// const mapDispatchToProps = {
-//   addTodo,
-//   deleteTodo,
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Register);
 export default Register;

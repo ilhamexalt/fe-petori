@@ -23,21 +23,16 @@ export default function Store() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [openService, setOpenService] = useState(false);
-
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
-
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [villages, setVillages] = useState([]);
   const [provinces, setProvinces] = useState([]);
-
   const [fullname, setFullname] = useLocalStorage("fullName");
   const [isToken, setIstoken] = useLocalStorage("isToken");
   const [isRole, setIsRole] = useLocalStorage("isRole");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
-  const [idStore, setIdStore] = useLocalStorage("idStore");
-
   const [paramIduser, setParamIdUser] = useLocalStorage("id");
   const [storeName, setStoreName] = useState("");
   const [ownerName, setOwnerName] = useState(fullname);
@@ -136,8 +131,11 @@ export default function Store() {
       setDistrict(store?.data.address.split(",")[2]);
       setVillage(store?.data.address.split(",")[3]);
       setNumber(store?.data.address.split(",")[4]);
+      setLocation(store?.data.location);
       setDescription(store?.data.description);
       setPreviewImage(store?.data.storeImage);
+      setImage(store?.data.storeImage);
+
       setOpen(true);
       return navigate(`/store/${id}`);
     }
@@ -167,6 +165,7 @@ export default function Store() {
     formData.append("storeImage", image);
     formData.append("storeName", storeName);
     formData.append("address", address);
+    formData.append("location", location);
     formData.append("description", description);
 
     //save data
@@ -325,8 +324,11 @@ export default function Store() {
   };
 
   //hooks get all data store
-  const { data, error, isError, isLoading, isFetching, refetch } =
-    useStoresQuery(isToken, paramIduser);
+  const { data, isError, isLoading, isFetching, refetch } = useStoresQuery(
+    isToken,
+    paramIduser
+  );
+  console.log(data);
 
   let datas = [];
   if (!isFetching) {
@@ -415,14 +417,12 @@ export default function Store() {
       </div>
     );
 
-  if (isError && isToken.length > 0 && isLogin.length > 0)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        An error has occurred: {error.message}
-      </div>
-    );
-
-  if (isToken.length === 0 && isLogin.length === 0) {
+  if (
+    isError &&
+    (isLogin === undefined || isLogin.length === 0) &&
+    (isToken === undefined || isToken.length === 0) &&
+    data === undefined
+  ) {
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -477,7 +477,6 @@ export default function Store() {
               <Skeleton loading={isFetching} active avatar>
                 <List
                   number={index + 1}
-                  to={`https://hello-iam.netlify.app`}
                   image={item.storeImage ? item.storeImage : StoreImage}
                   title={item.storeName}
                   description={item.description}
@@ -486,6 +485,7 @@ export default function Store() {
                     ", " +
                     item.address.split(",")[1]
                   }
+                  onClickGmaps={item.location}
                   onClickEdit={() => showModal(item.id)}
                   onClickDelete={() => handleDelete({ item })}
                   onClickService={() => showService({ item })}
@@ -664,6 +664,23 @@ export default function Store() {
                     placeholder="BLOK # NO #"
                     value={id !== undefined ? number : number}
                     onChange={(e) => setNumber(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="flex flex-wrap -mx-3 ">
+                <div className="w-full  px-3  mb-3">
+                  <LabelComponent label={"Location"}>
+                    <span className="text-red-500 ml-1">*</span>
+                  </LabelComponent>
+                  <InputComponent
+                    disabled={isRole === "Super Admin" ? true : false}
+                    className="uppercase"
+                    type="text"
+                    placeholder="https://www.google.com/maps/place/"
+                    value={id !== undefined ? location : location}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                 </div>
               </div>

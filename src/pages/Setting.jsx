@@ -47,7 +47,7 @@ const Setting = () => {
               {/* sementara buat dark mode dulu */}
               <Switch
                 disabled={true}
-                onChange={handleToggle}
+                // onChange={handleToggle}
                 className="bg-gray-400"
               />
             </div>

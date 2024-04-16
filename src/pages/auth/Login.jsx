@@ -10,17 +10,17 @@ import Swal from "sweetalert2";
 import { Spin } from "antd";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { login } from "../../services/service";
+import CryptoJS from "crypto-js";
 
 export default function Login() {
   const navigate = useNavigate();
+
   const [fullname, setFullname] = useLocalStorage("fullName", []);
   const [isRole, setIsRole] = useLocalStorage("isRole", []);
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn", []);
   const [isToken, setIsToken] = useLocalStorage("isToken", []);
   const [id, setId] = useLocalStorage("id", []);
-  const [isTour, setIsTour] = useLocalStorage("isTour", []);
   const [location, setLocation] = useLocalStorage("currentLocation", []);
-
   const [phoneNumber, setPhonenumber] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -57,7 +57,6 @@ export default function Login() {
 
     try {
       const response = await login({ phoneNumber, password, location });
-      console.log(response);
       if (!response.ok) {
         const data = await response.json();
         Swal.fire({
@@ -88,14 +87,22 @@ export default function Login() {
               toast.onmouseleave = Swal.resumeTimer;
             },
             willClose: () => {
-              return navigate("/verification/" + data?.data.id);
+              return navigate("/verification/", {
+                state: data.data,
+              });
             },
           });
         } else {
-          setIsTour(data.data.isTour);
           setLoading(false);
           setId(data.data.id);
           setFullname(data.data.fullname);
+
+          // const fullname = CryptoJS.AES.encrypt(
+          //   data.data.fullname,
+          //   "p3t0r1p3t0r1"
+          // ).toString();
+          // setFullname(fullname);
+
           setIsRole(data.data.isRole);
           setIsToken(data.token);
           setIsLogin(true);

@@ -19,19 +19,15 @@ export default function Profile() {
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
   const [isToken, setIsToken] = useLocalStorage("isToken");
   const [isRole, setIsRole] = useLocalStorage("isRole");
-
   const [id, setId] = useLocalStorage("id");
-
   const [address, setAddress] = useState("");
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
   const [showOrders, setShowOrders] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [activeComment, setActiveComment] = useState(false);
   const [activeOrder, setActiveOrder] = useState(false);
@@ -182,11 +178,11 @@ export default function Profile() {
     query: "(min-width: 1224px)",
   });
 
-  if (isDesktopScreen) {
-    // useEffect(() => {
-    //   setIsOpen(true);
-    // }, []);
-  }
+  // if (isDesktopScreen) {
+  //   // useEffect(() => {
+  //   //   setIsOpen(true);
+  //   // }, []);
+  // }
 
   if (isLoading)
     return (
