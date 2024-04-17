@@ -88,54 +88,40 @@ export default function Profile() {
     }, 1000);
   };
 
-  const handleUpdateProfile = () => {
-    Swal.fire({
-      icon: "info",
-      title: " Mobile Phone Verification",
-      text: "Please enter the 4-digit verification code that was sent to your phone number.",
-      confirmButtonText: "VERIFY OTP",
-      showLoaderOnConfirm: true,
-      input: "text",
-      inputAttributes: {
-        autocapitalize: "off",
+  const handleUpdateProfile = async () => {
+    const response = await fetch(`https://petori-service.my.id/Users/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${isToken}`,
       },
-      showClass: {
-        popup: `
-        animate__animated
-        animate__fadeInUp
-        animate__faster
-      `,
-      },
-      hideClass: {
-        popup: `
-        animate__animated
-        animate__fadeOutDown
-        animate__faster
-      `,
-      },
-      preConfirm: async (code) => {
-        console.log(code);
-        try {
-          if (code === "") return Swal.showValidationMessage("Cannot be empty");
-
-          //post data
-          if (code === "1234") {
-            Swal.fire({
-              icon: "success",
-              title: "Success",
-              text: "Your profile has been updated!",
-              timer: 1000,
-            });
-          } else {
-            Swal.showValidationMessage(`Incorrect code`);
-          }
-        } catch (error) {
-          Swal.showValidationMessage(`
-            Request failed: ${error}
-          `);
-        }
-      },
+      body: JSON.stringify({
+        fullname: fullname,
+        address: address,
+        phoneNumber: phoneNumber,
+        email: email,
+        password: password,
+      }),
     });
+
+    if (response.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Profile updated successfully!",
+        timer: 1000,
+        showConfirmButton: false,
+      });
+      setOpenForm(false);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: response.statusText,
+        timer: 1000,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const steps = [
@@ -258,13 +244,13 @@ export default function Profile() {
                       >
                         {openForm ? "CANCEL" : "UPDATE PROFILE"}
                       </ButtonComponent>
-                      <Link
+                      {/* <Link
                         ref={ref3}
                         to="/setting"
                         className="hidden md:block"
                       >
                         <IoSettingsSharp />
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
 
@@ -410,7 +396,7 @@ export default function Profile() {
                         disabled={openForm ? false : true}
                         type={"password"}
                         placeholder={"Password"}
-                        value={password}
+                        // value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className={`text-center bg-gray-100 capitalize ${
                           openForm ? "" : "cursor-not-allowed"
