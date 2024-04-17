@@ -14,6 +14,8 @@ import Cat from "../assets/cat-run.gif";
 export default function StoreDetail() {
   const { id } = useParams();
   const [isToken, setIsToken] = useLocalStorage("isToken");
+  const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
+
   const navigate = useNavigate();
 
   const isDesktopScreen = useMediaQuery({

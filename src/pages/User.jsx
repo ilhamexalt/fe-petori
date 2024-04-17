@@ -151,11 +151,7 @@ export default function User() {
       </div>
     );
 
-  if (
-    (isLogin === undefined || isLogin.length === 0) &&
-    (isToken === undefined || isToken.length === 0) &&
-    data === undefined
-  ) {
+  if (isToken.length === 0 && isLogin.length === 0) {
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -165,6 +161,7 @@ export default function User() {
     });
     return navigate("/");
   }
+
   return (
     <Layout>
       <div className="mt-16 md:mt-32 px-4 md:px-0 ">
