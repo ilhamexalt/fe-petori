@@ -125,6 +125,8 @@ export default function Store() {
       const store = await getStore(isToken, id);
       isRole === "Super Admin" && setOwnerName(store?.data.idUser);
 
+      console.log(store?.data);
+
       setStoreId(id);
       setStoreName(store?.data.storeName);
       setState(store?.data.address.split(",")[0]);
@@ -464,7 +466,7 @@ export default function Store() {
           <Spin className="mt-10" />
         ) : filteredStores.length === 0 ? (
           <div className="mt-14">
-            <Empty />
+            <Empty className="dark:text-gray-300" />
           </div>
         ) : (
           filteredStores?.map((item, index) => (
@@ -536,6 +538,7 @@ export default function Store() {
                     <span className="text-red-500 ml-1">*</span>
                   </LabelComponent>
                   <InputComponent
+                    readOnly={true}
                     disabled={isRole === "Super Admin" ? true : false}
                     className="uppercase"
                     value={id !== undefined ? ownerName : ownerName}
@@ -659,7 +662,7 @@ export default function Store() {
                     disabled={isRole === "Super Admin" ? true : false}
                     className="uppercase"
                     type="text"
-                    placeholder="BLOK # NO #"
+                    placeholder="Jl.Dummy No.Dummy Blok Dummy RT/RW 001/002"
                     value={id !== undefined ? number : number}
                     onChange={(e) => setNumber(e.target.value)}
                   />
@@ -676,7 +679,7 @@ export default function Store() {
                     disabled={isRole === "Super Admin" ? true : false}
                     className="uppercase"
                     type="text"
-                    placeholder="https://www.google.com/maps/place/"
+                    placeholder="https://www.google.com/maps/dir/-6.1348403765531625,+106.8771341821301/@-6.1347951,106.7942644,12z/data=!4m5!4m4!1m3!2m2!1d106.8771342!2d-6.1348404?entry=ttu/"
                     value={id !== undefined ? location : location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
@@ -693,7 +696,7 @@ export default function Store() {
                   className="uppercase"
                   type="text"
                   value={id !== undefined ? description : description}
-                  placeholder="Open 9.00 am"
+                  placeholder="Ex. Open 9.00 am"
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>

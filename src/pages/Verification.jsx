@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -14,6 +14,12 @@ export default function Verification() {
   const [otp, setOtp] = useState(new Array(4).fill(""));
   const otpBoxReference = useRef([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isToken.length > 0 && !isRole.length > 0) {
+      return navigate("/");
+    }
+  }, []);
 
   function handleChange(value, index) {
     let newArr = [...otp];

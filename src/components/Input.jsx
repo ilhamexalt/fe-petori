@@ -12,9 +12,11 @@ export default function InputComponent({
   disabled,
   ref,
   autoFocus,
+  readOnly,
 }) {
   return (
     <input
+      readOnly={readOnly}
       autoFocus={autoFocus}
       ref={ref}
       disabled={disabled}

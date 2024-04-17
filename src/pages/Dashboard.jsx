@@ -67,7 +67,7 @@ const Dashboard = () => {
         ) : (
           <>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-5 md:gap-10 justify-items-center mb-5 md:mb-10  ">
-              {isFetching ? (
+              {/* {isFetching ? (
                 <Skeleton.Image
                   style={
                     isDesktopScreen
@@ -77,8 +77,20 @@ const Dashboard = () => {
                   active={true}
                 />
               ) : (
-                data?.data.map((item, i) => (
-                  <div key={item.id}>
+               
+              )} */}
+              {data?.data.map((item, i) => (
+                <div key={item.id}>
+                  {isFetching ? (
+                    <Skeleton.Image
+                      style={
+                        isDesktopScreen
+                          ? { width: 240, height: 256 }
+                          : { width: 160, height: 240 }
+                      }
+                      active={true}
+                    />
+                  ) : (
                     <CardStoreComponent
                       onClick={() =>
                         navigate(`/storedetail/${item.id}`, {
@@ -89,9 +101,9 @@ const Dashboard = () => {
                       title={item.storeName}
                       location={item.address.split(",")[2]}
                     />
-                  </div>
-                ))
-              )}
+                  )}
+                </div>
+              ))}
             </div>
 
             <h1 className="flex justify-end text-xs md:text-sm -mt-2 dark:text-gray-300">

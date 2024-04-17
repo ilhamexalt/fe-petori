@@ -90,7 +90,6 @@ export default function StoreDetail() {
                   <thead>
                     <tr>
                       <th>Location</th>
-                      <th>Desc</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -98,11 +97,22 @@ export default function StoreDetail() {
                       <td>
                         <Link
                           className="text-blue-500"
-                          to={"https://hello-iam.netlify.app"}
+                          to={data?.data.location}
                         >
                           {data?.data.location}
                         </Link>
                       </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table-auto text-[10px] md:text-sm  text-justify">
+                  <thead>
+                    <tr>
+                      <th>Desc</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
                       <td>{data?.data.description}</td>
                     </tr>
                   </tbody>

@@ -2,7 +2,7 @@ import { Avatar, Tooltip, Modal } from "antd";
 import React, { useState } from "react";
 import { FaRegEdit, FaEye } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { FaRegTrashAlt } from "react-icons/fa";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -81,6 +81,7 @@ export default function List({
   onClickService,
 }) {
   const [isRole, setIsRole] = useLocalStorage("isRole");
+  const props = useLocation();
   return (
     <>
       <div className="flex justify-between px-3 items-center ">
@@ -107,10 +108,13 @@ export default function List({
           </Link>
         </Tooltip>
         <div className="flex gap-5">
-          <GrServices
-            onClick={onClickService}
-            className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
-          />
+          {props.pathname === "/user" ? null : (
+            <GrServices
+              onClick={onClickService}
+              className=" hover:text-indigo-500 hover:cursor-pointer text-xs md:text-sm"
+            />
+          )}
+
           {isRole !== "Super Admin" ? (
             <>
               <FaRegEdit
