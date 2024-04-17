@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "./layout/Index";
 import SvgComponent from "../components/Svg";
 import LabelComponent from "../components/Label";
@@ -6,9 +6,19 @@ import InputComponent from "../components/Input";
 import ButtonComponent from "../components/Button";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
+import useLocalStorage from "../hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
 
 export default function ContactUs() {
   const [sending, setSending] = useState(false);
+  const [isToken, setIsToken] = useLocalStorage("isToken");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isToken.length === 0) {
+      return navigate("/");
+    }
+  }, []);
 
   const {
     register,

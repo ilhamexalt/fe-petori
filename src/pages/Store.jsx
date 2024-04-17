@@ -329,10 +329,9 @@ export default function Store() {
     isToken,
     paramIduser
   );
-  console.log(data);
 
   let datas = [];
-  if (!isFetching) {
+  if (!isFetching && data !== undefined) {
     datas = data.data.map((data) => data);
   }
 
@@ -413,13 +412,12 @@ export default function Store() {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-800">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
 
   if (
-    isError &&
     (isLogin === undefined || isLogin.length === 0) &&
     (isToken === undefined || isToken.length === 0) &&
     data === undefined
@@ -433,7 +431,6 @@ export default function Store() {
     });
     return navigate("/");
   }
-
   return (
     <Layout>
       <div className="mt-16 md:mt-32 px-4 md:px-0 ">

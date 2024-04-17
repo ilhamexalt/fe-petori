@@ -20,7 +20,7 @@ import Verification from "./pages/Verification";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
   {
@@ -117,7 +117,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </QueryClientProvider>
   </React.StrictMode>
 );

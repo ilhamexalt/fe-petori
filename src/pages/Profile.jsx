@@ -172,19 +172,16 @@ export default function Profile() {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-800">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
 
-  if (isError && isToken.length > 0 && isLogin.length > 0)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        An error has occurred: {error.message}
-      </div>
-    );
-
-  if (isToken.length === 0 && isLogin.length === 0) {
+  if (
+    (isLogin === undefined || isLogin.length === 0) &&
+    (isToken === undefined || isToken.length === 0) &&
+    data === undefined
+  ) {
     Swal.fire({
       icon: "error",
       title: "Error",

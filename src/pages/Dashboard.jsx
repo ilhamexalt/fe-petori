@@ -2,7 +2,7 @@ import Layout from "./layout/Index";
 import CarouselComponent from "../components/Carousel";
 import Cat from "../assets/cat-run.gif";
 import ButtonComponent from "../components/Button";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useStoresQuery } from "../hooks/UseStoresQuery";
 import { Empty, Skeleton } from "antd";
@@ -12,8 +12,6 @@ import StoreImage from "../assets/store.png";
 import Swal from "sweetalert2";
 
 const Dashboard = () => {
-  // const props = useLocation();
-  // console.log(props);
   const navigate = useNavigate();
   const [isToken, setToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
@@ -29,13 +27,12 @@ const Dashboard = () => {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-800">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
 
   if (
-    isError &&
     (isLogin === undefined || isLogin.length === 0) &&
     (isToken === undefined || isToken.length === 0) &&
     data === undefined
