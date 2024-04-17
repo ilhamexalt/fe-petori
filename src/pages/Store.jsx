@@ -18,6 +18,7 @@ import StoreImage from "../assets/store.png";
 import { MdOutlinePets } from "react-icons/md";
 import { getStore } from "../services/service";
 import ServiceComponent from "../components/Service";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function Store() {
   const navigate = useNavigate();
@@ -709,7 +710,21 @@ export default function Store() {
                     type="submit"
                     onClick={() => handleSave(id)}
                   >
-                    {saving ? "Saving..." : "Save"}
+                    {saving ? (
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{
+                              fontSize: 18,
+                              color: "white",
+                            }}
+                            spin
+                          />
+                        }
+                      />
+                    ) : (
+                      "Save"
+                    )}
                   </ButtonComponent>
                 </div>
               )}

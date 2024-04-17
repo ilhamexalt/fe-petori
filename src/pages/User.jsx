@@ -13,6 +13,7 @@ import InputComponent from "../components/Input";
 import Swal from "sweetalert2";
 import AvatarUser from "../assets/man.png";
 import { getUser } from "../services/service";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const Avatar = "https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
 

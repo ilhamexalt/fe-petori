@@ -293,7 +293,7 @@ export default function MenuComponet() {
             <GrServices /> Service
           </NavLink>
         </div> */}
-        <div>
+        {/* <div>
           <NavLink
             to="/setting"
             className={({ isActive }) => {
@@ -304,7 +304,7 @@ export default function MenuComponet() {
           >
             <IoSettingsOutline /> Setting
           </NavLink>
-        </div>
+        </div> */}
 
         <div>
           <Link
