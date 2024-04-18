@@ -10,15 +10,20 @@ import CardStoreComponent from "../components/CardStore";
 import { useMediaQuery } from "react-responsive";
 import StoreImage from "../assets/store.png";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isToken, setToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const { data, error, isFetching, isLoading, isError } = useStoresQuery(
     isToken,
-    1
+    1,
+    page,
+    pageSize
   );
 
   const isDesktopScreen = useMediaQuery({
@@ -27,7 +32,7 @@ const Dashboard = () => {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-800">
+      <div className="flex justify-center items-center min-h-screen bg-white ">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
@@ -48,16 +53,16 @@ const Dashboard = () => {
   }
 
   const handleShowAll = async () => {
-    alert("belum dibuat");
+    alert("Coming soon!");
   };
 
   return (
-    <Layout>
-      <div className="mt-16 md:mt-32  md:px-0 px-4">
+    <Layout className={"md:px-0 px-4"}>
+      <div className="mt-16 md:mt-32">
         <CarouselComponent />
       </div>
-      <div className="h-auto pt-2 md:pt-10 md:px-0 px-4 ">
-        <h1 className="font-bold dark:text-gray-300 text-base md:text-2xl text-center mb-2">
+      <div className="h-auto pt-2 md:pt-10 ">
+        <h1 className="font-bold  text-base md:text-2xl text-center mb-2">
           STORES
         </h1>
         {!isToken || isToken.length === 0 || data.data.length === 0 ? (
@@ -106,7 +111,7 @@ const Dashboard = () => {
               ))}
             </div>
 
-            <h1 className="flex justify-end text-xs md:text-sm -mt-2 dark:text-gray-300">
+            <h1 className="flex justify-end text-xs md:text-sm -mt-2 ">
               Total Data :
               <span className="font-semibold ml-1"> {data.data.length}</span>
             </h1>

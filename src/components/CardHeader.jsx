@@ -33,13 +33,11 @@ export default function CardHeaderComponent({ title }) {
             These are details about the {title}
           </p>
         </div>
-        <div>
+        {/* <div>
           <ButtonComponent
             className=" flex items-center justify-center h-7 md:h-10 uppercase text-[8px] md:text-xs w-[80px] md:w-32"
             onClick={handleDownload}
           >
-            {/* <div className="loader-download"></div> */}
-
             {loading ? (
               "Please wait..."
             ) : (
@@ -52,7 +50,7 @@ export default function CardHeaderComponent({ title }) {
               </>
             )}
           </ButtonComponent>
-        </div>
+        </div> */}
       </CardHeader>
     </div>
   );

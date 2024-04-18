@@ -16,9 +16,11 @@ import ButtonComponent from "../components/Button";
 import Swal from "sweetalert2";
 import StoreImage from "../assets/store.png";
 import { MdOutlinePets } from "react-icons/md";
-import { getStore } from "../services/service";
+import { getStore, getStoresByUserId } from "../services/service";
 import ServiceComponent from "../components/Service";
 import { LoadingOutlined } from "@ant-design/icons";
+import PaginationComponent from "../components/Pagination";
+import { GrPowerReset } from "react-icons/gr";
 
 export default function Store() {
   const navigate = useNavigate();
@@ -51,6 +53,10 @@ export default function Store() {
   const [previewImage, setPreviewImage] = useState(null);
   const [searchItem, setSearchItem] = useState("");
   const [storeId, setStoreId] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [activePrev, setActivePrev] = useState(false);
+  const [activeNext, setActiveNext] = useState(false);
 
   /* Get State */
   useEffect(() => {
@@ -329,7 +335,9 @@ export default function Store() {
   //hooks get all data store
   const { data, isError, isLoading, isFetching, refetch } = useStoresQuery(
     isToken,
-    paramIduser
+    paramIduser,
+    page,
+    pageSize
   );
 
   let datas = [];
@@ -414,7 +422,7 @@ export default function Store() {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-800">
+      <div className="flex justify-center items-center min-h-screen bg-white ">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
@@ -433,12 +441,53 @@ export default function Store() {
     });
     return navigate("/");
   }
+
+  const handleNextPage = async () => {
+    const newPage = page + 1;
+    setPage(newPage);
+    const data = await getStoresByUserId(
+      isToken,
+      paramIduser,
+      newPage,
+      pageSize
+    );
+    setStores(data?.data);
+    setFilteredStores(data?.data);
+    setActiveNext(true);
+    setActivePrev(false);
+  };
+
+  const handlePrevPage = async () => {
+    const newPage = page - 1;
+    setPage(newPage);
+    const data = await getStoresByUserId(
+      isToken,
+      paramIduser,
+      newPage,
+      pageSize
+    );
+    setStores(data?.data);
+    setFilteredStores(data?.data);
+    setActiveNext(false);
+    setActivePrev(true);
+  };
+
+  const handleReset = async () => {
+    setSearchItem("");
+    setPage(1);
+    setActiveNext(false);
+    setActivePrev(false);
+    const data = await getStoresByUserId(isToken, paramIduser, 1, 10);
+    setStores(data?.data);
+    setFilteredStores(data?.data);
+  };
+
   return (
-    <Layout>
-      <div className="mt-16 md:mt-32 px-4 md:px-0 ">
+    <Layout className={"px-4 md:px-0"}>
+      <div className="mt-16 md:mt-32 ">
         <CardHeaderComponent title="Stores" />
       </div>
-      <div className="mt-5 flex items-center justify-between px-4">
+      <div className="mt-5 flex items-center justify-between">
         {isRole !== "Super Admin" && (
           <Link
             onClick={() => showModal()}
@@ -453,55 +502,86 @@ export default function Store() {
           </Link>
         )}
         <div></div>
-        <InputComponent
-          className="!w-40 md:w-56"
-          placeholder="Search .."
-          onChange={handleSearchInputChange}
-          value={searchItem}
-        />
+        <div className="flex items-center justify-between gap-5">
+          {filteredStores.length === 0 && (
+            <button
+              className="py-2 px-2 text-sm bg-gray-500 text-white rounded-full"
+              onClick={handleReset}
+            >
+              <GrPowerReset />
+            </button>
+          )}
+          <InputComponent
+            className="!w-40 md:w-56"
+            placeholder="Search .."
+            onChange={handleSearchInputChange}
+            value={searchItem}
+          />{" "}
+        </div>
       </div>
-      <div className="grid grid-cols-1 px-4">
+      <div className="grid grid-cols-1">
         {/* if empty data as admin or owner won't rendered */}
         {isFetching ? (
           <Spin className="mt-10" />
-        ) : filteredStores.length === 0 ? (
-          <div className="mt-14">
-            <Empty className="dark:text-gray-300" />
-          </div>
         ) : (
-          filteredStores?.map((item, index) => (
-            <div
-              key={index}
-              className="w-full h-20 mt-5 border-b-[1px] dark:text-gray-300"
-            >
-              <Skeleton loading={isFetching} active avatar>
-                <List
-                  number={index + 1}
-                  image={item.storeImage ? item.storeImage : StoreImage}
-                  title={item.storeName}
-                  description={item.description}
-                  location={
-                    item.address.split(",")[0] +
-                    ", " +
-                    item.address.split(",")[1]
-                  }
-                  onClickGmaps={item.location}
-                  onClickEdit={() => showModal(item.id)}
-                  onClickDelete={() => handleDelete({ item })}
-                  onClickService={() => showService({ item })}
-                />
-              </Skeleton>
-            </div>
-          ))
+          <>
+            {filteredStores.length === 0 ? (
+              <Empty className="mt-14" />
+            ) : (
+              <>
+                <Skeleton loading={isFetching} active avatar>
+                  {filteredStores?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="w-full h-20 mt-5 border-b-[1px] "
+                    >
+                      <List
+                        number={index + 1}
+                        image={item.storeImage ? item.storeImage : StoreImage}
+                        title={item.storeName}
+                        description={item.description}
+                        location={
+                          item.address.split(",")[0] +
+                          ", " +
+                          item.address.split(",")[1]
+                        }
+                        onClickGmaps={item.location}
+                        onClickEdit={() => showModal(item.id)}
+                        onClickDelete={() => handleDelete({ item })}
+                        onClickService={() => showService({ item })}
+                      />
+                    </div>
+                  ))}
+                </Skeleton>
+                <div className="flex justify-between">
+                  <p className="text-sm mt-3 ">
+                    Current Page : <span className="font-semibold">{page}</span>
+                  </p>
+                  <p className="text-sm  mt-3 ">
+                    Total Data :{" "}
+                    <span className="font-semibold">
+                      {filteredStores?.length}
+                    </span>
+                  </p>
+                </div>
+              </>
+            )}
+          </>
         )}
-
-        <p className="text-sm text-right mt-3 dark:text-gray-300">
-          Total Data :{" "}
-          <span className="font-semibold">
-            {!isFetching && filteredStores?.length}
-          </span>
-        </p>
       </div>
+
+      {filteredStores?.length > 0 && (
+        <div className="flex justify-center mt-5">
+          <PaginationComponent
+            activePrev={activePrev}
+            activeNext={activeNext}
+            page={page}
+            totalData={filteredStores?.length}
+            onClickPrev={handlePrevPage}
+            onClickNext={handleNextPage}
+          />
+        </div>
+      )}
 
       {/* Modal Add/Edit */}
       <ModalComponent open={open} onOk={handleSave} onCancel={handleCancel}>

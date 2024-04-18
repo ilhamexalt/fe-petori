@@ -29,7 +29,7 @@ export default function StoreDetail() {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-800">
+      <div className="flex justify-center items-center min-h-screen bg-white ">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
@@ -51,7 +51,7 @@ export default function StoreDetail() {
   return (
     <Layout>
       <div className="mt-16 md:mt-32  md:px-0 px-4 ">
-        <h1 className="text-center my-5 md:mb-10 md:text-xl text-sm font-semibold capitalize dark:text-gray-300">
+        <h1 className="text-center my-5 md:mb-10 md:text-xl text-sm font-semibold capitalize ">
           {data?.data.storeName} Store
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2">

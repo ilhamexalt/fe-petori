@@ -13,11 +13,9 @@ export default function CommentsComponent({ fullname, bodyComment }) {
       </div>
       <div className=" mb-2 ">
         <Divider type="vertical" className="bg-gray-300 w-[1px]" />
-        <span className="text-xs text-justify dark:text-gray-300">
-          {bodyComment}
-        </span>
+        <span className="text-xs text-justify ">{bodyComment}</span>
       </div>
-      <div className="text-xs font-light flex justify-end dark:text-gray-300">
+      <div className="text-xs font-light flex justify-end ">
         commented on {new Date().toDateString()}
       </div>
     </div>

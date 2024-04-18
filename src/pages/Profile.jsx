@@ -172,7 +172,7 @@ export default function Profile() {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-800">
+      <div className="flex justify-center items-center min-h-screen bg-white ">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
@@ -449,16 +449,16 @@ export default function Profile() {
             {showOrders && (
               <>
                 <div>
-                  <h1 className="mb-5 dark:text-gray-300">Orders</h1>
+                  <h1 className="mb-5">Orders</h1>
                 </div>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-5">
                   {comments.map((comment, index) => (
                     <div key={comment.id}>
                       <div
-                        className="w-full  dark:text-white dark:bg-gray-800 bg-white text-gray-800 text-center px-5 py-3 md:py-5 shadow-md rounded-md cursor-pointer "
+                        className="w-full   bg-white text-gray-800 text-center px-5 py-3 md:py-5 shadow-md rounded-md cursor-pointer "
                         onClick={() => setOpen(true)}
                       >
-                        <h1 className="text-sm  dark:text-white dark:bg-gray-800 font-semibold  text-gray-800">
+                        <h1 className="text-sm   font-semibold  text-gray-800">
                           Ticket ID #13{comment.id}52
                         </h1>
                       </div>

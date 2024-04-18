@@ -44,8 +44,8 @@ export async function verification({ id, otp }) {
 }
 
 //Users #GET
-export async function getUsers(isToken) {
-    const res = await fetch(`${baseUrl}/users`, {
+export async function getUsers(isToken, page, pageSize) {
+    const res = await fetch(`${baseUrl}/users?page=${page}&pageSize=${pageSize}`, {
         method: "GET", headers: {
             Authorization: `Bearer ${isToken}`,
         }
@@ -68,8 +68,8 @@ export async function getUser(id, isToken) {
 }
 
 //Stores : #GET // By User ID
-export async function getStoresByUserId(isToken, userId) {
-    const res = await fetch(`${baseUrl}/Store?userId=${userId}`, {
+export async function getStoresByUserId(isToken, userId, page, pageSize) {
+    const res = await fetch(`${baseUrl}/Store?userId=${userId}&page=${page}&pageSize=${pageSize}`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${isToken}`,

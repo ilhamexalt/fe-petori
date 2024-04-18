@@ -21,6 +21,8 @@ export default function Login() {
   const [isToken, setIsToken] = useLocalStorage("isToken", []);
   const [id, setId] = useLocalStorage("id", []);
   const [location, setLocation] = useLocalStorage("currentLocation", []);
+  const [email, setEmail] = useLocalStorage("email", []);
+
   const [phoneNumber, setPhonenumber] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -106,6 +108,7 @@ export default function Login() {
           setIsRole(data.data.isRole);
           setIsToken(data.token);
           setIsLogin(true);
+          setEmail(data.data.email);
           Swal.fire({
             icon: "success",
             title: "Success",

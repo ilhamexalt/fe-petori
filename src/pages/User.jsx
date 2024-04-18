@@ -12,8 +12,10 @@ import LabelComponent from "../components/Label";
 import InputComponent from "../components/Input";
 import Swal from "sweetalert2";
 import AvatarUser from "../assets/man.png";
-import { getUser } from "../services/service";
-import { LoadingOutlined } from "@ant-design/icons";
+import { getUser, getUsers } from "../services/service";
+// import { LoadingOutlined } from "@ant-design/icons";
+import PaginationComponent from "../components/Pagination";
+import { GrPowerReset } from "react-icons/gr";
 
 const Avatar = "https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
 
@@ -31,19 +33,20 @@ export default function User() {
   const [status, setStatus] = useState("");
   const [createdAt, setCreatedAt] = useState("");
   const [updatedAt, setUpdatedAt] = useState("");
-
   const [searchItem, setSearchItem] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [users, setUsers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [activePrev, setActivePrev] = useState(false);
+  const [activeNext, setActiveNext] = useState(false);
 
   const {
     data: datas,
     isLoading,
     isFetching,
-    isError,
-    error,
     refetch,
-  } = useUsersQuery(isToken);
+  } = useUsersQuery(isToken, page, pageSize);
 
   const handleSearchInputChange = (e) => {
     const searchTerm = e.target.value;
@@ -133,6 +136,36 @@ export default function User() {
     setOpen(false);
   };
 
+  const handleNextPage = async () => {
+    const newPage = page + 1;
+    setPage(newPage);
+    const data = await getUsers(isToken, newPage, pageSize);
+    setFilteredUsers(data?.data);
+    setUsers(data?.data);
+    setActiveNext(true);
+    setActivePrev(false);
+  };
+
+  const handlePrevPage = async () => {
+    const newPage = page - 1;
+    setPage(newPage);
+    const data = await getUsers(isToken, newPage, pageSize);
+    setFilteredUsers(data?.data);
+    setUsers(data?.data);
+    setActiveNext(false);
+    setActivePrev(true);
+  };
+
+  const handleReset = async () => {
+    setSearchItem("");
+    setPage(1);
+    setActiveNext(false);
+    setActivePrev(false);
+    const data = await getUsers(isToken, 1, 10);
+    setFilteredUsers(data?.data);
+    setUsers(data?.data);
+  };
+
   let data = [];
   if (!isFetching) {
     data = datas?.data || [];
@@ -142,11 +175,11 @@ export default function User() {
     setUsers(data);
     setFilteredUsers(data);
     window.scrollTo(0, 0);
-  }, [!isFetching]);
+  }, [!isFetching, page, pageSize]);
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-800">
+      <div className="flex justify-center items-center min-h-screen bg-white ">
         <img src={Cat} alt={"loading"} width={300} />
       </div>
     );
@@ -163,14 +196,22 @@ export default function User() {
   }
 
   return (
-    <Layout>
-      <div className="mt-16 md:mt-32 px-4 md:px-0 ">
+    <Layout className={"md:px-0 px-4"}>
+      <div className="mt-16 md:mt-32">
         <CardHeaderComponent title="Users" />
       </div>
 
-      <div className="mt-5 flex items-center justify-between px-4">
+      <div className="mt-5 flex items-center justify-between">
         <div></div>
-        <div className="flex items-center justify-between bg-red-200">
+        <div className="flex items-center justify-between gap-5">
+          {filteredUsers.length === 0 && (
+            <button
+              className="py-2 px-2 text-sm bg-gray-500 text-white rounded-full"
+              onClick={handleReset}
+            >
+              <GrPowerReset />
+            </button>
+          )}
           <InputComponent
             className="!w-40 md:w-56"
             placeholder="Search .."
@@ -193,10 +234,10 @@ export default function User() {
                     {filteredUsers.map((user, index) => (
                       <div
                         key={user.id}
-                        className="w-full h-20 mt-5 border-b-[1px]  px-4 dark:text-gray-300"
+                        className="w-full h-20 mt-5 border-b-[1px] "
                       >
                         <List
-                          number={index + 1}
+                          number={(index += 1)}
                           tooltip={
                             "https://www.google.com/maps/dir/" + user.address
                           }
@@ -216,14 +257,33 @@ export default function User() {
                       </div>
                     ))}
                   </Skeleton>
-                  <p className="text-sm text-right mt-3 px-4 md:px-0 dark:text-gray-300">
-                    Total Data :{" "}
-                    <span className="font-semibold">
-                      {filteredUsers.length}
-                    </span>
-                  </p>
+                  <div className="flex justify-between">
+                    <p className="text-sm mt-3 ">
+                      Current Page :{" "}
+                      <span className="font-semibold">{page}</span>
+                    </p>
+                    <p className="text-sm  mt-3 ">
+                      Total Data :{" "}
+                      <span className="font-semibold">
+                        {filteredUsers.length}
+                      </span>
+                    </p>
+                  </div>
                 </>
               )
+            )}
+
+            {filteredUsers.length > 0 && (
+              <div className="flex justify-center mt-5">
+                <PaginationComponent
+                  activePrev={activePrev}
+                  activeNext={activeNext}
+                  totalData={filteredUsers.length}
+                  page={page}
+                  onClickPrev={handlePrevPage}
+                  onClickNext={handleNextPage}
+                />
+              </div>
             )}
           </>
         )}

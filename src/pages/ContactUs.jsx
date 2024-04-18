@@ -12,6 +12,9 @@ import { useNavigate } from "react-router-dom";
 export default function ContactUs() {
   const [sending, setSending] = useState(false);
   const [isToken, setIsToken] = useLocalStorage("isToken");
+  const [email, setEmail] = useLocalStorage("email");
+  const [fullname, setFullname] = useLocalStorage("fullName");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,7 +77,7 @@ export default function ContactUs() {
               <h2 className="text-2xl dark:text-white lg:text-5xl font-bold leading-tight">
                 Lets talk about everything!
               </h2>
-              <div className="text-gray-700 dark:text-gray-300 mt-5 md:mt-8 text-sm md:text-sm">
+              <div className="text-gray-700  mt-5 md:mt-8 text-sm md:text-sm">
                 Hate forms? Send us an <span className="underline">email</span>{" "}
                 instead.
               </div>
@@ -99,6 +102,7 @@ export default function ContactUs() {
                   }}
                   type="text"
                   placeholder="Dummy"
+                  value={fullname}
                 />
                 <span className="text-red-500 text-xs">
                   {errors.fullname && <p>{errors.fullname?.message}</p>}
@@ -110,6 +114,7 @@ export default function ContactUs() {
                   className="text-gray-200 dark:text-white"
                 />
                 <InputComponent
+                  value={email}
                   props={{ ...register("email") }}
                   type="email"
                   placeholder="ex@gmail.com"
@@ -122,7 +127,7 @@ export default function ContactUs() {
                 />
                 <textarea
                   {...register("message")}
-                  className="w-full h-32 border border-gray-200  bg-gray-200 text-gray-700 mt-2 p-3 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="w-full h-32 border border-gray-200  bg-gray-200 text-gray-700 mt-2 p-3 rounded-md leading-tight focus:border-t-0 focus:border-r-0 focus:border-l-0 focus:rounded-none focus:outline-none focus:bg-white focus:border-indigo-500"
                 ></textarea>
               </div>
               <div className="mt-8">
