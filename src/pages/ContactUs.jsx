@@ -30,13 +30,13 @@ export default function ContactUs() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      fullname: "",
-      email: "",
+      fullname: fullname,
+      email: email,
       message: "",
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (data.fullname == "" || data.email == "" || data.message == "")
       return Swal.fire({
         icon: "error",
@@ -45,18 +45,36 @@ export default function ContactUs() {
       });
     setSending(true);
     try {
-      setTimeout(() => {
+      const response = await fetch("https://petori-service.my.id/feedback", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${isToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
         Swal.fire({
           icon: "success",
           title: "Send Message",
-          text: "Your message has been send!",
+          text: response.statusText,
           showConfirmButton: false,
           timer: 1500,
         });
-
+        setSending(false);
+      } else {
+        const data = await response.json();
+        Swal.fire({
+          icon: "success",
+          title: "Send Message",
+          text: data.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
         setSending(false);
         reset({ fullname: "", email: "", message: "" });
-      }, 1000);
+      }
     } catch (error) {
       Swal.fire({
         icon: "error",
