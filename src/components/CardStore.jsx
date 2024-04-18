@@ -14,7 +14,7 @@ export default function CardStoreComponent({
   return (
     <div
       onClick={onClick}
-      className={`bg-white dark:bg-gray-800 dark:text-gray-300 hover:cursor-pointer shadow-md hover:shadow-xl transition delay-50 ease-in-out w-full md:h-64 h-60 rounded-sm  ${className}`}
+      className={`bg-white hover:cursor-pointer shadow-md hover:shadow-xl transition delay-50 ease-in-out w-full md:h-64 h-60 rounded-sm  ${className}`}
     >
       <div>
         <div className="w-full bg-white h-40 flex justify-center items-center">

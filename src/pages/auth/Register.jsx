@@ -244,7 +244,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-full min-h-screen bg-gray-50 dark:bg-gray-800">
+    <div className="flex justify-center items-center w-full min-h-screen bg-gray-50 ">
       <div className="bg-white w-80 md:w-[400px] shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
         <div className="w-full py-3 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-br-2xl rounded-bl-sm rounded-tl-2xl rounded-tr-sm">
           <div className="font-bold text-5xl flex justify-center">

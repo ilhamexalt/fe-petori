@@ -74,7 +74,7 @@ export default function ContactUs() {
         <div className="max-w-screen-xl px-8 grid gap-8 grid-cols-1 md:grid-cols-2 md:px-12 lg:px-16 xl:px-32 py-10 md:py-16 mx-auto text-gray-900 ">
           <div className="flex flex-col justify-between ">
             <div>
-              <h2 className="text-2xl dark:text-white lg:text-5xl font-bold leading-tight">
+              <h2 className="text-2xl lg:text-5xl font-bold leading-tight">
                 Lets talk about everything!
               </h2>
               <div className="text-gray-700  mt-5 md:mt-8 text-sm md:text-sm">
@@ -87,10 +87,7 @@ export default function ContactUs() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <div>
-                <LabelComponent
-                  label={"Fullname"}
-                  className="text-gray-200 dark:text-white"
-                />
+                <LabelComponent label={"Fullname"} className="text-gray-200 " />
                 <InputComponent
                   props={{
                     ...register("fullname", {
@@ -109,10 +106,7 @@ export default function ContactUs() {
                 </span>
               </div>
               <div className="mt-8">
-                <LabelComponent
-                  label={"Email"}
-                  className="text-gray-200 dark:text-white"
-                />
+                <LabelComponent label={"Email"} className="text-gray-200 " />
                 <InputComponent
                   value={email}
                   props={{ ...register("email") }}
@@ -121,10 +115,7 @@ export default function ContactUs() {
                 />
               </div>
               <div className="mt-8">
-                <LabelComponent
-                  label={"Message"}
-                  className="text-gray-200 dark:text-white"
-                />
+                <LabelComponent label={"Message"} className="text-gray-200 " />
                 <textarea
                   {...register("message")}
                   className="w-full h-32 border border-gray-200  bg-gray-200 text-gray-700 mt-2 p-3 rounded-md leading-tight focus:border-t-0 focus:border-r-0 focus:border-l-0 focus:rounded-none focus:outline-none focus:bg-white focus:border-indigo-500"

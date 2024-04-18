@@ -428,7 +428,7 @@ export default function Profile() {
             {showComments && (
               <>
                 <div>
-                  <h1 className="mb-5 dark:text-gray-300">Comments</h1>
+                  <h1 className="mb-5 ">Comments</h1>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   {comments.map((comment) => (

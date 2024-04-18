@@ -7,14 +7,14 @@ const Setting = () => {
     <Layout>
       <div className="mt-16 md:mt-32 px-4">
         <div>
-          <h1 className="text-sm md:text-lg font-semibold dark:text-white">
+          <h1 className="text-sm md:text-lg font-semibold ">
             Language and dates
           </h1>
           <p className="text-xs md:text-base text-justify text-gray-400">
             Choose what language and date format to use throughout your account.
           </p>
           <Divider />
-          <div className="flex justify-between mb-5 text-xs md:text-base dark:text-gray-300 ">
+          <div className="flex justify-between mb-5 text-xs md:text-base  ">
             <div className="min-w-36">
               <p className="">Language</p>
             </div>
@@ -25,7 +25,7 @@ const Setting = () => {
               <Switch defaultChecked className="bg-gray-400" />
             </div>
           </div>
-          <div className="flex justify-between mb-5 text-xs md:text-base dark:text-gray-300">
+          <div className="flex justify-between mb-5 text-xs md:text-base ">
             <div className="min-w-36">
               <p className="">Date Format</p>
             </div>
@@ -36,7 +36,7 @@ const Setting = () => {
               <Switch defaultChecked className="bg-gray-400" />
             </div>
           </div>
-          <div className="flex justify-between mb-5 text-xs md:text-base dark:text-gray-300">
+          <div className="flex justify-between mb-5 text-xs md:text-base ">
             <div className="min-w-36">
               <p className="">Theme</p>
             </div>
@@ -54,7 +54,7 @@ const Setting = () => {
           </div>
           <div className="flex justify-between items-center text-xs md:text-base">
             <div>
-              <p className="font-semibold dark:text-white">Delete account</p>
+              <p className="font-semibold ">Delete account</p>
             </div>
             <button
               onClick={() => {

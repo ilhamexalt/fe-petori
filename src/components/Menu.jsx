@@ -130,9 +130,9 @@ export default function MenuComponet() {
               src={Avatar}
               alt="Profile"
             />
-            <div className="font-medium text-sm md:text-base dark:text-gray-300">
+            <div className="font-medium text-sm md:text-base ">
               Hi, <span className="font-bold ">{fullname}</span>
-              <div className="text-xs md:text-sm text-gray-500 dark:text-gray-300">
+              <div className="text-xs md:text-sm text-gray-500 ">
                 {fullname === "Super Admin" ? "Super Admin" : "Owner"}
               </div>
             </div>
@@ -144,7 +144,7 @@ export default function MenuComponet() {
             className={({ isActive }) => {
               return isActive
                 ? `text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block`
-                : `text-gray-800 dark:text-gray-300 font-semibold text-base pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
+                : `text-gray-800  font-semibold text-base pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
             }}
           >
             Users
@@ -157,7 +157,7 @@ export default function MenuComponet() {
           className={({ isActive }) => {
             return isActive
               ? `text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block`
-              : `text-gray-800 dark:text-gray-300 font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
+              : `text-gray-800  font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
           }}
         >
           {fullname === "Super Admin" ? "Stores" : "My Store"}
@@ -169,7 +169,7 @@ export default function MenuComponet() {
           className={({ isActive }) => {
             return isActive
               ? `text-white font-semibold text-base bg-indigo-500 rounded-lg pr-5 pl-5 pt-1 pb-1 hidden md:block`
-              : `text-gray-800 dark:text-gray-300 font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
+              : `text-gray-800  font-semibold text-base  pr-5 pl-5 pt-1 pb-1 duration-100 ease-in-out hidden md:block`;
           }}
         >
           {fullname === "Super Admin" ? "Services" : "My Services"}
@@ -193,9 +193,9 @@ export default function MenuComponet() {
                 alt="Profile"
               />
             </Link>
-            <div className="font-medium dark:text-white">
+            <div className="font-medium ">
               Hi, <span className="font-bold">{fullname}</span>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-sm text-gray-500 ">
                 {fullname === "Super Admin" ? "Super Admin" : "Owner"}
               </div>
             </div>
