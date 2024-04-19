@@ -131,8 +131,6 @@ export default function Store() {
       const store = await getStore(isToken, id);
       isRole === "Super Admin" && setOwnerName(store?.data.idUser);
 
-      console.log(store?.data);
-
       setStoreId(id);
       setStoreName(store?.data.storeName);
       setState(store?.data.address.split(",")[0]);
@@ -323,7 +321,6 @@ export default function Store() {
   };
 
   const showService = ({ item }) => {
-    console.log(item);
     setStores(item);
     setOpenService(true);
   };

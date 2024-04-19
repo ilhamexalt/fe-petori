@@ -234,13 +234,23 @@ export default function Profile() {
                   </div>
                   <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
                     <div className="md:py-6 py-3 px-3 mt-24 sm:mt-0 flex items-center gap-x-5">
-                      <ButtonComponent
-                        className="!bg-white w-full md:w-40  uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                        type="button"
-                        onClick={handleOpenForm}
-                      >
-                        {openForm ? "CANCEL" : "UPDATE PROFILE"}
-                      </ButtonComponent>
+                      {openForm ? (
+                        <button
+                          onClick={handleOpenForm}
+                          className=" w-full md:w-40 flex justify-center font-bold hover:shadow-md  items-center uppercase text-xs  gap-1 h-8 text-white bg-gray-500 shadow-sm rounded-md ease-linear transition-all duration-150"
+                        >
+                          Cancel
+                        </button>
+                      ) : (
+                        <ButtonComponent
+                          className="!bg-white w-full md:w-40  uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2  sm:mr-2 mb-1 ease-linear transition-all duration-150"
+                          type="button"
+                          onClick={handleOpenForm}
+                        >
+                          UPDATE PROFILE
+                        </ButtonComponent>
+                      )}
+
                       {/* <Link
                         ref={ref3}
                         to="/setting"
@@ -412,10 +422,16 @@ export default function Profile() {
                   </div>
                 ) : (
                   <div className="md:mt-4 mt-0 pb-6 space-y-2 text-xs md:text-sm">
-                    <div className="text-center"> {data?.fullname}</div>
-                    <div className="text-center"> {data?.address}</div>
-                    <div className="text-center"> {data?.email}</div>
-                    <div className="text-center"> {data?.phoneNumber}</div>
+                    <div className="text-center uppercase">
+                      {" "}
+                      {data?.fullname}
+                    </div>
+                    <div className="text-center uppercase">
+                      {" "}
+                      {data?.address}
+                    </div>
+                    <div className="text-center uppercase"> {data?.email}</div>
+                    <div className="text-center "> {data?.phoneNumber}</div>
                   </div>
                 )}
               </div>
@@ -449,7 +465,7 @@ export default function Profile() {
             {showOrders && (
               <>
                 <div>
-                  <h1 className="mb-5">Orders</h1>
+                  <h1 className="mb-5">Orders History</h1>
                 </div>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-5">
                   {comments.map((comment, index) => (

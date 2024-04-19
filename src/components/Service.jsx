@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useServicesQuery } from "../hooks/useServicesQuery";
-import { useStoresQuery } from "../hooks/UseStoresQuery";
 import { IoMdAddCircle } from "react-icons/io";
 import InputComponent from "./Input";
 import CardServiceComponent from "./CardService";
 import { MdOutlinePets } from "react-icons/md";
 import ModalComponent from "./Modal";
-import SelectComponent from "./Select";
 import LabelComponent from "./Label";
 import ButtonComponent from "./Button";
 import { Divider, Empty, Skeleton, Spin } from "antd";
@@ -32,6 +29,7 @@ const ServiceComponent = ({ props }) => {
   const [services, setServices] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
   const [searchItem, setSearchItem] = useState("");
+  const [limit, setLimit] = useState(5);
 
   const showModal = async (id) => {
     setLoading(true);
@@ -182,11 +180,6 @@ const ServiceComponent = ({ props }) => {
     setServicePrice("");
   };
 
-  useEffect(() => {
-    setServices(props?.services);
-    setFilteredServices(props?.services);
-  }, [props]);
-
   const handleSearchInputChange = (e) => {
     setLoading(true);
     const searchItem = e.target.value;
@@ -199,6 +192,28 @@ const ServiceComponent = ({ props }) => {
     setFilteredServices(filteredItems);
     setLoading(false);
   };
+
+  const handleShowMore = () => {
+    if (props?.services.length - filteredServices?.length < 5)
+      return setLimit(
+        limit + props?.services.length - filteredServices?.length
+      );
+    setLimit(limit + 5);
+  };
+
+  const datas = [];
+  for (let i = 0; i < limit; i++) {
+    if (props?.services[i] !== undefined) {
+      datas.push(props?.services[i]);
+    } else {
+      break;
+    }
+  }
+
+  useEffect(() => {
+    setServices(datas);
+    setFilteredServices(datas);
+  }, [props, limit]);
 
   return (
     <div>
@@ -249,10 +264,20 @@ const ServiceComponent = ({ props }) => {
         </div>
       )}
 
-      <p className="text-sm text-right mt-3  px-4 ">
-        Total Data :{" "}
-        <span className="font-semibold">{filteredServices?.length}</span>
-      </p>
+      {filteredServices?.length > 0 && (
+        <>
+          <p className="text-sm text-right mt-3  px-4 ">
+            Total Data :{" "}
+            <span className="font-semibold">{filteredServices?.length}</span>
+          </p>
+
+          <div className="flex justify-center mt-5">
+            <ButtonComponent onClick={handleShowMore}>
+              Show More
+            </ButtonComponent>
+          </div>
+        </>
+      )}
 
       <ModalComponent open={open} onOk={handleSave} onCancel={handleCancel}>
         <div className="gap-y-4">

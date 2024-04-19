@@ -73,7 +73,7 @@ export default function ContactUs() {
           timer: 1500,
         });
         setSending(false);
-        reset({ fullname: "", email: "", message: "" });
+        reset({ message: "" });
       }
     } catch (error) {
       Swal.fire({

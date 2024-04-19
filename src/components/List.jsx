@@ -82,6 +82,11 @@ export default function List({
 }) {
   const [isRole, setIsRole] = useLocalStorage("isRole");
   const props = useLocation();
+
+  const isDesktopScreen = useMediaQuery({
+    query: "(min-width: 1224px)",
+  });
+
   return (
     <>
       <div className="flex justify-between px-3 items-center ">
