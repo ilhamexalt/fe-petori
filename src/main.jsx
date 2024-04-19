@@ -20,6 +20,7 @@ import Verification from "./pages/Verification";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
@@ -98,6 +99,11 @@ const router = createBrowserRouter([
         path: "/verification/:id",
       },
     ],
+  },
+  {
+    path: "/privacy",
+    element: <PrivacyPolicy />,
+    errorElement: <Error />,
   },
 ]);
 

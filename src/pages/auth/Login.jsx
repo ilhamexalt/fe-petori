@@ -133,7 +133,7 @@ export default function Login() {
 
   return (
     <>
-      <div className="flex justify-center items-center w-full min-h-screen bg-gray-50 ">
+      {/* <div className="flex justify-center items-center w-full min-h-screen bg-gray-50 ">
         <div className="bg-white w-80 md:w-[400px] shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
           <div className="w-full py-3 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-br-2xl rounded-bl-sm rounded-tl-2xl rounded-tr-sm">
             <div className="font-bold text-5xl flex justify-center">
@@ -226,6 +226,121 @@ export default function Login() {
             </div>
           </div>
         </div>
+      </div> */}
+
+      <div className="area">
+        <ul className="circles">
+          <div className="flex justify-center items-center min-h-screen">
+            <div className="bg-white w-80 md:w-[400px] shadow-md hover:shadow-lg rounded-br-2xl rounded-bl-sm rounded-tl-2xl ">
+              <div className="w-full py-3 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-br-2xl rounded-bl-sm rounded-tl-2xl rounded-tr-sm">
+                <div className="font-bold text-5xl flex justify-center">
+                  <img
+                    src={Petori}
+                    alt="Petori Logo "
+                    className="w-24 md:w-44"
+                  />
+                </div>
+                <p className="text-center text-xs font-light text-white">
+                  © 2024 - Development
+                </p>
+              </div>
+              <div className="pt-5 px-5 py-5">
+                {error && (
+                  <p className="text-red-500 text-center text-xs mb-2">
+                    {error}
+                  </p>
+                )}
+                <form name="basic" className="relative">
+                  <InputComponent
+                    type="text"
+                    className={
+                      error && !phoneNumber ? "mb-5 border-red-500" : "mb-5"
+                    }
+                    placeholder="Phone Number"
+                    value={phoneNumber}
+                    onChange={(e) => setPhonenumber(e.target.value)}
+                  />
+                  <div className="relative">
+                    <InputComponent
+                      type={showPassword ? "text" : "password"}
+                      className={
+                        error && !password ? "mb-5 border-red-500" : "mb-5"
+                      }
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+
+                    {showPassword ? (
+                      <div className="absolute right-0 top-0 cursor-pointer w-10 h-10">
+                        <FaEye
+                          className="absolute right-3 top-3"
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      </div>
+                    ) : (
+                      <div className="absolute right-0 top-0 cursor-pointer w-10 h-10 ">
+                        <FaEyeSlash
+                          className="absolute right-3 top-3"
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <ButtonComponent
+                    onClick={handleLogin}
+                    disabled={loading}
+                    type="submit"
+                    className="w-full tracking-widest p-1 mb-2"
+                  >
+                    {loading ? (
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{
+                              fontSize: 18,
+                              color: "white",
+                            }}
+                            spin
+                          />
+                        }
+                      />
+                    ) : (
+                      "Log In"
+                    )}
+                  </ButtonComponent>
+                </form>
+
+                <div className="text-center">
+                  <Link
+                    to="/signup"
+                    className="text-gray-800  hover:text-indigo-500 transition ease-in-out delay-75 text-xs md:text-sm  mb-2"
+                  >
+                    {"Don't have an account yet?"}
+                  </Link>
+                </div>
+                <div className="text-center">
+                  <Link
+                    to="/forgotpassword"
+                    className="text-gray-800 hover:text-indigo-500 transition ease-in-out delay-50 text-xs md:text-sm"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
       </div>
     </>
   );

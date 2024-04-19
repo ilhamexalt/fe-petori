@@ -22,7 +22,7 @@ export default function FooterComponent() {
           <Link to={"/contactus"}>Contact Us</Link>
         </div>
         <div className="hover:text-indigo-200 transition delay-50 ease-in-out">
-          <Link>Privacy and Policy</Link>
+          <Link to={"/privacy"}>Privacy and Policy</Link>
         </div>
         <div className="hover:text-indigo-200 transition delay-50 ease-in-out">
           <Link>Terms and Conditions</Link>
