@@ -16,7 +16,7 @@ export default function PaginationComponent({
         disabled={page === 1 ? true : false}
         className={`${
           activePrev ? "bg-indigo-500 !text-white" : ""
-        } rounded-sm w-14 h-10 hover:bg-indigo-500  hover:text-white text-black text-sm flex justify-center items-center ${
+        } rounded-sm  w-12 h-8 md:w-14 md:h-10  hover:bg-indigo-500  hover:text-white text-black text-sm flex justify-center items-center ${
           page === 1 ? "cursor-not-allowed" : "cursor-pointer"
         }`}
         onClick={onClickPrev}
@@ -27,7 +27,7 @@ export default function PaginationComponent({
         disabled={totalData < 10 ? true : false}
         className={`${
           activeNext ? "bg-indigo-500 !text-white" : ""
-        } rounded-sm w-14 h-10 white  text-black text-sm  flex justify-center items-center ${
+        } rounded-sm w-12 h-8 md:w-14 md:h-10 white  text-black text-sm  flex justify-center items-center ${
           totalData < 10 ? "cursor-not-allowed" : "cursor-pointer"
         }`}
         onClick={onClickNext}

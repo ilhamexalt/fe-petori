@@ -20,7 +20,6 @@ import { getStore, getStoresByUserId } from "../services/service";
 import ServiceComponent from "../components/Service";
 import { LoadingOutlined } from "@ant-design/icons";
 import PaginationComponent from "../components/Pagination";
-import { GrPowerReset } from "react-icons/gr";
 
 export default function Store() {
   const navigate = useNavigate();
@@ -331,7 +330,7 @@ export default function Store() {
   };
 
   //hooks get all data store
-  const { data, isError, isLoading, isFetching, refetch } = useStoresQuery(
+  const { data, isLoading, isFetching, refetch } = useStoresQuery(
     isToken,
     paramIduser,
     page,
@@ -443,6 +442,7 @@ export default function Store() {
   }
 
   const handleNextPage = async () => {
+    setLoading(true);
     const newPage = page + 1;
     setPage(newPage);
     const data = await getStoresByUserId(
@@ -453,9 +453,11 @@ export default function Store() {
     );
     setStores(data?.data);
     setFilteredStores(data?.data);
+    setLoading(false);
   };
 
   const handlePrevPage = async () => {
+    setLoading(true);
     const newPage = page - 1;
     setPage(newPage);
     const data = await getStoresByUserId(
@@ -466,6 +468,7 @@ export default function Store() {
     );
     setStores(data?.data);
     setFilteredStores(data?.data);
+    setLoading(false);
   };
 
   return (
@@ -493,43 +496,45 @@ export default function Store() {
         </div>
       </div>
       <div className="grid grid-cols-1">
-        {/* if empty data as admin or owner won't rendered */}
         {isFetching ? (
           <Spin className="mt-10" />
         ) : (
           <>
             {filteredStores.length === 0 ? (
               <Empty className="mt-14" />
+            ) : loading ? (
+              <Spin className="mt-10" />
             ) : (
               <>
-                <Skeleton loading={isFetching} active avatar>
-                  {filteredStores?.map((item, index) => (
-                    <div
-                      key={index}
-                      className="w-full h-20 mt-5 border-b-[1px] "
-                    >
-                      <List
-                        number={index + 1}
-                        image={item.storeImage ? item.storeImage : StoreImage}
-                        title={item.storeName}
-                        description={item.description}
-                        location={
-                          item.address.split(",")[0] +
-                          ", " +
-                          item.address.split(",")[1]
-                        }
-                        onClickGmaps={item.location}
-                        onClickEdit={() => showModal(item.id)}
-                        onClickDelete={() => handleDelete({ item })}
-                        onClickService={() => showService({ item })}
-                      />
-                    </div>
-                  ))}
-                </Skeleton>
+                {filteredStores?.map((item, index) => (
+                  <>
+                    <Skeleton loading={isFetching} active avatar>
+                      <div
+                        key={index}
+                        className="w-full h-20 mt-5 border-b-[1px] "
+                      >
+                        <List
+                          number={index + 1}
+                          image={item.storeImage ? item.storeImage : StoreImage}
+                          title={item.storeName}
+                          description={item.description}
+                          location={
+                            item.address.split(",")[0] +
+                            ", " +
+                            item.address.split(",")[1]
+                          }
+                          onClickGmaps={item.location}
+                          onClickEdit={() => showModal(item.id)}
+                          onClickDelete={() => handleDelete({ item })}
+                          onClickService={() => showService({ item })}
+                        />
+                      </div>
+                    </Skeleton>
+                  </>
+                ))}
+
                 <div className="flex justify-between">
-                  <p className="text-sm mt-3 ">
-                    {/* Current Page : <span className="font-semibold">{page}</span> */}
-                  </p>
+                  <p className="text-sm mt-3 "></p>
                   <p className="text-sm  mt-3 ">
                     Total Data :{" "}
                     <span className="font-semibold">
@@ -751,7 +756,7 @@ export default function Store() {
                   className="uppercase"
                   type="text"
                   value={id !== undefined ? description : description}
-                  placeholder="Ex. Open 9.00 am"
+                  placeholder="Ex. Provide some services and open daily at 9.00 am"
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>

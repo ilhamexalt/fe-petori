@@ -40,6 +40,7 @@ export default function User() {
   const [pageSize, setPageSize] = useState(10);
   const [activePrev, setActivePrev] = useState(false);
   const [activeNext, setActiveNext] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     data: datas,
@@ -137,19 +138,23 @@ export default function User() {
   };
 
   const handleNextPage = async () => {
+    setLoading(true);
     const newPage = page + 1;
     setPage(newPage);
     const data = await getUsers(isToken, newPage, pageSize);
     setFilteredUsers(data?.data);
     setUsers(data?.data);
+    setLoading(false);
   };
 
   const handlePrevPage = async () => {
+    setLoading(true);
     const newPage = page - 1;
     setPage(newPage);
     const data = await getUsers(isToken, newPage, pageSize);
     setFilteredUsers(data?.data);
     setUsers(data?.data);
+    setLoading(false);
   };
 
   let data = [];
@@ -207,10 +212,13 @@ export default function User() {
             {filteredUsers.length === 0 ? (
               <Empty className="mt-14" />
             ) : (
-              isRole === "Super Admin" && (
+              isRole === "Super Admin" &&
+              (loading ? (
+                <Spin className="mt-10" />
+              ) : (
                 <>
-                  <Skeleton loading={isFetching} active avatar>
-                    {filteredUsers.map((user, index) => (
+                  {filteredUsers.map((user, index) => (
+                    <Skeleton loading={isFetching} active avatar>
                       <div
                         key={user.id}
                         className="w-full h-20 mt-5 border-b-[1px] "
@@ -234,8 +242,9 @@ export default function User() {
                           onClickDelete={() => handleDelete({ user })}
                         />
                       </div>
-                    ))}
-                  </Skeleton>
+                    </Skeleton>
+                  ))}
+
                   <div className="flex justify-between">
                     <p className="text-sm mt-3 ">
                       {/* Current Page :{" "}
@@ -249,7 +258,7 @@ export default function User() {
                     </p>
                   </div>
                 </>
-              )
+              ))
             )}
 
             {filteredUsers.length > 0 && (

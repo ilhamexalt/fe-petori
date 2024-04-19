@@ -1,12 +1,12 @@
 import Swal from "sweetalert2";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import Dog from "../assets/dog.gif";
+import Fox from "../assets/fox.png";
 import { Drawer, Tour } from "antd";
 import { useRef, useState } from "react";
 import { MdClose, MdDashboard, MdLogout } from "react-icons/md";
 import { GrOrganization } from "react-icons/gr";
 import { FaRegMoneyBill1 } from "react-icons/fa6";
-import { IoSettingsOutline } from "react-icons/io5";
 import ButtonComponent from "./Button";
 import useLocalStorage from "../hooks/useLocalStorage";
 import Avatar from "../assets/avatar.png";
@@ -118,7 +118,8 @@ export default function MenuComponet() {
           to={"/dashboard"}
           className="text-gray-800 font-bold items-center hidden md:block"
         >
-          <img src={Dog} alt={"loading"} width={80} />
+          {/* <img src={Dog} alt={"loading"} width={80} /> */}
+          <img src={Fox} alt={"loading"} width={50} />
         </Link>
         <Link
           to={"/profile"}
@@ -233,7 +234,11 @@ export default function MenuComponet() {
       </ButtonComponent>
 
       <Drawer
-        closeIcon={<MdClose />}
+        closeIcon={
+          <div className="flex items-center justify-between">
+            <MdClose />
+          </div>
+        }
         placement="right"
         width={500}
         onClose={onClose}

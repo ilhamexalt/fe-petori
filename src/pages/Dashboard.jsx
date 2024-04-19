@@ -1,11 +1,10 @@
 import Layout from "./layout/Index";
 import CarouselComponent from "../components/Carousel";
 import Cat from "../assets/cat-run.gif";
-import ButtonComponent from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useStoresQuery } from "../hooks/UseStoresQuery";
-import { Empty, Skeleton } from "antd";
+import { Empty, Skeleton, Spin } from "antd";
 import CardStoreComponent from "../components/CardStore";
 import { useMediaQuery } from "react-responsive";
 import StoreImage from "../assets/store.png";
@@ -23,6 +22,7 @@ const Dashboard = () => {
   const [pageSize, setPageSize] = useState(10);
   const [activePrev, setActivePrev] = useState(false);
   const [activeNext, setActiveNext] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { data, isFetching, isLoading } = useStoresQuery(
     isToken,
@@ -63,17 +63,21 @@ const Dashboard = () => {
   }
 
   const handleNext = async () => {
+    setLoading(true);
     const newPage = page + 1;
     setPage(newPage);
     const data = await getStoresByUserId(isToken, 1, newPage, pageSize);
     setStores(data?.data);
+    setLoading(false);
   };
 
   const handlePrev = async () => {
+    setLoading(true);
     const newPage = page - 1;
     setPage(newPage);
     const data = await getStoresByUserId(isToken, 1, newPage, pageSize);
     setStores(data?.data);
+    setLoading(false);
   };
 
   return (
@@ -82,7 +86,7 @@ const Dashboard = () => {
         <CarouselComponent />
       </div>
       <div className="h-auto pt-2 md:pt-10 ">
-        <h1 className="font-bold  text-base md:text-2xl text-center mb-5">
+        <h1 className="font-bold  text-base md:text-2xl text-center mt-5 mb-5">
           ALL STORES
         </h1>
         {!isToken || isToken.length === 0 || data.data.length === 0 ? (
@@ -102,6 +106,15 @@ const Dashboard = () => {
                           : { width: 160, height: 240 }
                       }
                       active={true}
+                    />
+                  ) : loading ? (
+                    <Skeleton.Image
+                      style={
+                        isDesktopScreen
+                          ? { width: 240, height: 256 }
+                          : { width: 160, height: 240 }
+                      }
+                      active={loading}
                     />
                   ) : (
                     <CardStoreComponent
