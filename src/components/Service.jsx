@@ -185,7 +185,7 @@ const ServiceComponent = ({ props }) => {
   useEffect(() => {
     setServices(props?.services);
     setFilteredServices(props?.services);
-  }, []);
+  }, [props]);
 
   const handleSearchInputChange = (e) => {
     setLoading(true);
@@ -297,7 +297,13 @@ const ServiceComponent = ({ props }) => {
 
               <Divider />
               {isRole !== "Super Admin" && (
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={handleCancel}
+                    className="flex justify-center items-center gap-1 w-28 h-8 text-white bg-gray-500 shadow-sm rounded-md transition"
+                  >
+                    Cancel
+                  </button>
                   <ButtonComponent
                     className="py-1"
                     disabled={saving}

@@ -14,19 +14,19 @@ export default function CardStoreComponent({
   return (
     <div
       onClick={onClick}
-      className={`bg-white hover:cursor-pointer shadow-md hover:shadow-xl transition delay-50 ease-in-out w-full md:h-64 h-60 rounded-sm  ${className}`}
+      className={`bg-white hover:cursor-pointer shadow-md hover:shadow-xl  hover:scale-105 transition delay-50 ease-in-out w-full md:h-64 h-60 rounded-sm  ${className}`}
     >
       <div>
         <div className="w-full bg-white h-40 flex justify-center items-center">
           <img
-            className="w-full h-full object-contain shadow-sm rounded-sm hover:scale-105 transition p-2 md:p-2"
+            className="w-full h-full object-contain shadow-sm rounded-sm  p-2 md:p-2"
             src={src}
             alt="Store"
           />
         </div>
         <div className="grid grid-cols-1 py-2 px-2 md:px-3">
           <div>
-            <p className="text-[10px] text-justify md:text-sm capitalize">
+            <p className="text-[10px] font-semibold text-justify md:text-sm capitalize">
               {title}
             </p>
           </div>

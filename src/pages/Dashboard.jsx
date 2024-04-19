@@ -10,21 +10,31 @@ import CardStoreComponent from "../components/CardStore";
 import { useMediaQuery } from "react-responsive";
 import StoreImage from "../assets/store.png";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getStoresByUserId } from "../services/service";
+import PaginationComponent from "../components/Pagination";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isToken, setToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
+  const [stores, setStores] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [activePrev, setActivePrev] = useState(false);
+  const [activeNext, setActiveNext] = useState(false);
 
-  const { data, error, isFetching, isLoading, isError } = useStoresQuery(
+  const { data, isFetching, isLoading } = useStoresQuery(
     isToken,
     1,
     page,
     pageSize
   );
+
+  useEffect(() => {
+    setActivePrev(true);
+    setStores(data?.data);
+  }, [!isFetching, page, pageSize]);
 
   const isDesktopScreen = useMediaQuery({
     query: "(min-width: 1224px)",
@@ -52,8 +62,18 @@ const Dashboard = () => {
     return navigate("/");
   }
 
-  const handleShowAll = async () => {
-    alert("Coming soon!");
+  const handleNext = async () => {
+    const newPage = page + 1;
+    setPage(newPage);
+    const data = await getStoresByUserId(isToken, 1, newPage, pageSize);
+    setStores(data?.data);
+  };
+
+  const handlePrev = async () => {
+    const newPage = page - 1;
+    setPage(newPage);
+    const data = await getStoresByUserId(isToken, 1, newPage, pageSize);
+    setStores(data?.data);
   };
 
   return (
@@ -62,8 +82,8 @@ const Dashboard = () => {
         <CarouselComponent />
       </div>
       <div className="h-auto pt-2 md:pt-10 ">
-        <h1 className="font-bold  text-base md:text-2xl text-center mb-2">
-          STORES
+        <h1 className="font-bold  text-base md:text-2xl text-center mb-5">
+          ALL STORES
         </h1>
         {!isToken || isToken.length === 0 || data.data.length === 0 ? (
           <>
@@ -72,19 +92,7 @@ const Dashboard = () => {
         ) : (
           <>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-5 md:gap-10 justify-items-center mb-5 md:mb-10  ">
-              {/* {isFetching ? (
-                <Skeleton.Image
-                  style={
-                    isDesktopScreen
-                      ? { width: 240, height: 256 }
-                      : { width: 160, height: 240 }
-                  }
-                  active={true}
-                />
-              ) : (
-               
-              )} */}
-              {data?.data.map((item, i) => (
+              {stores?.map((item, i) => (
                 <div key={item.id}>
                   {isFetching ? (
                     <Skeleton.Image
@@ -113,18 +121,24 @@ const Dashboard = () => {
 
             <h1 className="flex justify-end text-xs md:text-sm -mt-2 ">
               Total Data :
-              <span className="font-semibold ml-1"> {data.data.length}</span>
+              <span className="font-semibold ml-1"> {stores?.length}</span>
             </h1>
             <div className="flex justify-center items-center mt-5 mb-2">
               {isFetching ? (
                 <Skeleton.Input size="default" active={true} />
               ) : (
-                <ButtonComponent
-                  onClick={() => handleShowAll()}
-                  className="bg-indigo-500 uppercase text-xs p-2 md:text-sm"
-                >
-                  {isFetching ? "Loading..." : "View All"}
-                </ButtonComponent>
+                <div className="flex">
+                  <PaginationComponent
+                    activePrev={activePrev}
+                    activeNext={activeNext}
+                    totalData={stores?.length}
+                    page={page}
+                    titlePrev={page}
+                    titleNext={page + 1}
+                    onClickPrev={handlePrev}
+                    onClickNext={handleNext}
+                  />
+                </div>
               )}
             </div>
           </>

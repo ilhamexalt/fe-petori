@@ -1,22 +1,29 @@
+import { Link } from "react-router-dom";
 import Layout from "./layout/Index";
+import { FloatButton } from "antd";
+import { HomeOutlined } from "@ant-design/icons";
 
 export default function PrivacyPolicy() {
   return (
-    <Layout>
+    <Layout className={"px-4 md:px-0"}>
       <div className="mt-16 md:mt-32">
-        <div className="container mx-auto px-4 py-8 text-justify">
-          <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
+        <div className="container mx-auto text-justify">
+          <h1 className="text-xl md:text-2xl font-bold mb-4">Privacy Policy</h1>
 
-          <p className="mb-4">
+          <p className="mb-4 text-sm md:text-lg">
             This privacy policy sets out how our website uses and protects any
             information that you give us when you use this website.
           </p>
 
-          <h2 className="text-2xl font-bold mb-2">Information We Collect</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-2">
+            Information We Collect
+          </h2>
 
-          <p className="mb-4">We may collect the following information:</p>
+          <p className="mb-4 text-sm md:text-lg">
+            We may collect the following information:
+          </p>
 
-          <ul className="list-disc list-inside mb-4">
+          <ul className="list-disc list-inside mb-4 text-sm md:text-lg">
             <li>Your name and contact information</li>
             <li>Demographic information</li>
             <li>
@@ -24,16 +31,16 @@ export default function PrivacyPolicy() {
             </li>
           </ul>
 
-          <h2 className="text-2xl font-bold mb-2">
+          <h2 className="text-xl md:text-2xl font-bold mb-2">
             How We Use the Information
           </h2>
 
-          <p className="mb-4">
+          <p className="mb-4 text-sm md:text-lg">
             We require this information to understand your needs and provide you
             with a better service, and in particular for the following reasons:
           </p>
 
-          <ul className="list-disc list-inside mb-4">
+          <ul className="list-disc list-inside mb-4 text-sm md:text-lg">
             <li>Internal record keeping</li>
             <li>Improving our products and services</li>
             <li>
@@ -48,18 +55,18 @@ export default function PrivacyPolicy() {
             </li>
           </ul>
 
-          <h2 className="text-2xl font-bold mb-2">Security</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-2">Security</h2>
 
-          <p className="mb-4">
+          <p className="mb-4 text-sm md:text-lg">
             We are committed to ensuring that your information is secure. In
             order to prevent unauthorized access or disclosure, we have put in
             place suitable physical, electronic, and managerial procedures to
             safeguard and secure the information we collect online.
           </p>
 
-          <h2 className="text-2xl font-bold mb-2">Cookies</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-2">Cookies</h2>
 
-          <p className="mb-4">
+          <p className="mb-4 text-sm md:text-lg">
             A cookie is a small file that asks permission to be placed on your
             computer's hard drive. Once you agree, the file is added, and the
             cookie helps analyze web traffic or lets you know when you visit a
@@ -69,7 +76,7 @@ export default function PrivacyPolicy() {
             about your preferences.
           </p>
 
-          <p className="mb-4">
+          <p className="mb-4 text-sm md:text-lg">
             Overall, cookies help us provide you with a better website by
             enabling us to monitor which pages you find useful and which you do
             not. A cookie in no way gives us access to your computer or any
@@ -77,9 +84,11 @@ export default function PrivacyPolicy() {
             us.
           </p>
 
-          <h2 className="text-2xl font-bold mb-2">Links to Other Websites</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-2">
+            Links to Other Websites
+          </h2>
 
-          <p className="mb-4">
+          <p className="mb-4 text-sm md:text-lg">
             Our website may contain links to other websites of interest.
             However, once you have used these links to leave our site, you
             should note that we do not have any control over that other website.
@@ -90,16 +99,16 @@ export default function PrivacyPolicy() {
             website in question.
           </p>
 
-          <h2 className="text-2xl font-bold mb-2">
+          <h2 className="text-xl md:text-2xl font-bold mb-2">
             Controlling Your Personal Information
           </h2>
 
-          <p className="mb-4">
+          <p className="mb-4 text-sm md:text-lg">
             You may choose to restrict the collection or use of your personal
             information in the following ways:
           </p>
 
-          <ul className="list-disc list-inside mb-4">
+          <ul className="list-disc list-inside mb-4 text-sm md:text-lg">
             <li>
               If you have previously agreed to us using your personal
               information for direct marketing purposes, you may change your
@@ -126,11 +135,20 @@ export default function PrivacyPolicy() {
             </li>
           </ul>
 
-          <p className="mb-4">
+          <p className="mb-4 text-sm md:text-lg">
             This privacy policy is subject to change without notice.
           </p>
         </div>
       </div>
+
+      <Link to={"/dashboard"}>
+        <FloatButton.Group type="primary">
+          <FloatButton
+            className="bg-white"
+            icon={<HomeOutlined className="hover:text-indigo-500" />}
+          />
+        </FloatButton.Group>
+      </Link>
     </Layout>
   );
 }

@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Layout from "./layout/Index";
-import { useState } from "react";
 import CardStoreComponent from "../components/CardStore";
 import ButtonComponent from "../components/Button";
 import { FloatButton, Skeleton } from "antd";
@@ -86,7 +85,7 @@ export default function StoreDetail() {
               <Skeleton active />
             ) : (
               <div className="px-3 py-3 shadow-md bg-white hover:shadow-lg md:max-h-64 md:min-h-64 max-h-60 overflow-y-auto scrollable-element">
-                <table class="table-auto text-[10px] md:text-sm  text-justify">
+                <table class="table-auto text-[10px] md:text-sm  text-justify mb-2">
                   <thead>
                     <tr>
                       <th>Location</th>
@@ -96,7 +95,8 @@ export default function StoreDetail() {
                     <tr>
                       <td>
                         <Link
-                          className="text-blue-500"
+                          target="_blank"
+                          className="text-blue-500 truncate hover:underline"
                           to={data?.data.location}
                         >
                           {data?.data.location}

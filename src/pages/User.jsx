@@ -142,26 +142,12 @@ export default function User() {
     const data = await getUsers(isToken, newPage, pageSize);
     setFilteredUsers(data?.data);
     setUsers(data?.data);
-    setActiveNext(true);
-    setActivePrev(false);
   };
 
   const handlePrevPage = async () => {
     const newPage = page - 1;
     setPage(newPage);
     const data = await getUsers(isToken, newPage, pageSize);
-    setFilteredUsers(data?.data);
-    setUsers(data?.data);
-    setActiveNext(false);
-    setActivePrev(true);
-  };
-
-  const handleReset = async () => {
-    setSearchItem("");
-    setPage(1);
-    setActiveNext(false);
-    setActivePrev(false);
-    const data = await getUsers(isToken, 1, 10);
     setFilteredUsers(data?.data);
     setUsers(data?.data);
   };
@@ -172,6 +158,7 @@ export default function User() {
   }
 
   useEffect(() => {
+    setActivePrev(true);
     setUsers(data);
     setFilteredUsers(data);
     window.scrollTo(0, 0);
@@ -204,14 +191,6 @@ export default function User() {
       <div className="mt-5 flex items-center justify-between">
         <div></div>
         <div className="flex items-center justify-between gap-5">
-          {filteredUsers.length === 0 && (
-            <button
-              className="py-2 px-2 text-sm bg-gray-500 text-white rounded-full"
-              onClick={handleReset}
-            >
-              <GrPowerReset />
-            </button>
-          )}
           <InputComponent
             className="!w-40 md:w-56"
             placeholder="Search .."
@@ -259,8 +238,8 @@ export default function User() {
                   </Skeleton>
                   <div className="flex justify-between">
                     <p className="text-sm mt-3 ">
-                      Current Page :{" "}
-                      <span className="font-semibold">{page}</span>
+                      {/* Current Page :{" "}
+                      <span className="font-semibold">{page}</span> */}
                     </p>
                     <p className="text-sm  mt-3 ">
                       Total Data :{" "}
@@ -280,6 +259,8 @@ export default function User() {
                   activeNext={activeNext}
                   totalData={filteredUsers.length}
                   page={page}
+                  titlePrev={page}
+                  titleNext={page + 1}
                   onClickPrev={handlePrevPage}
                   onClickNext={handleNextPage}
                 />

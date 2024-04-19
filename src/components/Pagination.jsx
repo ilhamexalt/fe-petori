@@ -7,6 +7,8 @@ export default function PaginationComponent({
   activeNext,
   page,
   totalData,
+  titlePrev,
+  titleNext,
 }) {
   return (
     <div className="border border-gray-200 flex justify-center">
@@ -19,7 +21,7 @@ export default function PaginationComponent({
         }`}
         onClick={onClickPrev}
       >
-        Prev
+        {titlePrev}
       </button>
       <button
         disabled={totalData < 10 ? true : false}
@@ -30,7 +32,7 @@ export default function PaginationComponent({
         }`}
         onClick={onClickNext}
       >
-        Next
+        {titleNext}
       </button>
     </div>
   );

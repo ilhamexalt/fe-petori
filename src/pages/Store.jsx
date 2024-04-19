@@ -323,6 +323,7 @@ export default function Store() {
   };
 
   const showService = ({ item }) => {
+    console.log(item);
     setStores(item);
     setOpenService(true);
   };
@@ -346,9 +347,11 @@ export default function Store() {
   }
 
   useEffect(() => {
+    setActivePrev(true);
     setStores(datas);
     setFilteredStores(datas);
-  }, [!isFetching]);
+    window.scrollTo(0, 0);
+  }, [!isFetching, page, pageSize]);
 
   //POST
   // const formData = new FormData();
@@ -453,8 +456,6 @@ export default function Store() {
     );
     setStores(data?.data);
     setFilteredStores(data?.data);
-    setActiveNext(true);
-    setActivePrev(false);
   };
 
   const handlePrevPage = async () => {
@@ -466,18 +467,6 @@ export default function Store() {
       newPage,
       pageSize
     );
-    setStores(data?.data);
-    setFilteredStores(data?.data);
-    setActiveNext(false);
-    setActivePrev(true);
-  };
-
-  const handleReset = async () => {
-    setSearchItem("");
-    setPage(1);
-    setActiveNext(false);
-    setActivePrev(false);
-    const data = await getStoresByUserId(isToken, paramIduser, 1, 10);
     setStores(data?.data);
     setFilteredStores(data?.data);
   };
@@ -494,23 +483,10 @@ export default function Store() {
             className="text-indigo-500 text-xs md:text-base flex items-center gap-1 pl-2 pr-2 md:pl-5 md:pr-5"
           >
             <IoMdAddCircle /> Store{" "}
-            {/* <ExportAsExcel
-              data={data}
-              columns={columns}
-              exportFilename="SampleData"
-            /> */}
           </Link>
         )}
         <div></div>
         <div className="flex items-center justify-between gap-5">
-          {filteredStores.length === 0 && (
-            <button
-              className="py-2 px-2 text-sm bg-gray-500 text-white rounded-full"
-              onClick={handleReset}
-            >
-              <GrPowerReset />
-            </button>
-          )}
           <InputComponent
             className="!w-40 md:w-56"
             placeholder="Search .."
@@ -555,7 +531,7 @@ export default function Store() {
                 </Skeleton>
                 <div className="flex justify-between">
                   <p className="text-sm mt-3 ">
-                    Current Page : <span className="font-semibold">{page}</span>
+                    {/* Current Page : <span className="font-semibold">{page}</span> */}
                   </p>
                   <p className="text-sm  mt-3 ">
                     Total Data :{" "}
@@ -577,6 +553,8 @@ export default function Store() {
             activeNext={activeNext}
             page={page}
             totalData={filteredStores?.length}
+            titlePrev={page}
+            titleNext={page + 1}
             onClickPrev={handlePrevPage}
             onClickNext={handleNextPage}
           />
@@ -783,7 +761,13 @@ export default function Store() {
 
               <Divider />
               {isRole !== "Super Admin" && (
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={handleCancel}
+                    className="flex justify-center items-center gap-1 w-28 h-8 text-white bg-gray-500 shadow-sm rounded-md transition"
+                  >
+                    Cancel
+                  </button>
                   <ButtonComponent
                     className="py-1"
                     disabled={saving}
