@@ -23,6 +23,7 @@ import PaginationComponent from "../components/Pagination";
 import { useDispatch } from "react-redux";
 import { closeModal, openModal } from "../redux/features/modalSlice";
 import ModalTest from "../components/ModalTest";
+import { CiSearch } from "react-icons/ci";
 
 export default function Store() {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ export default function Store() {
   const [pageSize, setPageSize] = useState(10);
   const [activePrev, setActivePrev] = useState(false);
   const [activeNext, setActiveNext] = useState(false);
+  const [inputSearch, setInputSearch] = useState("");
 
   // const dispatch = useDispatch();
   // const handleOpenModal = () => {
@@ -483,6 +485,22 @@ export default function Store() {
     setLoading(false);
   };
 
+  const handleSearch = async () => {
+    setLoading(true);
+    const response = await fetch(
+      `https://petori-service.my.id/Store?storeName=${inputSearch}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${isToken}`,
+        },
+      }
+    );
+    const data = await response.json();
+    setLoading(false);
+    setFilteredStores(data?.data);
+  };
+
   return (
     <Layout className={"px-4 md:px-0"}>
       <div className="mt-16 md:mt-32 ">
@@ -498,15 +516,29 @@ export default function Store() {
             <IoMdAddCircle /> Store{" "}
           </Link>
         )}
+
         <div></div>
-        <div className="flex items-center justify-between gap-5">
+        <div className="flex gap-2">
+          <InputComponent
+            className="!w-40 md:w-56"
+            placeholder="Search .."
+            onChange={(e) => setInputSearch(e.target.value)}
+          />
+          <button
+            onClick={handleSearch}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            <CiSearch />
+          </button>
+        </div>
+        {/* <div className="flex items-center justify-between gap-5">
           <InputComponent
             className="!w-40 md:w-56"
             placeholder="Search .."
             onChange={handleSearchInputChange}
             value={searchItem}
           />{" "}
-        </div>
+        </div> */}
       </div>
       <div className="grid grid-cols-1">
         {isFetching ? (

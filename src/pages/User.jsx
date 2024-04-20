@@ -15,7 +15,8 @@ import AvatarUser from "../assets/man.png";
 import { getUser, getUsers } from "../services/service";
 // import { LoadingOutlined } from "@ant-design/icons";
 import PaginationComponent from "../components/Pagination";
-import { GrPowerReset } from "react-icons/gr";
+// import { GrPowerReset } from "react-icons/gr";
+import { CiSearch } from "react-icons/ci";
 
 const Avatar = "https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
 
@@ -41,6 +42,7 @@ export default function User() {
   const [activePrev, setActivePrev] = useState(false);
   const [activeNext, setActiveNext] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [inputSearch, setInputSearch] = useState("");
 
   const {
     data: datas,
@@ -187,6 +189,23 @@ export default function User() {
     return navigate("/");
   }
 
+  const handleSearch = async () => {
+    setLoading(true);
+    const response = await fetch(
+      `https://petori-service.my.id/Users?name=${inputSearch}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${isToken}`,
+        },
+      }
+    );
+    const data = await response.json();
+    setLoading(false);
+    setUsers(data?.data);
+    setFilteredUsers(data?.data);
+  };
+
   return (
     <Layout className={"md:px-0 px-4"}>
       <div className="mt-16 md:mt-32">
@@ -195,14 +214,27 @@ export default function User() {
 
       <div className="mt-5 flex items-center justify-between">
         <div></div>
-        <div className="flex items-center justify-between gap-5">
+        <div className="flex gap-2">
+          <InputComponent
+            className="!w-40 md:w-56"
+            placeholder="Search .."
+            onChange={(e) => setInputSearch(e.target.value)}
+          />
+          <button
+            onClick={handleSearch}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            <CiSearch />
+          </button>
+        </div>
+        {/* <div className="flex items-center justify-between gap-5">
           <InputComponent
             className="!w-40 md:w-56"
             placeholder="Search .."
             value={searchItem}
             onChange={handleSearchInputChange}
           />
-        </div>
+        </div> */}
       </div>
       <div className="grid grid-cols-1 ">
         {isFetching ? (
@@ -218,11 +250,11 @@ export default function User() {
               ) : (
                 <>
                   {filteredUsers.map((user, index) => (
-                    <Skeleton loading={isFetching} active avatar>
-                      <div
-                        key={user.id}
-                        className="w-full h-20 mt-5 border-b-[1px] "
-                      >
+                    <div
+                      key={user.id}
+                      className="w-full h-20 mt-5 border-b-[1px] "
+                    >
+                      <Skeleton loading={isFetching} active avatar>
                         <List
                           number={(index += 1)}
                           tooltip={
@@ -241,8 +273,8 @@ export default function User() {
                           onClickEdit={() => showModal(user.id)}
                           onClickDelete={() => handleDelete({ user })}
                         />
-                      </div>
-                    </Skeleton>
+                      </Skeleton>
+                    </div>
                   ))}
 
                   <div className="flex justify-between">
