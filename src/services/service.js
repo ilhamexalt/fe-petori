@@ -145,6 +145,30 @@ export async function patchService(isToken, id, data) {
 }
 
 
+//Order History : #GET //
+export async function getOrderHistory(isToken, userId, page, pageSize) {
+    const res = await fetch(`${baseUrl}/OrderHistory?userId=${userId}&page=${page}&pageSize=${pageSize}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${isToken}`,
+        },
+    });
+    const data = await res.json()
+    return data;
+}
+
+//Order History : #GET // By Order ID
+export async function getOrderHistoryById(isToken, invoice) {
+    const res = await fetch(`${baseUrl}/OrderHistory/${invoice}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${isToken}`,
+        },
+    });
+    const data = await res.json()
+    return data;
+}
+
 
 
 

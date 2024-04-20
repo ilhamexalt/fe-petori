@@ -3,8 +3,7 @@ import Layout from "./layout/Index";
 import useLocalStorage from "../hooks/useLocalStorage";
 import ButtonComponent from "../components/Button";
 import Swal from "sweetalert2";
-import { IoSettingsSharp } from "react-icons/io5";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import InputComponent from "../components/Input";
 import Avatar from "../assets/avatar.png";
 import CommentsComponent from "../components/Comments";
@@ -13,6 +12,8 @@ import OrderDetail from "../components/OrderDetail";
 import { useMediaQuery } from "react-responsive";
 import { useUserQuery } from "../hooks/useUserQuery";
 import Cat from "../assets/cat-run.gif";
+import { useOrdersQuery } from "../hooks/useOrdersQuery";
+import { getOrderHistoryById } from "../services/service";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -34,15 +35,14 @@ export default function Profile() {
   const [openForm, setOpenForm] = useState(false);
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [detailOrder, setDetailOrder] = useState("");
 
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
 
-  const { data, isLoading, isFetching, isError, error } = useUserQuery(
-    id,
-    isToken
-  );
+  const { data, isLoading } = useUserQuery(id, isToken);
+  const { data: orders } = useOrdersQuery(isToken, id, 1, 10);
 
   const handleOpenForm = () => {
     if (openForm) {
@@ -124,6 +124,13 @@ export default function Profile() {
     }
   };
 
+  const handleDetailOrder = async (order) => {
+    const invoice = order;
+    const data = await getOrderHistoryById(isToken, invoice);
+    setDetailOrder(data);
+    setOpen(true);
+  };
+
   const steps = [
     {
       title: "Info",
@@ -163,12 +170,6 @@ export default function Profile() {
   const isDesktopScreen = useMediaQuery({
     query: "(min-width: 1224px)",
   });
-
-  // if (isDesktopScreen) {
-  //   // useEffect(() => {
-  //   //   setIsOpen(true);
-  //   // }, []);
-  // }
 
   if (isLoading)
     return (
@@ -225,10 +226,8 @@ export default function Profile() {
                     <div className="relative">
                       <img
                         alt="Profile"
-                        // src="https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg"
                         src={Avatar}
                         className=" h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px]"
-                        // shadow-xl rounded-full
                       />
                     </div>
                   </div>
@@ -467,15 +466,15 @@ export default function Profile() {
                 <div>
                   <h1 className="mb-5">Orders History</h1>
                 </div>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-5">
-                  {comments.map((comment, index) => (
-                    <div key={comment.id}>
+                <div className="grid grid-cols-2 md:grid-cols-6 gap-5">
+                  {orders?.data.map((order, index) => (
+                    <div key={index}>
                       <div
-                        className="w-full   bg-white text-gray-800 text-center px-5 py-3 md:py-5 shadow-md rounded-md cursor-pointer "
-                        onClick={() => setOpen(true)}
+                        className="w-full   bg-white text-gray-800 text-center px-5 py-5 shadow-md rounded-md cursor-pointer "
+                        onClick={() => handleDetailOrder(order)}
                       >
                         <h1 className="text-sm   font-semibold  text-gray-800">
-                          Ticket ID #13{comment.id}52
+                          {order}
                         </h1>
                       </div>
                     </div>
@@ -494,7 +493,7 @@ export default function Profile() {
             onCancel={() => setOpen(false)}
             width={1200}
           >
-            <OrderDetail />
+            <OrderDetail data={detailOrder} />
           </Modal>
         </section>
       </main>
