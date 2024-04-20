@@ -6,5 +6,6 @@ export const useOrdersQuery = (isToken, userId, page, pageSize) => {
     return useQuery({
         queryKey: ["orders"],
         queryFn: () => getOrderHistory(isToken, userId, page, pageSize),
+        refetchOnWindowFocus: false,
     });
 };

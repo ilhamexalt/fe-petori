@@ -5,7 +5,7 @@ export const useStoresQuery = (isToken, userId, page, pageSize) => {
   return useQuery({
     queryKey: ["stores"],
     queryFn: () => getStoresByUserId(isToken, userId, page, pageSize),
-    // refetchOnWindowFocus: false,
+    refetchOnWindowFocus: false,
   });
 
 };

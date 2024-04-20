@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import Avatar from "../assets/avatar.png";
+import { format } from "date-fns";
+import { Spin } from "antd";
 
 export default function OrderDetail({ data }) {
   const [totalPrice, setTotalPrice] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     let result = 0;
     for (let i = 0; i < data.data.serviceDetails.length; i++) {
       result =
@@ -13,16 +17,22 @@ export default function OrderDetail({ data }) {
         result;
       setTotalPrice(result);
     }
+    setTotalPrice(result);
+    setLoading(false);
   }, [data]);
 
   return (
     <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
+      <Spin className="flex justify-center" spinning={loading} />
       <div className="flex justify-start item-start space-y-2 flex-col">
         <h1 className="text-lg  font-semibold leading-7 lg:leading-9 text-gray-800">
           {data?.data.orderHistory.invoiceNumber}
         </h1>
         <p className="text-xs  font-medium leading-6 text-gray-600">
-          {data?.data.orderHistory.orderDate}
+          {format(
+            data?.data.orderHistory.orderDate,
+            "dd MMMM yyyy, HH:mm:ss a"
+          )}
         </p>
       </div>
       <div className="mt-5 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
@@ -80,7 +90,9 @@ export default function OrderDetail({ data }) {
 
                 <div className="flex justify-between items-center w-full">
                   <p className="text-sm  leading-4 text-gray-800">Shipping</p>
-                  <p className="text-sm  leading-4 text-gray-600">Rp. 0 </p>
+                  <p className="text-sm  leading-4 text-gray-600">
+                    Rp. Rp. {new Intl.NumberFormat("en-ID").format(0)}
+                  </p>
                 </div>
               </div>
               <div className="flex justify-between items-center w-full">
@@ -116,7 +128,7 @@ export default function OrderDetail({ data }) {
                   </div>
                 </div>
                 <p className="text-sm font-semibold leading-6  text-gray-800">
-                  Rp. 0
+                  Rp. {new Intl.NumberFormat("en-ID").format(0)}
                 </p>
               </div>
             </div>
@@ -134,7 +146,7 @@ export default function OrderDetail({ data }) {
                   alt="avatar"
                 />
                 <div className="flex justify-start items-start flex-col space-y-2">
-                  <p className="text-sm  font-semibold leading-4 text-left text-gray-800">
+                  <p className="text-sm  capitalize font-semibold leading-4 text-left text-gray-800">
                     {data?.data.customer.fullname}
                   </p>
                   <p className="text-xs  leading-5 text-gray-600">
