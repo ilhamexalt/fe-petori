@@ -14,6 +14,7 @@ import { useUserQuery } from "../hooks/useUserQuery";
 import Cat from "../assets/cat-run.gif";
 import { useOrdersQuery } from "../hooks/useOrdersQuery";
 import { getOrderHistoryById } from "../services/service";
+import OrderHistoryComponent from "../components/OrderHistory";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -469,14 +470,10 @@ export default function Profile() {
                 <div className="grid grid-cols-2 md:grid-cols-6 gap-5">
                   {orders?.data.map((order, index) => (
                     <div key={index}>
-                      <div
-                        className="w-full   bg-white text-gray-800 text-center px-5 py-5 shadow-md rounded-md cursor-pointer "
+                      <OrderHistoryComponent
                         onClick={() => handleDetailOrder(order)}
-                      >
-                        <h1 className="text-sm   font-semibold  text-gray-800">
-                          {order}
-                        </h1>
-                      </div>
+                        invoice={order}
+                      />
                     </div>
                   ))}
                 </div>

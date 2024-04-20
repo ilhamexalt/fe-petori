@@ -20,6 +20,9 @@ import { getStore, getStoresByUserId } from "../services/service";
 import ServiceComponent from "../components/Service";
 import { LoadingOutlined } from "@ant-design/icons";
 import PaginationComponent from "../components/Pagination";
+import { useDispatch } from "react-redux";
+import { closeModal, openModal } from "../redux/features/modalSlice";
+import ModalTest from "../components/ModalTest";
 
 export default function Store() {
   const navigate = useNavigate();
@@ -56,6 +59,11 @@ export default function Store() {
   const [pageSize, setPageSize] = useState(10);
   const [activePrev, setActivePrev] = useState(false);
   const [activeNext, setActiveNext] = useState(false);
+
+  // const dispatch = useDispatch();
+  // const handleOpenModal = () => {
+  //   dispatch(openModal());
+  // };
 
   /* Get State */
   useEffect(() => {
@@ -198,7 +206,11 @@ export default function Store() {
             timer: 1000,
             showConfirmButton: false,
           });
+          // clear state
+
           setOpen(false);
+          // dispatch(closeModal());
+
           refetch();
         })
         .catch((error) => {
@@ -479,6 +491,7 @@ export default function Store() {
       <div className="mt-5 flex items-center justify-between">
         {isRole !== "Super Admin" && (
           <Link
+            // onClick={handleOpenModal}
             onClick={() => showModal()}
             className="text-indigo-500 text-xs md:text-base flex items-center gap-1 pl-2 pr-2 md:pl-5 md:pr-5"
           >
@@ -507,30 +520,25 @@ export default function Store() {
             ) : (
               <>
                 {filteredStores?.map((item, index) => (
-                  <>
+                  <div key={index} className="w-full h-20 mt-5 border-b-[1px] ">
                     <Skeleton loading={isFetching} active avatar>
-                      <div
-                        key={index}
-                        className="w-full h-20 mt-5 border-b-[1px] "
-                      >
-                        <List
-                          number={index + 1}
-                          image={item.storeImage ? item.storeImage : StoreImage}
-                          title={item.storeName}
-                          description={item.description}
-                          location={
-                            item.address.split(",")[0] +
-                            ", " +
-                            item.address.split(",")[1]
-                          }
-                          onClickGmaps={item.location}
-                          onClickEdit={() => showModal(item.id)}
-                          onClickDelete={() => handleDelete({ item })}
-                          onClickService={() => showService({ item })}
-                        />
-                      </div>
+                      <List
+                        number={index + 1}
+                        image={item.storeImage ? item.storeImage : StoreImage}
+                        title={item.storeName}
+                        description={item.description}
+                        location={
+                          item.address.split(",")[0] +
+                          ", " +
+                          item.address.split(",")[1]
+                        }
+                        onClickGmaps={item.location}
+                        onClickEdit={() => showModal(item.id)}
+                        onClickDelete={() => handleDelete({ item })}
+                        onClickService={() => showService({ item })}
+                      />
                     </Skeleton>
-                  </>
+                  </div>
                 ))}
 
                 <div className="flex justify-between">
@@ -803,6 +811,8 @@ export default function Store() {
       <ModalComponent open={openService} onCancel={hiddenService} width={1000}>
         <ServiceComponent props={stores} />
       </ModalComponent>
+
+      <ModalTest></ModalTest>
     </Layout>
   );
 }

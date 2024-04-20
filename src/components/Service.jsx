@@ -31,18 +31,21 @@ const ServiceComponent = ({ props }) => {
   const [searchItem, setSearchItem] = useState("");
   const [limit, setLimit] = useState(5);
 
+  const [loadingService, setLoadingService] = useState(false);
+
   const showModal = async (id) => {
-    setLoading(true);
+    setLoadingService(true);
     setOpen(true);
     if (!id) {
-      setLoading(false);
+      setLoadingService(false);
       return null;
     } else {
       //call api service by id
       const data = await getService(isToken, id);
       setServiceName(data?.data.serviceName);
       setServicePrice(data?.data.servicePrice);
-      setLoading(false);
+      setLoadingService(false);
+
       return navigate(`/store/${id}`);
     }
   };
@@ -117,6 +120,7 @@ const ServiceComponent = ({ props }) => {
         });
         setServiceName("");
         setServicePrice("");
+        pushData();
         setOpen(false);
       }
     }
@@ -202,18 +206,21 @@ const ServiceComponent = ({ props }) => {
   };
 
   const datas = [];
-  for (let i = 0; i < limit; i++) {
-    if (props?.services[i] !== undefined) {
-      datas.push(props?.services[i]);
-    } else {
-      break;
+  const pushData = () => {
+    for (let i = 0; i < limit; i++) {
+      if (props?.services[i] !== undefined) {
+        datas.push(props?.services[i]);
+      } else {
+        break;
+      }
     }
-  }
+  };
 
   useEffect(() => {
+    pushData();
     setServices(datas);
     setFilteredServices(datas);
-  }, [props, limit]);
+  }, [props, limit, !saving]);
 
   return (
     <div>
@@ -245,11 +252,8 @@ const ServiceComponent = ({ props }) => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-5 px-4 gap-3">
           <Skeleton loading={loading} active avatar>
-            {filteredServices?.map((service) => (
-              <div
-                key={service.id}
-                className="w-full mt-2 flex justify-center  "
-              >
+            {filteredServices?.map((service, index) => (
+              <div key={index} className="w-full mt-2 flex justify-center  ">
                 <CardServiceComponent
                   storeName={props.storeName}
                   img={Service}
@@ -285,7 +289,7 @@ const ServiceComponent = ({ props }) => {
             <MdOutlinePets /> Service
           </h1>
           <Divider />
-          {loading ? (
+          {loadingService ? (
             <div className="flex justify-center items-center h-56">
               <Spin />
             </div>
