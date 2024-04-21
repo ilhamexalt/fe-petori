@@ -1,5 +1,5 @@
 const baseUrl = "https://petori-service.my.id";
-
+// console.log(import.meta.env.REACT_APP_BASE_URL)
 
 // AUTH : #POST 
 export function register({ fullname, phoneNumber, email, password, address }) {

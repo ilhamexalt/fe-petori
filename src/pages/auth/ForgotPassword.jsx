@@ -38,13 +38,22 @@ export default function ForgotPassword() {
     );
 
     if (!response.ok) {
+      console.log("Error: ", response.statusText);
       setLoading(false);
-      return Swal.fire("Error", response.statusText, "error");
+      Swal.fire("Error", response.statusText, "error");
     }
 
     if (response.ok) {
+      const data = await response.json();
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: data.message,
+        timer: 1000,
+        showConfirmButton: false,
+      });
       setLoading(false);
-      navigate("/verification/reset-password", { state: phoneNumber });
+      return navigate("/verification/reset-password", { state: phoneNumber });
     }
   };
 

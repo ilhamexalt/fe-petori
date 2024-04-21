@@ -15,11 +15,11 @@ export default function Verification() {
   const otpBoxReference = useRef([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isToken.length > 0 && !isRole.length > 0) {
-      return navigate("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!isToken.length > 0 && !isRole.length > 0) {
+  //     return navigate("/");
+  //   }
+  // }, []);
 
   function handleChange(value, index) {
     let newArr = [...otp];
