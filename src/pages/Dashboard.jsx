@@ -12,8 +12,11 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { getStoresByUserId } from "../services/service";
 import PaginationComponent from "../components/Pagination";
+import ButtonComponent from "../components/Button";
 
 const Dashboard = () => {
+  let pageNumber = Array.from({ length: 5 }, (_, i) => i + 1);
+
   const navigate = useNavigate();
   const [isToken, setToken] = useLocalStorage("isToken");
   const [isLogin, setIsLogin] = useLocalStorage("isLoggedIn");
@@ -31,7 +34,41 @@ const Dashboard = () => {
     pageSize
   );
 
+  const handleNext = async () => {
+    setLoading(true);
+    const newPage = page + 1;
+    setPage(newPage);
+    const data = await getStoresByUserId(isToken, 1, newPage, pageSize);
+    setStores(data?.data);
+    setLoading(false);
+  };
+
+  const handlePrev = async () => {
+    setLoading(true);
+    const newPage = page - 1;
+    setPage(newPage);
+    const data = await getStoresByUserId(isToken, 1, newPage, pageSize);
+    setStores(data?.data);
+    setLoading(false);
+  };
+
+  const fetchNewData = async (isToken, page, pageSize) => {
+    setLoading(true);
+    const data = await getStoresByUserId(isToken, 1, page, pageSize);
+    setLoading(false);
+    return data;
+  };
+
   useEffect(() => {
+    console.log("render : ", page);
+    fetchNewData(isToken, page, pageSize).then((data) => {
+      setStores(data?.data);
+      if (data?.data?.length === 0) {
+        setActiveNext(false);
+      } else {
+        setActiveNext(true);
+      }
+    });
     setActivePrev(true);
     setStores(data?.data);
   }, [!isFetching, page, pageSize]);
@@ -61,24 +98,6 @@ const Dashboard = () => {
     });
     return navigate("/");
   }
-
-  const handleNext = async () => {
-    setLoading(true);
-    const newPage = page + 1;
-    setPage(newPage);
-    const data = await getStoresByUserId(isToken, 1, newPage, pageSize);
-    setStores(data?.data);
-    setLoading(false);
-  };
-
-  const handlePrev = async () => {
-    setLoading(true);
-    const newPage = page - 1;
-    setPage(newPage);
-    const data = await getStoresByUserId(isToken, 1, newPage, pageSize);
-    setStores(data?.data);
-    setLoading(false);
-  };
 
   return (
     <Layout className={"md:px-0 px-4"}>
@@ -141,7 +160,19 @@ const Dashboard = () => {
                 <Skeleton.Input size="default" active={true} />
               ) : (
                 <div className="flex">
-                  <PaginationComponent
+                  {pageNumber?.map((item, i) => (
+                    <div key={i}>
+                      <button
+                        className={`rounded-sm  w-10 h-8 md:w-12 md:h-8  hover:bg-indigo-500  hover:text-white text-black text-sm flex justify-center items-center`}
+                        onClick={() => {
+                          setPage(item);
+                        }}
+                      >
+                        {item}
+                      </button>
+                    </div>
+                  ))}
+                  {/* <PaginationComponent
                     activePrev={activePrev}
                     activeNext={activeNext}
                     totalData={stores?.length}
@@ -150,7 +181,7 @@ const Dashboard = () => {
                     titleNext={page + 1}
                     onClickPrev={handlePrev}
                     onClickNext={handleNext}
-                  />
+                  /> */}
                 </div>
               )}
             </div>

@@ -434,6 +434,7 @@ const Register = () => {
             )}
 
             <ButtonComponent
+              disabled={!loading}
               onClick={handleRegister}
               type="submit"
               className="w-full tracking-widest mb-2"

@@ -38,11 +38,11 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      setLocation(lat + " " + lng);
-    });
+    // navigator.geolocation.getCurrentPosition(async (position) => {
+    //   const lat = position.coords.latitude;
+    //   const lng = position.coords.longitude;
+    //   setLocation(lat + " " + lng);
+    // });
 
     if (phoneNumber === "" || password === "" || location === "") {
       setError(true);
@@ -58,69 +58,64 @@ export default function Login() {
     }
 
     try {
-      const response = await login({ phoneNumber, password, location });
-      if (!response.ok) {
-        const data = await response.json();
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: data.message + response.statusText,
-          timer: 1000,
-          showConfirmButton: false,
-        });
-        setLoading(false);
-        return null;
-      }
+      // const response = await login({ phoneNumber, password, location });
+      // if (!response.ok) {
+      //   const data = await response.json();
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Oops...",
+      //     text: data.message + response.statusText,
+      //     timer: 1000,
+      //     showConfirmButton: false,
+      //   });
+      //   setLoading(false);
+      //   return null;
+      // }
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data?.data.isActive !== 1) {
-          setLoading(false);
-          Swal.fire({
-            icon: "info",
-            title: `<p style='text-align: center; font-size: 12px'>${data.message}</p>`,
-            html: `<p style='text-align: center; font-size: 12px'> you will be directed to the verification page, please wait... </p>`,
-            timer: 3000,
-            showCancelButton: false,
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-            willClose: () => {
-              return navigate("/verification/", {
-                state: data.data,
-              });
-            },
-          });
-        } else {
-          setLoading(false);
-          setId(data.data.id);
-          setFullname(data.data.fullname);
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   if (data?.data.isActive !== 1) {
+      //     setLoading(false);
+      //     Swal.fire({
+      //       icon: "info",
+      //       title: `<p style='text-align: center; font-size: 12px'>${data.message}</p>`,
+      //       html: `<p style='text-align: center; font-size: 12px'> you will be directed to the verification page, please wait... </p>`,
+      //       timer: 3000,
+      //       showCancelButton: false,
+      //       showConfirmButton: false,
+      //       timerProgressBar: true,
+      //       didOpen: (toast) => {
+      //         toast.onmouseenter = Swal.stopTimer;
+      //         toast.onmouseleave = Swal.resumeTimer;
+      //       },
+      //       willClose: () => {
+      //         return navigate("/verification/", {
+      //           state: data.data,
+      //         });
+      //       },
+      //     });
+      //   } else {
+      //     setLoading(false);
+      //     setId(data.data.id);
+      //     setFullname(data.data.fullname);
 
-          // const fullname = CryptoJS.AES.encrypt(
-          //   data.data.fullname,
-          //   "p3t0r1p3t0r1"
-          // ).toString();
-          // setFullname(fullname);
-
-          setIsRole(data.data.isRole);
-          setIsToken(data.token);
-          setIsLogin(true);
-          setEmail(data.data.email);
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            html: `<p style='text-align: center; font-size: 20px; '> ${data.message}</p>`,
-            timer: 1000,
-            showConfirmButton: false,
-            willClose: () => {
-              return navigate("/dashboard", { state: data.data });
-            },
-          });
-        }
-      }
+      //     setIsRole(data.data.isRole);
+      //     setIsToken(data.token);
+      //     setIsLogin(true);
+      //     setEmail(data.data.email);
+      //     Swal.fire({
+      //       icon: "success",
+      //       title: "Success",
+      //       html: `<p style='text-align: center; font-size: 20px; '> ${data.message}</p>`,
+      //       timer: 1000,
+      //       showConfirmButton: false,
+      //       willClose: () => {
+      //         return navigate("/dashboard", { state: data.data });
+      //       },
+      //     });
+      //   }
+      // }
+      return navigate("/dashboard");
     } catch (error) {
       setLoading(false);
       Swal.fire({
@@ -147,6 +142,9 @@ export default function Login() {
             {error && (
               <p className="text-red-500 text-center text-xs mb-2">{error}</p>
             )}
+            <p className="text-center text-xs mb-1 font-body italic text-red-500">
+              Saat ini tidak dapat digunakan terlebih dahulu
+            </p>
             <form name="basic" className="relative">
               <InputComponent
                 type="text"
@@ -186,7 +184,7 @@ export default function Login() {
               </div>
               <ButtonComponent
                 onClick={handleLogin}
-                disabled={loading}
+                disabled={!loading}
                 type="submit"
                 className="w-full tracking-widest p-1 mb-2"
               >

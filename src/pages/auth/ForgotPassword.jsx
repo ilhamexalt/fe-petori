@@ -89,7 +89,7 @@ export default function ForgotPassword() {
               </div>
 
               <ButtonComponent
-                disabled={loading}
+                disabled={!loading}
                 type="submit"
                 className="w-full tracking-widest p-1 mb-2"
               >
